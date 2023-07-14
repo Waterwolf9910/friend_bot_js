@@ -53,10 +53,11 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
-    "@discordjs/builders": "^1.2.0",
+    "@discordjs/builders": "^1.6.3",
     "@discordjs/opus": "latest",
     "@discordjs/rest": "latest",
     "@discordjs/voice": "latest",
+    "@distube/ytdl-core": "latest",
     "@types/react": "^17.0.38",
     "@types/sequelize": "^4.28.14",
     "bufferutil": "latest",
@@ -65,7 +66,7 @@
     "cors": "^2.8.5",
     "dayjs": "^1.11.7",
     "dhparam": "^2.0.0",
-    "discord-api-types": "^0.36.2",
+    "discord-api-types": "^0.37.48",
     "discord.js": "latest",
     "erlpack": "github:discord/erlpack",
     "errorhandler": "^1.5.1",
@@ -92,7 +93,6 @@
     "tslib": "^2.3.1",
     "utf-8-validate": "latest",
     "uuid": "^8.3.2",
-    "ytdl-core": "patch:ytdl-core@latest#./sig.js.patch",
     "ytpl": "latest",
     "ytsr": "latest",
     "zlib-sync": "latest"

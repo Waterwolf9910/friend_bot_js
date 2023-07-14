@@ -23,7 +23,7 @@ let _: import("../../types").Command = {
 }
 
 
-let run = async (guildId: string, origin: number, to: number): Promise<import("c:/Users/water/friend_bot_js/src/types").CommandResult> => {
+let run = async (guildId: string, origin: number, to: number): Promise<import("../../types").CommandResult> => {
     let queueData = queue_data.guild_queues[guildId]
     if (origin > queueData.queue.length || origin < 1) {
         return { flag: 'r', message: "origin is out of range" }

@@ -1,6 +1,6 @@
 import voice = require("@discordjs/voice")
 import queue_data = require("./queues")
-import ytdl = require("ytdl-core")
+import ytdl = require("@distube/ytdl-core")
 import dayjs = require("dayjs")
 
 let _: import("../../types").Command= {

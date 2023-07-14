@@ -2,7 +2,7 @@ import voice = require("@discordjs/voice")
 // import discord = require("discord.js")
 import queue_data = require("./queues")
 import ytsearch = require("ytsr")
-import ytdl = require("ytdl-core")
+import ytdl = require("@distube/ytdl-core")
 import ytpl = require("ytpl")
 import dayjs = require("dayjs")
 

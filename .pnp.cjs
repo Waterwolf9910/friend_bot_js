@@ -29,10 +29,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["@babel/core", "npm:7.21.4"],\
-            ["@discordjs/builders", "npm:1.6.1"],\
+            ["@discordjs/builders", "npm:1.6.3"],\
             ["@discordjs/opus", "npm:0.9.0"],\
             ["@discordjs/rest", "npm:1.7.0"],\
             ["@discordjs/voice", "npm:0.16.0"],\
+            ["@distube/ytdl-core", "npm:4.11.10"],\
             ["@mdx-js/react", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:1.6.22"],\
             ["@storybook/addon-actions", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:6.5.16"],\
             ["@storybook/addon-docs", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:6.5.16"],\
@@ -66,7 +67,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["csstype", "npm:3.1.2"],\
             ["dayjs", "npm:1.11.7"],\
             ["dhparam", "npm:2.0.0"],\
-            ["discord-api-types", "npm:0.36.3"],\
+            ["discord-api-types", "npm:0.37.48"],\
             ["discord.js", "npm:14.9.0"],\
             ["erlpack", "https://github.com/discord/erlpack.git#commit=cbe76be04c2210fc9cb6ff95910f0937c1011d04"],\
             ["errorhandler", "npm:1.5.1"],\
@@ -108,7 +109,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["webpack", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:5.78.0"],\
             ["webpack-cli", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:4.10.0"],\
             ["webpack-dev-server", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:4.13.2"],\
-            ["ytdl-core", "patch:ytdl-core@npm%3A4.11.3#./sig.js.patch::version=4.11.3&hash=d0db88&locator=discord_bot-friend_server%40workspace%3A."],\
             ["ytpl", "npm:2.3.0"],\
             ["ytsr", "npm:3.8.1"],\
             ["zlib-sync", "npm:0.1.8"]\
@@ -4438,6 +4438,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["tslib", "npm:2.5.0"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:1.6.3", {\
+          "packageLocation": "./.yarn/cache/@discordjs-builders-npm-1.6.3-a6dcda558f-6a0c07fb91.zip/node_modules/@discordjs/builders/",\
+          "packageDependencies": [\
+            ["@discordjs/builders", "npm:1.6.3"],\
+            ["@discordjs/formatters", "npm:0.3.1"],\
+            ["@discordjs/util", "npm:0.3.1"],\
+            ["@sapphire/shapeshift", "npm:3.9.2"],\
+            ["discord-api-types", "npm:0.37.48"],\
+            ["fast-deep-equal", "npm:3.1.3"],\
+            ["ts-mixer", "npm:6.0.3"],\
+            ["tslib", "npm:2.5.0"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["@discordjs/collection", [\
@@ -4455,6 +4469,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@discordjs/formatters", "npm:0.3.0"],\
             ["discord-api-types", "npm:0.37.37"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:0.3.1", {\
+          "packageLocation": "./.yarn/cache/@discordjs-formatters-npm-0.3.1-7840a49252-9635568785.zip/node_modules/@discordjs/formatters/",\
+          "packageDependencies": [\
+            ["@discordjs/formatters", "npm:0.3.1"],\
+            ["discord-api-types", "npm:0.37.48"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -4512,6 +4534,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@discordjs/util", "npm:0.2.0"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:0.3.1", {\
+          "packageLocation": "./.yarn/cache/@discordjs-util-npm-0.3.1-16db858cd1-afd53427bc.zip/node_modules/@discordjs/util/",\
+          "packageDependencies": [\
+            ["@discordjs/util", "npm:0.3.1"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["@discordjs/voice", [\
@@ -4533,6 +4562,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@discoveryjs-json-ext-npm-0.5.7-fe04af1f31-2176d301cc.zip/node_modules/@discoveryjs/json-ext/",\
           "packageDependencies": [\
             ["@discoveryjs/json-ext", "npm:0.5.7"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@distube/ytdl-core", [\
+        ["npm:4.11.10", {\
+          "packageLocation": "./.yarn/cache/@distube-ytdl-core-npm-4.11.10-0891d38a88-3290855820.zip/node_modules/@distube/ytdl-core/",\
+          "packageDependencies": [\
+            ["@distube/ytdl-core", "npm:4.11.10"],\
+            ["m3u8stream", "npm:0.8.6"],\
+            ["miniget", "npm:4.2.2"],\
+            ["sax", "npm:1.2.4"],\
+            ["undici", "npm:5.22.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -4939,6 +4981,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@sapphire-shapeshift-npm-3.8.2-fe69f79d35-5b2b26ad13.zip/node_modules/@sapphire/shapeshift/",\
           "packageDependencies": [\
             ["@sapphire/shapeshift", "npm:3.8.2"],\
+            ["fast-deep-equal", "npm:3.1.3"],\
+            ["lodash", "npm:4.17.21"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:3.9.2", {\
+          "packageLocation": "./.yarn/cache/@sapphire-shapeshift-npm-3.9.2-0a1ff5d126-0d4572281a.zip/node_modules/@sapphire/shapeshift/",\
+          "packageDependencies": [\
+            ["@sapphire/shapeshift", "npm:3.9.2"],\
             ["fast-deep-equal", "npm:3.1.3"],\
             ["lodash", "npm:4.17.21"]\
           ],\
@@ -11730,17 +11781,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["discord-api-types", [\
-        ["npm:0.36.3", {\
-          "packageLocation": "./.yarn/cache/discord-api-types-npm-0.36.3-63aa977556-3089c0fb37.zip/node_modules/discord-api-types/",\
-          "packageDependencies": [\
-            ["discord-api-types", "npm:0.36.3"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:0.37.37", {\
           "packageLocation": "./.yarn/cache/discord-api-types-npm-0.37.37-417c73fff9-6b680f52c1.zip/node_modules/discord-api-types/",\
           "packageDependencies": [\
             ["discord-api-types", "npm:0.37.37"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:0.37.48", {\
+          "packageLocation": "./.yarn/cache/discord-api-types-npm-0.37.48-c6f46c880d-aebc89f6bd.zip/node_modules/discord-api-types/",\
+          "packageDependencies": [\
+            ["discord-api-types", "npm:0.37.48"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -11773,10 +11824,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["discord_bot-friend_server", "workspace:."],\
             ["@babel/core", "npm:7.21.4"],\
-            ["@discordjs/builders", "npm:1.6.1"],\
+            ["@discordjs/builders", "npm:1.6.3"],\
             ["@discordjs/opus", "npm:0.9.0"],\
             ["@discordjs/rest", "npm:1.7.0"],\
             ["@discordjs/voice", "npm:0.16.0"],\
+            ["@distube/ytdl-core", "npm:4.11.10"],\
             ["@mdx-js/react", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:1.6.22"],\
             ["@storybook/addon-actions", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:6.5.16"],\
             ["@storybook/addon-docs", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:6.5.16"],\
@@ -11810,7 +11862,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["csstype", "npm:3.1.2"],\
             ["dayjs", "npm:1.11.7"],\
             ["dhparam", "npm:2.0.0"],\
-            ["discord-api-types", "npm:0.36.3"],\
+            ["discord-api-types", "npm:0.37.48"],\
             ["discord.js", "npm:14.9.0"],\
             ["erlpack", "https://github.com/discord/erlpack.git#commit=cbe76be04c2210fc9cb6ff95910f0937c1011d04"],\
             ["errorhandler", "npm:1.5.1"],\
@@ -11852,7 +11904,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["webpack", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:5.78.0"],\
             ["webpack-cli", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:4.10.0"],\
             ["webpack-dev-server", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:4.13.2"],\
-            ["ytdl-core", "patch:ytdl-core@npm%3A4.11.3#./sig.js.patch::version=4.11.3&hash=d0db88&locator=discord_bot-friend_server%40workspace%3A."],\
             ["ytpl", "npm:2.3.0"],\
             ["ytsr", "npm:3.8.1"],\
             ["zlib-sync", "npm:0.1.8"]\
@@ -22751,6 +22802,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["busboy", "npm:1.6.0"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:5.22.1", {\
+          "packageLocation": "./.yarn/cache/undici-npm-5.22.1-ff9b0b961e-048a3365f6.zip/node_modules/undici/",\
+          "packageDependencies": [\
+            ["undici", "npm:5.22.1"],\
+            ["busboy", "npm:1.6.0"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["unfetch", [\
@@ -24216,18 +24275,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["yoga-layout-prebuilt", "npm:1.10.0"],\
             ["@types/yoga-layout", "npm:1.9.2"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["ytdl-core", [\
-        ["patch:ytdl-core@npm%3A4.11.3#./sig.js.patch::version=4.11.3&hash=d0db88&locator=discord_bot-friend_server%40workspace%3A.", {\
-          "packageLocation": "./.yarn/cache/ytdl-core-patch-1bf5e167ec-4b9340841d.zip/node_modules/ytdl-core/",\
-          "packageDependencies": [\
-            ["ytdl-core", "patch:ytdl-core@npm%3A4.11.3#./sig.js.patch::version=4.11.3&hash=d0db88&locator=discord_bot-friend_server%40workspace%3A."],\
-            ["m3u8stream", "npm:0.8.6"],\
-            ["miniget", "npm:4.2.2"],\
-            ["sax", "npm:1.2.4"]\
           ],\
           "linkType": "HARD"\
         }]\
