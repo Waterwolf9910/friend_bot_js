@@ -17,10 +17,7 @@ let _: import("../../types").Command= {
         let search = interaction.options.getString("video_query", false)
         //@ts-ignore
         let member: import('discord.js').GuildMember = interaction.member
-        return run(member, interaction.guild.id, (message) => {
-            return interaction.editReply(message)
-            //@ts-ignore
-        }, interaction.channel, search, search != null && search !== "" ? search.split(' ') : null)
+        return run(member, interaction.guild.id, interaction.channel, search, search != null && search !== "" ? search.split(' ') : null)
     },
     slash: require("./slash").addSubcommand(sub => {
         sub.setName("play")
@@ -128,7 +125,7 @@ let end = async (guildId: string) => {
     queue_data.end(guildId, true)
 }
 
-let run = async (member: import('discord.js').GuildMember, guildId: string, reply: (message: string | import('discord.js').MessageCreateOptions | import('discord.js').MessagePayload) => Promise<import('discord.js').Message>, text_channel: import('discord.js').GuildTextBasedChannel, search: string, searchSplit: string[]): Promise<import('../../types').CommandResult> => {
+let run = async (member: import('discord.js').GuildMember, guildId: string, text_channel: import('discord.js').GuildTextBasedChannel, search: string, searchSplit: string[]): Promise<import('../../types').CommandResult> => {
     // let search = _search.join(' ')
     let voice_channel = member.voice.channel
     if (!voice_channel?.joinable) {
@@ -247,7 +244,7 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, repl
                     play_next(text_channel, guildId)
                 }
             }  else {
-                reply("Not an available video or playlist (can't play live videos)")
+                return { message: "Not an available video or playlist (can't play live videos)", flag: 'r' };
             }
         }
     } else {

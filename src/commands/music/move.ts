@@ -8,12 +8,15 @@ let _: import("../../types").Command = {
             origin.setName("origin")
             origin.setDescription("The song to move")
             origin.setRequired(true)
+            return origin
         })
         sub.addIntegerOption(to => {
             to.setName("to")
             to.setDescription("Where to move the song")
             to.setRequired(true)
+            return to;
         })
+        return sub
     }),
     interaction: interaction => {
         return run(interaction.guildId, interaction.options.getInteger("origin"), interaction.options.getInteger("to"))
@@ -40,3 +43,5 @@ let run = async (guildId: string, origin: number, to: number): Promise<import(".
     newqueue.splice(to - 1, 0, temp)
     queue_data.guild_queues[guildId].queue = newqueue
 }
+
+export = _
