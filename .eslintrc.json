@@ -1,0 +1,37 @@
+{
+    "env": {
+        "browser": false,
+        "commonjs": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": "latest"
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "no-unused-vars": "warn",
+        "prefer-const": "off", 
+        "@typescript-eslint/no-var-requires": "off", 
+        "@typescript-eslint/no-unused-vars": "off", // Base eslint has this
+        "@typescript-eslint/no-empty-function": "warn",
+        "no-empty": "warn",
+        "no-var": "off",
+        "no-global-assign": "warn",
+        "@typescript-eslint/ban-ts-comment": "warn",
+        "@typescript-eslint/no-explicit-any": "off"
+    }
+    
+}

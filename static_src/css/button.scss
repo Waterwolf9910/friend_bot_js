@@ -1,0 +1,19 @@
+.mybutton {
+    font-family: fanasty, 'Ubuntu', 'Times New Roman', Times, Arial, sans-serif;
+    /* border: 5cm, chocolate; */
+    border: 0;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    padding: 20px 12px;
+    border-radius: 10px;
+    &.primary {
+        color: wheat;
+        background-color: rgb(7, 114, 146);
+    }
+    &.secondary {
+        color: maroon;
+        background-color: bisque;
+    }
+}
+

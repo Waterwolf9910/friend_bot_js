@@ -1,0 +1,12 @@
+{
+    "baseDir": "./src",
+    "includeNpm": true,
+    "fileExtensions": ["ts", "tsx"],
+    "tsConfig": "./tsconfig.json",
+    "detectiveOptions": {
+        "ts": {
+            "mixedImports": true,
+            "skipTypeImports": true
+        }
+    }
+}

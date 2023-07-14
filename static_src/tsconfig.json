@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        // "outDir": "../build/static",
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "importHelpers": true,
+        // "lib": ["ES2021", "ES6"],
+        "allowSyntheticDefaultImports": false,
+        "jsx": "react-jsxdev",
+        "isolatedModules": false,
+        "target": "ES6",
+        "rootDir": ".",
+        "sourceMap": true,
+        // "sourceMap": true,
+        "esModuleInterop": true
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

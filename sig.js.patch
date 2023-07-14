@@ -1,0 +1,22 @@
+From 586971bd9aeda1cbb4600851cfef82a809833ac2 Mon Sep 17 00:00:00 2001
+From: khlevon <khlevonn@gmail.com>
+Date: Thu, 6 Apr 2023 20:35:17 +0400
+Subject: [PATCH] fix: code parser
+
+---
+ lib/utils.js | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/utils.js b/lib/utils.js
+index 705c8dd3..143ef1ff 100644
+--- a/lib/utils.js
++++ b/lib/utils.js
+@@ -60,7 +60,7 @@ const ESCAPING_SEQUENZES = [
+   { start: "'", end: "'" },
+   { start: '`', end: '`' },
+   // RegeEx
+-  { start: '/', end: '/', startPrefix: /(^|[[{:;,])\s?$/ },
++  { start: '/', end: '/', startPrefix: /(^|[[{:;,/])\s?$/ },
+ ];
+ 
+ /**

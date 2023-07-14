@@ -1,0 +1,89 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "request": "launch",
+            "name": "Build (Test)",
+            "type": "node-terminal",
+            "preLaunchTask": "Test Build",
+            "command": "exit 0"
+        },
+        {
+            "type": "vscode-edge-devtools.debug",
+            "request": "launch",
+            "name": "Launch Edge",
+            "useHttps": true,
+            "url": "https://localhost:3000",
+            "webRoot": "${workspaceFolder}/build/static"
+        },
+        {
+            "name": "Launch Bot",
+            "request": "launch",
+            "type": "node",
+            // "profileStartup": true,
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["node", "--tls-min-v1.2", "--report-uncaught-exception", /* "--prof", */ "--node-memory-debug", /* "--heap-prof", "--cpu-prof" */],
+            "autoAttachChildProcesses": true,
+            "presentation": {
+                "hidden": false,
+                "group": "Discord Bots",
+                "order": 1
+            },
+            "cwd": "${workspaceFolder}/debug",
+            "sourceMaps": true,
+            "outputCapture": "std",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "localRoot": "${workspaceFolder}/build/",
+            "preLaunchTask": "Test Build",
+            "program": "${workspaceFolder}/build/index.js",
+            "showAsyncStacks": true,
+            "serverReadyAction": {
+                "action": "startDebugging",
+                "name": "Launch Edge",
+                "pattern": "Listening on port 3000"
+            },
+            "skipFiles": [
+                "<node_internals>/**",
+                "**/.pnp.cjs",
+                "**/.pnp.js",
+                "**/yarn.js",
+                "**/v35.js",
+                "**/get-intrinsic/*.js",
+                "**/ytdl-core/lib/*.js",
+                "**/libsodium.js"
+            ]
+        },
+        {
+            "name": "Relaunch Bot",
+            "request": "launch",
+            "type": "node",
+            "profileStartup": true,
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": [
+                "node",
+                "--tls-min-v1.2",
+                "--report-uncaught-exception", /* "--prof", */
+                "--node-memory-debug", /* "--heap-prof", "--cpu-prof" */
+            ],
+            "autoAttachChildProcesses": true,
+            "presentation": {
+                "hidden": false,
+                "group": "Discord Bots",
+                "order": 1
+            },
+            "sourceMaps": true,
+            "outputCapture": "std",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "localRoot": "${workspaceFolder}/build/",
+            "program": "${workspaceFolder}/build/index.js",
+            "showAsyncStacks": true,
+            "serverReadyAction": {
+                "action": "startDebugging",
+                "name": "Launch Edge",
+                "pattern": "Listening on port 3000"
+            }
+        }
+    ]
+}

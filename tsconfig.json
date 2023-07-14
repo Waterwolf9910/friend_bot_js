@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "forceConsistentCasingInFileNames": true,
+        "importHelpers": true,
+        "lib": ["ESNext", "DOM"],
+        "moduleResolution": "Node",
+        "esModuleInterop": true,
+        "rootDir": "src",
+        "target": "ESNext",
+        "sourceMap": false,
+        "outDir": "build",
+        "removeComments": true,
+        "resolveJsonModule": true,
+        "declaration": false,
+        "extendedDiagnostics": true,
+        "diagnostics": true
+    },
+    "watchOptions": {"watchDirectory": "dynamicprioritypolling"},
+    "typeAcquisition": {"enable": true},
+    "buildOptions": {"verbose": true},
+    "include": ["src/**/*.ts"],
+    "ts-node": {"preferTsExts": true, "transpileOnly": true},
+}
