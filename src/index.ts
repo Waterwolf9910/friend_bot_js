@@ -64,15 +64,15 @@ async function main() {
     client_secret = config.ClientSecret
     secret = config.WebSecret
     let validatorPath = path.resolve(os.homedir(), "friend_bot-validator.json")
-    let validater: import("./types").Validator = fs.existsSync(validatorPath) ? JSON.parse(fs.readFileSync(validatorPath, { encoding: 'utf-8' })) : {}
+    let validater: import("./types").Validator = fs.existsSync(validatorPath) ? JSON.parse(fs.readFileSync(validatorPath, { encoding: 'utf-8' })) : {List: {}}
      
     let setToken = async (refresh = false) => {
         if (refresh) {
-            token = crypto.decrypt({ tag: validater.BotToken.Tag, ciphertext: token, iv: validater.BotToken.Nonce, key: validater.BotToken.Key })
+            token = crypto.decrypt({ tag: validater.List.BotToken.Tag, ciphertext: token, iv: validater.List.BotToken.Nonce, key: validater.List.BotToken.Key })
         }  
         let encrypted_BT = crypto.encrypt(token, random.alphaNumSpecial(true, null, 1024))
         config.BotToken = encrypted_BT.ciphertext
-        validater.BotToken = {
+        validater.List.BotToken = {
             CipherText: config.BotToken,
             ExpireDate: dayjs().add(config.RefreshDays, "days").toISOString(),
             Key: encrypted_BT.key,
@@ -85,11 +85,11 @@ async function main() {
     
     let setSecret = async (refresh = false) => {
         if (refresh) {
-            client_secret = crypto.decrypt({ tag: validater.BotSecret.Tag, ciphertext: client_secret, iv: validater.BotSecret.Nonce, key: validater.BotSecret.Key })
+            client_secret = crypto.decrypt({ tag: validater.List.BotSecret.Tag, ciphertext: client_secret, iv: validater.List.BotSecret.Nonce, key: validater.List.BotSecret.Key })
         }
         let encrypted_CS = crypto.encrypt(client_secret, random.alphaNumSpecial(true, null, 1024))
         config.ClientSecret = encrypted_CS.ciphertext
-        validater.BotSecret = {
+        validater.List.BotSecret = {
             CipherText: config.ClientSecret,
             ExpireDate: dayjs().add(config.RefreshDays, "days").toISOString(),
             Key: encrypted_CS.key,
@@ -100,22 +100,22 @@ async function main() {
         fs.writeFileSync(path.resolve("config.json"), JSON.stringify(config, null, 4))
     }
 
-    if (validater.BotToken && validater.BotToken.CipherText == config.BotToken) {
-        if (dayjs(validater.BotToken.ExpireDate).diff(dayjs(), "days") <= 0) {
+    if (validater.List.BotToken && validater.List.BotToken.CipherText == config.BotToken) {
+        if (dayjs(validater.List.BotToken.ExpireDate).diff(dayjs(), "days") <= 0) {
             await setToken(true)
         } else {
-            token = crypto.decrypt({tag: validater.BotToken.Tag, ciphertext: config.BotToken, iv: validater.BotToken.Nonce, key: validater.BotToken.Key})
+            token = crypto.decrypt({ tag: validater.List.BotToken.Tag, ciphertext: config.BotToken, iv: validater.List.BotToken.Nonce, key: validater.List.BotToken.Key })
             // secret = crypto.decrypt({auth_tag: web_authTag, data: config.secret, iv: webIv, key: webKey})
         }
     } else {
         await setToken()
     }
 
-    if (validater.BotSecret && validater.BotSecret.CipherText == config.ClientSecret) {
-        if (dayjs(validater.BotSecret.ExpireDate).diff(dayjs(), "days") <= 0) {
+    if (validater.List.BotSecret && validater.List.BotSecret.CipherText == config.ClientSecret) {
+        if (dayjs(validater.List.BotSecret.ExpireDate).diff(dayjs(), "days") <= 0) {
             await setSecret(true)
         } else {
-            client_secret = crypto.decrypt({ tag: validater.BotSecret.Tag, ciphertext: config.ClientSecret, iv: validater.BotSecret.Nonce, key: validater.BotSecret.Key })
+            client_secret = crypto.decrypt({ tag: validater.List.BotSecret.Tag, ciphertext: config.ClientSecret, iv: validater.List.BotSecret.Nonce, key: validater.List.BotSecret.Key })
             // secret = crypto.decrypt({auth_tag: web_authTag, data: config.secret, iv: webIv, key: webKey})
         }
     } else {

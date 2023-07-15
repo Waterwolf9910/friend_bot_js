@@ -52,12 +52,9 @@ let play_next = async (text_channel: import("discord.js").GuildTextBasedChannel,
         queueInfo.clearing = false
         let timeout_msg = await text_channel.send("No more music in the queue. I will leave in 5 minutes if music is not added.")
         let timeout = setTimeout(() => {
-            try {
-                queueInfo.player?.removeAllListeners()
-            } catch { }
             end(guildId)
             timeout_msg.edit("I disconnected due to inactivity")
-        })
+        }, 5 * 60 * 1000) 
         queueInfo.timeout_info = { timeout: timeout, msg: timeout_msg, type: "queue" }
         return
     }
@@ -82,12 +79,9 @@ let play_next = async (text_channel: import("discord.js").GuildTextBasedChannel,
         if (!queue[ next ] || !(loop == 'song' && queue[ cur ])) {
             let timeout_msg = await text_channel.send("No more music in the queue. I will leave in 5 minutes if music is not added.")
             let timeout = setTimeout(() => {
-                try {
-                    queueInfo.player?.removeAllListeners()
-                } catch { }
                 end(guildId)
                 timeout_msg.edit("I disconnected due to inactivity")
-            })
+            }, 5 * 60 * 1000)
             queueInfo.timeout_info = { timeout: timeout, msg: timeout_msg, type: "queue" }
         } 
         play_next(text_channel, guildId, loop == 'song' ? retrys + 1 : 0)
@@ -179,6 +173,9 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
             try {
                 pl = await ytpl(url.searchParams.get("list"), { limit: Infinity })
             } catch {
+                if (queue_data.guild_queues[ guildId ].queue.length == 0) {
+                    end(guildId)
+                }
                 return { flag: "r", message: 'The playlist does not exist.' };
             }
             for (let video of pl.items) {
@@ -202,17 +199,20 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
                 play_next(text_channel, guildId)
             }
         } else if (ytdl.validateURL(searchSplit[ 0 ])) {
-            let _video = await ytdl.getInfo(searchSplit[ 0 ]);
-            let video = _video.videoDetails
+            let video = (await ytdl.getInfo(searchSplit[ 0 ])).videoDetails
             if (!video) {
+                if (queue_data.guild_queues[ guildId ].queue.length == 0) {
+                    end(guildId)
+                }
                 return { flag: 's', message: 'Error getting video info' };
             }
             if (!video.isLiveContent) {
+                let durSecs = parseInt(video.lengthSeconds)
                 queue.push({
-                    duration: video.lengthSeconds,
+                    duration: `${(durSecs / 60).toFixed(0)}:${(durSecs % 60) < 10 ? 0 : ''}${durSecs % 60}`,
                     link: searchSplit[ 0 ],
                     source: "Youtube",
-                    thumbnail: _video.thumbnail_url,
+                    thumbnail: video.thumbnails[ 0 ].url,
                     title: video.title,
                     uploader: {
                         name: video.author.name,
@@ -227,7 +227,7 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
                         description: `Song Added. Queue #${queue.length}`,
                         timestamp: dayjs().toISOString(),
                         thumbnail: {
-                            url: _video.thumbnail_url,
+                            url: video.thumbnails[ 0 ].url,
                             height: 80,
                             width: 80
                         },
@@ -243,7 +243,10 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
                 if (player.state.status == voice.AudioPlayerStatus.Idle) {
                     play_next(text_channel, guildId)
                 }
-            }  else {
+            } else {
+                if (queue_data.guild_queues[ guildId ].queue.length == 0) {
+                    end(guildId)
+                }
                 return { message: "Not an available video or playlist (can't play live videos)", flag: 'r' };
             }
         }
@@ -303,6 +306,9 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
                     let video = options[ sel.emoji.name ]
                     if (!video) {
                         let canmsg = await text_channel.send("Cancelled")
+                        if (queue_data.guild_queues[ guildId ].queue.length == 0) {
+                            end(guildId)
+                        }
                         setTimeout(() => {
                             canmsg.delete().catch(() => null)
                         }, 3000)
@@ -337,23 +343,24 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
                 } catch (err) {
                     selmsg.delete().catch(() => null)
                     text_channel.send("No response within 30 seconds, Cancelling")
+                    if (queue_data.guild_queues[ guildId ].queue.length == 0) {
+                        end(guildId)
+                    }
                 }
             })
         })
     }
 
-    if (player.listenerCount("stateChange") < 1) {
-        connection.on("stateChange", async (oldS, newS) => {
+    if (connection.listenerCount("stateChange") < 1) {
+        connection.on("stateChange", async (_, newS) => {
             if (newS.status == voice.VoiceConnectionStatus.Destroyed || newS.status == voice.VoiceConnectionStatus.Disconnected) {
                 end(guildId)
                 return
             }
             if (queue_data.guild_queues[ guildId ].vchannel.members.filter(member => !member.user.bot).size < 1) {
-                let timeout_msg = await text_channel.send("No more music in the queue. I will leave in 5 minutes if music is not added.")
+                let timeout_msg = await text_channel.send("I will leave in a minute due to user inactivity")
+                queue_data.guild_queues[ guildId ].player.pause()
                 timeout = setTimeout(() => {
-                    try {
-                        player?.removeAllListeners()
-                    } catch { }
                     end(guildId)
                     timeout_msg.edit("I disconnected due to inactivity")
                 }, 5 * 60 * 1000)
@@ -363,7 +370,7 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
     }
 
     if (player.listenerCount("stateChange") < 1) {
-        player.on("stateChange", async (oldS, newS) => {
+        player.on("stateChange", async (_, newS) => {
             if (newS.status == voice.AudioPlayerStatus.Buffering) {
                 return
             }
@@ -384,6 +391,7 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
                 return
             }
 
+            // Handled in the listener above
             if (queueData.connection.state.status == voice.VoiceConnectionStatus.Destroyed || queueData.connection.state.status == voice.VoiceConnectionStatus.Disconnected) {
                 return
             }
@@ -397,9 +405,6 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
             } else {
                 let timeout_msg = await text_channel.send("No more music in the queue. I will leave in 5 minutes if music is not added.")
                 timeout = setTimeout(() => {
-                    try {
-                        player?.removeAllListeners()
-                    } catch { }
                     end(guildId)
                     timeout_msg.edit("I disconnected due to inactivity")
                 }, 5 * 60 * 1000)
@@ -437,9 +442,6 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
             } else {
                 let timeout_msg = await text_channel.send("No more music in the queue. I will leave in 5 minutes if music is not added.")
                 timeout = setTimeout(() => {
-                    try {
-                        player?.removeAllListeners()
-                    } catch { }
                     end(guildId)
                     timeout_msg.edit("I disconnected due to inactivity")
                 }, 5*60*1000)

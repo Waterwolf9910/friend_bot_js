@@ -11,6 +11,7 @@
 !.yarn/cache
 #/.pnp.*
 build/
+debug
 .dev.json
 data.json
 *.log

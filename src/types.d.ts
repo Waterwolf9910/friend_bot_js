@@ -450,12 +450,14 @@ export type plugin = {
 }
 
 export interface Validator {
-    [key: string]: {
-        Key: string,
-        CipherText: string,
-        Nonce: string,
-        Tag: string,
-        ExpireDate: string
+    List: {
+        [key: string]: {
+            Key: string,
+            CipherText: string,
+            Nonce: string,
+            Tag: string,
+            ExpireDate: string
+        }
     }
 }
 

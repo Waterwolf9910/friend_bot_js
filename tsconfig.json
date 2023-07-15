@@ -8,7 +8,7 @@
         "esModuleInterop": true,
         "rootDir": "src",
         "target": "ESNext",
-        "sourceMap": false,
+        "sourceMap": true,
         "outDir": "build",
         "removeComments": true,
         "resolveJsonModule": true,
