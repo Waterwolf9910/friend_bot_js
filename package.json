@@ -58,6 +58,8 @@
     "@discordjs/rest": "latest",
     "@discordjs/voice": "latest",
     "@distube/ytdl-core": "latest",
+    "@distube/ytpl": "latest",
+    "@distube/ytsr": "latest",
     "@types/react": "^17.0.38",
     "@types/sequelize": "^4.28.14",
     "bufferutil": "latest",
@@ -93,8 +95,6 @@
     "tslib": "^2.3.1",
     "utf-8-validate": "latest",
     "uuid": "^8.3.2",
-    "ytpl": "latest",
-    "ytsr": "latest",
     "zlib-sync": "latest"
   },
   "resolutions": {

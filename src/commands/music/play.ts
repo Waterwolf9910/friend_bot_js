@@ -1,9 +1,9 @@
 import voice = require("@discordjs/voice")
 // import discord = require("discord.js")
 import queue_data = require("./queues")
-import ytsearch = require("ytsr")
+import ytsearch = require("@distube/ytsr")
 import ytdl = require("@distube/ytdl-core")
-import ytpl = require("ytpl")
+import ytpl = require("@distube/ytpl")
 import dayjs = require("dayjs")
 
 let _: import("../../types").Command= {
@@ -169,7 +169,7 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
     } catch { }
     if (url) {
         if (ytpl.validateID(url.searchParams.get("list"))) {
-            let pl: ytpl.Result
+            let pl: ytpl.result
             try {
                 pl = await ytpl(url.searchParams.get("list"), { limit: Infinity })
             } catch {
@@ -181,10 +181,11 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
             for (let video of pl.items) {
                 queue.push({
                     duration: video.duration,
-                    thumbnail: video.bestThumbnail.url,
+                    thumbnail: video.thumbnail,
                     source: "Youtube",
                     uploader: {
                         name: video.author.name,
+                        //@ts-ignore (supposed to be .url now)
                         url: video.author.url
                     },
                     title: video.title,
@@ -254,100 +255,98 @@ let run = async (member: import('discord.js').GuildMember, guildId: string, text
         // if (!search || search?.length < 2) {
         //     return {flag: "r", message: "search query is too short"}
         // }
-        ytsearch.getFilters(search).then(async result_filter => {
-            ytsearch(result_filter.get("Type").get("Video").url, { limit: 3 }).then(async result => {
+        ytsearch(search, { type: "video", safeSearch: false, limit: 3 }).then(async result => {
 
-                let ran = 0
-                let selections = [ "1️⃣", "2️⃣", "3️⃣" ]
-                let fields = []
-                //@ts-ignore
-                let options: { [ key: string ]: typeof queue[ 0 ] } = {}
+            let ran = 0
+            let selections = [ "1️⃣", "2️⃣", "3️⃣" ]
+            let fields = []
+            //@ts-ignore
+            let options: { [ key: string ]: typeof queue[ 0 ] } = {}
 
-                for (let video of result.items) {
-                    if (video.type == "video" && !video.upcoming) {
-                        fields.push({
-                            inline: true,
-                            name: `${selections[ ran ]}: `,
-                            value: `[${video.title}](${video.url})\n[${video.author.name}](${video.author.url})`
-                        })
-                        options[ selections[ ran ] ] = {
-                            duration: video.duration,
-                            thumbnail: video.bestThumbnail.url,
-                            source: "Youtube",
-                            uploader: {
-                                name: video.author.name,
-                                url: video.author.url
-                            },
-                            title: video.title,
-                            link: video.url
-                        }
-                        ran++
+            for (let video of result.items) {
+                if (video.type == "video" && !video.upcoming) {
+                    fields.push({
+                        inline: true,
+                        name: `${selections[ ran ]}: `,
+                        value: `[${video.name}](${video.url})\n[${video.author.name}](${video.author.url})`
+                    })
+                    options[ selections[ ran ] ] = {
+                        duration: video.duration,
+                        thumbnail: video.thumbnail,
+                        source: "Youtube",
+                        uploader: {
+                            name: video.author.name,
+                            url: video.author.url
+                        },
+                        title: video.name,
+                        link: video.url
                     }
+                    ran++
                 }
-                let selmsg = await text_channel.send({
-                    embeds: [ {
-                        title: `React with ${selections[ 0 ]}, ${selections[ 1 ]}, or ${selections[ 2 ]} to select the song`,
-                        color: 3142847,
-                        fields
-                    } ]
-                })
+            }
+            let selmsg = await text_channel.send({
+                embeds: [ {
+                    title: `React with ${selections[ 0 ]}, ${selections[ 1 ]}, or ${selections[ 2 ]} to select the song`,
+                    color: 3142847,
+                    fields
+                } ]
+            })
 
-                selmsg.react("1️⃣").then(_m1 => {
-                    selmsg.react("2️⃣").then(_m2 => {
-                        selmsg.react("3️⃣").then(_m3 => {
-                            selmsg.react("❌")
-                        }).catch(() => null)
+            selmsg.react("1️⃣").then(_m1 => {
+                selmsg.react("2️⃣").then(_m2 => {
+                    selmsg.react("3️⃣").then(_m3 => {
+                        selmsg.react("❌")
                     }).catch(() => null)
                 }).catch(() => null)
-                try {
-                    let sel = (await selmsg.awaitReactions({ errors: [ "time" ], time: 30000, maxEmojis: 1, filter: (_react, user) => user.id == member.id })).first()
-                    selmsg.delete().catch(() => null)
-                    // console.log(sel.first().emoji, options)
-                    let video = options[ sel.emoji.name ]
-                    if (!video) {
-                        let canmsg = await text_channel.send("Cancelled")
-                        if (queue_data.guild_queues[ guildId ].queue.length == 0) {
-                            end(guildId)
-                        }
-                        setTimeout(() => {
-                            canmsg.delete().catch(() => null)
-                        }, 3000)
-                        return
-                    }
-                    queue.push(options[ sel.emoji.name ])
-                    let addmsg = await text_channel.send({
-                        embeds: [ {
-                            color: 3142847,
-                            title: video.title,
-                            url: video.link,
-                            description: `Song Added. Queue #${queue.length}`,
-                            timestamp: dayjs().toISOString(),
-                            thumbnail: {
-                                url: video.thumbnail,
-                                height: 80,
-                                width: 80
-                            },
-                            author: {
-                                name: video.uploader.name,
-                                url: video.uploader.url
-                            }
-                        } ]
-                    })
-                    setTimeout(() => {
-                        addmsg.delete().catch(() => null)
-                    }, 3000)
-                    if (player.state.status == voice.AudioPlayerStatus.Idle) {
-                        play_next(text_channel, guildId)
-                    }
-                    
-                } catch (err) {
-                    selmsg.delete().catch(() => null)
-                    text_channel.send("No response within 30 seconds, Cancelling")
+            }).catch(() => null)
+            try {
+                let sel = (await selmsg.awaitReactions({ errors: [ "time" ], time: 30000, maxEmojis: 1, filter: (_react, user) => user.id == member.id })).first()
+                selmsg.delete().catch(() => null)
+                // console.log(sel.first().emoji, options)
+                let video = options[ sel.emoji.name ]
+                if (!video) {
+                    let canmsg = await text_channel.send("Cancelled")
                     if (queue_data.guild_queues[ guildId ].queue.length == 0) {
                         end(guildId)
                     }
+                    setTimeout(() => {
+                        canmsg.delete().catch(() => null)
+                    }, 3000)
+                    return
                 }
-            })
+                queue.push(options[ sel.emoji.name ])
+                let addmsg = await text_channel.send({
+                    embeds: [ {
+                        color: 3142847,
+                        title: video.title,
+                        url: video.link,
+                        description: `Song Added. Queue #${queue.length}`,
+                        timestamp: dayjs().toISOString(),
+                        thumbnail: {
+                            url: video.thumbnail,
+                            height: 80,
+                            width: 80
+                        },
+                        author: {
+                            name: video.uploader.name,
+                            url: video.uploader.url
+                        }
+                    } ]
+                })
+                setTimeout(() => {
+                    addmsg.delete().catch(() => null)
+                }, 3000)
+                if (player.state.status == voice.AudioPlayerStatus.Idle) {
+                    play_next(text_channel, guildId)
+                }
+                
+            } catch (err) {
+                selmsg.delete().catch(() => null)
+                text_channel.send("No response within 30 seconds, Cancelling")
+                if (queue_data.guild_queues[ guildId ].queue.length == 0) {
+                    end(guildId)
+                }
+            }
         })
     }
 

@@ -34,6 +34,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@discordjs/rest", "npm:1.7.1"],\
             ["@discordjs/voice", "npm:0.16.0"],\
             ["@distube/ytdl-core", "npm:4.11.16"],\
+            ["@distube/ytpl", "npm:1.1.2"],\
+            ["@distube/ytsr", "npm:1.1.9"],\
             ["@mdx-js/react", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:1.6.22"],\
             ["@storybook/addon-actions", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:6.5.16"],\
             ["@storybook/addon-docs", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:6.5.16"],\
@@ -109,8 +111,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["webpack", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:5.88.2"],\
             ["webpack-cli", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:4.10.0"],\
             ["webpack-dev-server", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:4.15.1"],\
-            ["ytpl", "npm:2.3.0"],\
-            ["ytsr", "npm:3.8.2"],\
             ["zlib-sync", "npm:0.1.8"]\
           ],\
           "linkType": "SOFT"\
@@ -5008,6 +5008,26 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["miniget", "npm:4.2.3"],\
             ["sax", "npm:1.2.4"],\
             ["undici", "npm:5.22.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@distube/ytpl", [\
+        ["npm:1.1.2", {\
+          "packageLocation": "./.yarn/cache/@distube-ytpl-npm-1.1.2-41e09aa5fc-62c3601de8.zip/node_modules/@distube/ytpl/",\
+          "packageDependencies": [\
+            ["@distube/ytpl", "npm:1.1.2"],\
+            ["miniget", "npm:4.2.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@distube/ytsr", [\
+        ["npm:1.1.9", {\
+          "packageLocation": "./.yarn/cache/@distube-ytsr-npm-1.1.9-a7ac9c49b3-32fbdccdea.zip/node_modules/@distube/ytsr/",\
+          "packageDependencies": [\
+            ["@distube/ytsr", "npm:1.1.9"],\
+            ["miniget", "npm:4.2.3"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -12334,6 +12354,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@discordjs/rest", "npm:1.7.1"],\
             ["@discordjs/voice", "npm:0.16.0"],\
             ["@distube/ytdl-core", "npm:4.11.16"],\
+            ["@distube/ytpl", "npm:1.1.2"],\
+            ["@distube/ytsr", "npm:1.1.9"],\
             ["@mdx-js/react", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:1.6.22"],\
             ["@storybook/addon-actions", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:6.5.16"],\
             ["@storybook/addon-docs", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:6.5.16"],\
@@ -12409,8 +12431,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["webpack", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:5.88.2"],\
             ["webpack-cli", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:4.10.0"],\
             ["webpack-dev-server", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:4.15.1"],\
-            ["ytpl", "npm:2.3.0"],\
-            ["ytsr", "npm:3.8.2"],\
             ["zlib-sync", "npm:0.1.8"]\
           ],\
           "linkType": "SOFT"\
@@ -24937,26 +24957,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["yoga-layout-prebuilt", "npm:1.10.0"],\
             ["@types/yoga-layout", "npm:1.9.2"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["ytpl", [\
-        ["npm:2.3.0", {\
-          "packageLocation": "./.yarn/cache/ytpl-npm-2.3.0-13ac87cdcb-cec072c4e4.zip/node_modules/ytpl/",\
-          "packageDependencies": [\
-            ["ytpl", "npm:2.3.0"],\
-            ["miniget", "npm:4.2.3"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["ytsr", [\
-        ["npm:3.8.2", {\
-          "packageLocation": "./.yarn/cache/ytsr-npm-3.8.2-87fe50c7d3-7e4d7d1ca2.zip/node_modules/ytsr/",\
-          "packageDependencies": [\
-            ["ytsr", "npm:3.8.2"],\
-            ["miniget", "npm:4.2.3"]\
           ],\
           "linkType": "HARD"\
         }]\

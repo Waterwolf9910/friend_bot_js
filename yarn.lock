@@ -2094,6 +2094,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@distube/ytpl@npm:latest":
+  version: 1.1.2
+  resolution: "@distube/ytpl@npm:1.1.2"
+  dependencies:
+    miniget: ^4.2.1
+  checksum: 62c3601de8385a5d75084dd2909826185a5bc73e73b745736a7f4160b2ddf4217e032308703ecb7be495295d0d326643dce3165a9b1a93bcf38bde59f21877e5
+  languageName: node
+  linkType: hard
+
+"@distube/ytsr@npm:latest":
+  version: 1.1.9
+  resolution: "@distube/ytsr@npm:1.1.9"
+  dependencies:
+    miniget: ^4.2.2
+  checksum: 32fbdccdeaa428336092c1dd75ca4e59e2c27437366c001e7fd833dfe163f9a11f1421bdea727acce828fc5732d43d83a3dcd5bf82404f9c22409ab0e84a0652
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.0.1":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -7764,6 +7782,8 @@ __metadata:
     "@discordjs/rest": latest
     "@discordjs/voice": latest
     "@distube/ytdl-core": latest
+    "@distube/ytpl": latest
+    "@distube/ytsr": latest
     "@mdx-js/react": ^1.6.22
     "@storybook/addon-actions": ^6.4.9
     "@storybook/addon-docs": ^6.4.9
@@ -7839,8 +7859,6 @@ __metadata:
     webpack: latest
     webpack-cli: ^4.9.1
     webpack-dev-server: ^4.11.1
-    ytpl: latest
-    ytsr: latest
     zlib-sync: latest
   languageName: unknown
   linkType: soft
@@ -12331,7 +12349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"miniget@npm:^4.2.2, miniget@npm:^4.2.3":
+"miniget@npm:^4.2.1, miniget@npm:^4.2.2, miniget@npm:^4.2.3":
   version: 4.2.3
   resolution: "miniget@npm:4.2.3"
   checksum: c2db18570b4dc6771a6824993f9a33360b02ef92173bf38a5d772f27640f4f493153f73da1b28700c2b55cb7526321446ce2f326c667ad671fb78c8998c1402f
@@ -18676,24 +18694,6 @@ __metadata:
   dependencies:
     "@types/yoga-layout": 1.9.2
   checksum: 6954c7c7b04c585a1c974391bea4734611adb85702b5e9131549a1d3dc5b94e69bcfea34121cdaeb5e702663bf290fcce5374910128e54d1031503a57c062865
-  languageName: node
-  linkType: hard
-
-"ytpl@npm:latest":
-  version: 2.3.0
-  resolution: "ytpl@npm:2.3.0"
-  dependencies:
-    miniget: ^4.2.2
-  checksum: cec072c4e4b5e19930d498b0e4e69726538e95a452dc0686d4d7c865583f9ed14c33e526bbf1d54a75b7470490b4860eac814a697a98b3b89115ed1a0ea77a39
-  languageName: node
-  linkType: hard
-
-"ytsr@npm:latest":
-  version: 3.8.2
-  resolution: "ytsr@npm:3.8.2"
-  dependencies:
-    miniget: ^4.2.2
-  checksum: 7e4d7d1ca228ca51ff33da0c7b12531d2485afc7225d6fc72e85822551486ca70900b2b930dfef2c2d9ddc9d9d7ce31e9b4755ec94b9ef890012116f02789df2
   languageName: node
   linkType: hard
 
