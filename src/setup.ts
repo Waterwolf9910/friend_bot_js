@@ -66,6 +66,7 @@ let baseConfig: import("./types").Config = {
     DBUser: "friend_bot",
     DBUseSSL: false,
     DHParam: path.resolve("web_data", "dhparam.pem"),
+    DisabledPlugins: [],
     HttpPort: 8080,
     HttpsPort: 3000,
     UseHttps: true,

@@ -7,8 +7,7 @@
             "command": [
                 "yarn tsc",
                 // "echo Building Web Assests... &&",
-                // "yarn webpack build --color &&",
-                "echo Done"
+                // "yarn webpack build --color",
             ],
             // "command": [
             //     "./build.sh"

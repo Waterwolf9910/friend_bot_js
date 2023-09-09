@@ -2,8 +2,8 @@ import events = require("../events")
 import util = require("util")
 import discord = require("discord.js")
 
-let _: import("../types").event<"interactionCreate"> = {
-    name: "interactionCreate",
+let _: import("../types").event<discord.Events.InteractionCreate> = {
+    name: discord.Events.InteractionCreate,
     function: async (config, _client,  interaction) => {
         if (interaction.user.bot) { return }
         if (interaction.isStringSelectMenu()) {

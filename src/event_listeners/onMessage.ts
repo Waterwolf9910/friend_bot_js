@@ -2,8 +2,8 @@ import discord = require("discord.js")
 import db = require("../libs/db")
 import fs = require('fs')
 import path = require("path")
-let _: import("../types").event<"messageCreate"> = {
-    name: "messageCreate",
+let _: import("../types").event<discord.Events.MessageCreate> = {
+    name: discord.Events.MessageCreate,
     function: async (config, client, ctx) => {
         try {
             // ctx = await ctx.fetch()
@@ -32,6 +32,9 @@ let _: import("../types").event<"messageCreate"> = {
 
             for (let iplugin of fs.readdirSync(path.resolve("..", "internal_plugins")).filter(file => file.endsWith(".js"))) {
                 try {
+                    if (config.DisabledPlugins.includes(iplugin.replace(".js", ''))) {
+                        return
+                    }
                     require(`../internal_plugins/${iplugin}`).run(ctx, guild_config)
                 } catch (err) {
                     console.error(`Internal Plugin Error (${iplugin.replace(".js", " ")}): \n${err}`)
@@ -39,6 +42,9 @@ let _: import("../types").event<"messageCreate"> = {
             }
             for (let plugin of fs.readdirSync(path.resolve("plugins")).filter(file => file.endsWith(".js"))) {
                 try {
+                    if (config.DisabledPlugins.includes(plugin.replace(".js", ''))) {
+                        return
+                    }
                     require(`./plugins/${plugin}`).run(ctx, guild_config)
                 } catch (err) {
                     console.log(`Plugin Error (${plugin.replace(".js", " ")}): \n${err}`)

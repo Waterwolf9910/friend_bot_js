@@ -1,3 +1,4 @@
+process.env["YTDL_NO_UPDATE"] = "1"
 import path = require("path")
 import fs = require("fs")
 fs.existsSync(path.resolve(__dirname, ".pnp.cjs")) ? require("./.pnp.cjs").setup() : require("../.pnp.cjs")
@@ -29,7 +30,6 @@ import uuid = require("uuid")
 import morgan = require("morgan")
 import errorhandler = require("errorhandler")
 import url = require("url")
-import events = require("./events")
 // let querystring: typeof import("querystring") = require("querystring")
 
 let app = express()

@@ -1,6 +1,6 @@
 import db = require("../../libs/db")
 import discord = require("discord.js")
-let _: import("../../types").Command= {
+let _: import("../../types").Command = {
     // command: async (ctx, amount) => await run(ctx.guild, ctx.member, ctx.mentions.members.first(),
     //     //@ts-ignore
     //     ctx.channel,

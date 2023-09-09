@@ -22,6 +22,7 @@ export interface Config {
     DBUser: string
     DBUseSSL: boolean
     DHParam: string
+    DisabledPlugins: string[],
     Privkey: string
     HttpPort: number
     HttpsPort: number
