@@ -1,0 +1,18 @@
+@import "bootstrap/scss/bootstrap";
+
+p {
+    font-size: 12px;
+    margin: 8px;
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+    .center_items {
+        align-items: center;
+    }
+}
+
+.center_self {
+    align-self: center;
+}

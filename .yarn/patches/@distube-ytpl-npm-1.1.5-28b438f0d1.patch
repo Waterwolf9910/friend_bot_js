@@ -1,0 +1,11 @@
+diff --git a/typings/index.d.ts b/typings/index.d.ts
+index e4f49337cb1b21b355e61b442c2bf451b52cebea..13e6f55b8cc04e5b5c25cbee6a8b74862b60a384 100644
+--- a/typings/index.d.ts
++++ b/typings/index.d.ts
+@@ -61,5 +61,6 @@ declare module '@distube/ytpl' {
+    */
+   function ytpl(id: string, options?: ytpl.options): Promise<ytpl.result>;
+ 
++  //@ts-ignore typescript is getting mad at this no matter what I do
+   export = ytpl;
+ }

@@ -22,7 +22,7 @@
             "type": "node",
             // "profileStartup": true,
             "runtimeExecutable": "yarn",
-            "runtimeArgs": ["node", "--tls-min-v1.2", "--report-uncaught-exception", /* "--prof", */ "--node-memory-debug", /* "--heap-prof", "--cpu-prof" */],
+            "runtimeArgs": ["node", "--tls-min-v1.2", "--report-uncaught-exception", /* "--prof", "--node-memory-debug", "--heap-prof", "--cpu-prof" */],
             "autoAttachChildProcesses": true,
             "presentation": {
                 "hidden": false,
@@ -30,12 +30,15 @@
                 "order": 1
             },
             "cwd": "${workspaceFolder}/debug",
+            "env": {
+                "NODE_ENV": "development"
+            },
             "sourceMaps": true,
             "outputCapture": "std",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "localRoot": "${workspaceFolder}/build/",
-            "preLaunchTask": "Test Build",
+            "preLaunchTask": "npm: prepareDebug",
             "program": "${workspaceFolder}/build/index.js",
             "showAsyncStacks": true,
             "serverReadyAction": {
@@ -53,37 +56,6 @@
                 "**/ytdl-core/lib/*.js",
                 "**/libsodium.js"
             ]
-        },
-        {
-            "name": "Relaunch Bot",
-            "request": "launch",
-            "type": "node",
-            "profileStartup": true,
-            "runtimeExecutable": "yarn",
-            "runtimeArgs": [
-                "node",
-                "--tls-min-v1.2",
-                "--report-uncaught-exception", /* "--prof", */
-                "--node-memory-debug", /* "--heap-prof", "--cpu-prof" */
-            ],
-            "autoAttachChildProcesses": true,
-            "presentation": {
-                "hidden": false,
-                "group": "Discord Bots",
-                "order": 1
-            },
-            "sourceMaps": true,
-            "outputCapture": "std",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "localRoot": "${workspaceFolder}/build/",
-            "program": "${workspaceFolder}/build/index.js",
-            "showAsyncStacks": true,
-            "serverReadyAction": {
-                "action": "startDebugging",
-                "name": "Launch Edge",
-                "pattern": "Listening on port 3000"
-            }
         }
     ]
 }

@@ -46,11 +46,12 @@ interface CommandResultNone {
 
 export type CommandResult = CommandResultSend | CommandResultNone
 
-export interface UserLogin {
+export interface UserLogin extends Model {
+    id: string
     access_token: string
-    expires_in: number
     refresh_token: string
     scope: string
+    /** usually "Bearer" */
     token_type: string
     expire_time: string
 }

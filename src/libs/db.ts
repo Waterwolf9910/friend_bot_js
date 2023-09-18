@@ -27,19 +27,19 @@ import util = require("util")
 let guild_configs = sequelize.define<import("../types").GuildConfig>("guild_configs", {
     id: {
         allowNull: false,
-        type: _sequelize.DataTypes.STRING,
+        type: _sequelize.STRING,
         unique: true,
         primaryKey: true
     },
     prefix: {
         allowNull: false,
-        type: _sequelize.DataTypes.STRING,
+        type: _sequelize.STRING,
         unique: false,
         defaultValue: config.Prefix
     },
     econ_managers: {
         allowNull: false,
-        type: _sequelize.DataTypes.TEXT,
+        type: _sequelize.TEXT,
         get() {
             return this.getDataValue("econ_managers") ? JSON.parse(this.getDataValue("econ_managers")) : []
         },
@@ -53,7 +53,7 @@ let guild_configs = sequelize.define<import("../types").GuildConfig>("guild_conf
     },
     config_managers: {
         allowNull: false,
-        type: _sequelize.DataTypes.TEXT,
+        type: _sequelize.TEXT,
         get() {
             return this.getDataValue("config_managers") ? JSON.parse(this.getDataValue("config_managers")) : []
         },
@@ -67,7 +67,7 @@ let guild_configs = sequelize.define<import("../types").GuildConfig>("guild_conf
     },
     xp: {
         allowNull: false,
-        type: _sequelize.DataTypes.TEXT,
+        type: _sequelize.TEXT,
         get() {
             return this.getDataValue("xp") ? JSON.parse(this.getDataValue("xp")) : []
         },
@@ -81,7 +81,7 @@ let guild_configs = sequelize.define<import("../types").GuildConfig>("guild_conf
     },
     money: {
         allowNull: false,
-        type: _sequelize.DataTypes.TEXT,
+        type: _sequelize.TEXT,
         get() {
             return this.getDataValue("money") ? JSON.parse(this.getDataValue("money")) : []
         },
@@ -95,7 +95,7 @@ let guild_configs = sequelize.define<import("../types").GuildConfig>("guild_conf
     },
     other: {
         allowNull: false,
-        type: _sequelize.DataTypes.TEXT,
+        type: _sequelize.TEXT,
         get() {
             return this.getDataValue("other") ? JSON.parse(this.getDataValue("other")) : []
         },
@@ -108,6 +108,45 @@ let guild_configs = sequelize.define<import("../types").GuildConfig>("guild_conf
         defaultValue: "{}"
     }
 }, {})
+
+let user_logins = sequelize.define<import("../types").UserLogin>('user_logins', {
+    id: {
+        primaryKey: true,
+        allowNull: false,
+        type: _sequelize.STRING,
+        unique: true
+    },
+    access_token: {
+        primaryKey: true,
+        allowNull: false,
+        type: _sequelize.STRING,
+        unique: true
+    },
+    refresh_token: {
+        primaryKey: true,
+        allowNull: false,
+        type: _sequelize.STRING,
+        unique: true
+    },
+    scope: {
+        primaryKey: true,
+        allowNull: false,
+        type: _sequelize.STRING,
+        unique: true
+    },
+    token_type: {
+        primaryKey: true,
+        allowNull: false,
+        type: _sequelize.STRING,
+        unique: true
+    },
+    expire_time: {
+        primaryKey: true,
+        allowNull: false,
+        type: _sequelize.STRING,
+        unique: true
+    },
+})
 
 setInterval(async () => {
     console.log("[db.js] checking db auth")
@@ -140,10 +179,8 @@ setInterval(async () => {
     })
 })
 
-
-module.exports = {sequelize}
-
 export = {
     sequelize,
-    guild_configs
+    guild_configs,
+    user_logins
 }

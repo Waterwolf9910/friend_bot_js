@@ -1,6 +1,4 @@
-// import Logger from "./libs/logger"
-
-declare module 'main' {
+declare module 'logger' {
     global {
         interface Console {
             fatal: (message: any, ...optionalParams: any[]) => Error

@@ -1,20 +1,22 @@
 {
+    "extends": "../tsconfig.json",
     "compilerOptions": {
         "module": "CommonJS",
-        // "outDir": "../build/static",
         "strict": true,
+        "importHelpers": false,
         "forceConsistentCasingInFileNames": true,
-        "importHelpers": true,
-        // "lib": ["ES2021", "ES6"],
+        "lib": ["DOM"],
+        "outDir": "",
+        "esModuleInterop": false,
         "allowSyntheticDefaultImports": false,
-        "jsx": "react-jsxdev",
-        "isolatedModules": false,
-        "target": "ES6",
+        "jsx": "react-jsx",
+        "target": "ES2022",
         "rootDir": ".",
         "sourceMap": true,
-        // "sourceMap": true,
-        "esModuleInterop": true
     },
+    "include": [
+        "**/*"
+    ],
     "exclude": [
         "node_modules"
     ]
