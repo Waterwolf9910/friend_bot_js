@@ -5,26 +5,27 @@ let path = require("path")
 let webpack = require("webpack")
 let html = require("html-webpack-plugin")
 let terser = require("terser-webpack-plugin")
+let autoprefixer = require('autoprefixer')
 
 let isDev = process.env.NODE_ENV == "development"
 let pagedir = path.resolve(__dirname, 'static_src', 'js', 'pages')
 fs.writeFileSync(path.resolve(__dirname, "static_src/js/pages/page_data.json"), JSON.stringify(fs.readdirSync(pagedir).filter(v => v.endsWith(".tsx")).map(v => v.replace(".tsx", ''))))
-
 
 /**
  * @type {webpack.Configuration}
  */
 let config = {
     //@ts-ignore
-    entry: [ isDev && "webpack-hot-middleware/client?path=/__hmr&reload=true", "./js/renderer.tsx" ].filter(v => typeof v != "boolean"),
+    entry: [ isDev && "webpack-hot-middleware/client?path=__hmr&dynamicPublicPath=true&reload=true", "./js/renderer.tsx" ].filter(v => typeof v != "boolean"),
     target: ["web", "es6"],
     stats: "normal",
     output: {
-        path: path.resolve("build", "static"),
+        path: path.resolve(__dirname, "build/static"),
         charset: true,
         publicPath: "auto",
         clean: true
     },
+    context: path.resolve(__dirname, "static_src"),
     module: {
         rules: [
             {
@@ -37,19 +38,31 @@ let config = {
                 }
             },
             {
-                test: /\.(sc|c)ss$/i,
+                test: /\.(sc|c|sa)ss$/i,
                 use: [/* "style-loader" *//* css.loader, */
                     {
                         loader: "css-loader",
                         options: {
-                            modules: {
-                                mode: "global",
-                                namedExport: true
-                            },
+                            // modules: {
+                            //     mode: "global",
+                            //     namedExport: true
+                            // },
+                            modules: false,
                             exportType: "css-style-sheet",
                             sourceMap: isDev
                         }
-                    }, {
+                    }, 
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            postcssOptions: {
+                                plugins: [
+                                    autoprefixer
+                                ]
+                            }
+                        }
+                    },
+                    {
                         loader: "sass-loader",
                         options: {
                             sourceMap: isDev,
@@ -82,6 +95,7 @@ let config = {
             new html({
                 inject: "head",
                 template: "./index.html",
+                publicPath: "&{_path_}",
                 minify: { removeComments: true }
             }),
             new webpack.ProgressPlugin({
@@ -112,13 +126,14 @@ let config = {
         plugins: [
         ]
     },
-    optimization: {
-        minimize: isDev,
+    optimization: isDev ? {} : {
+        minimize: true,
         minimizer: [
             new terser({
                 parallel: true,
                 extractComments: true,
                 terserOptions: {
+                    sourceMap: false,
                     compress: {
                         booleans: true,
                         conditionals: true,
@@ -130,10 +145,10 @@ let config = {
                         loops: true,
                         negate_iife: false,
                         properties: false,
+                        drop_console: true,
                     },
                     format: {
-                        braces: true,
-                        indent_level: 4,
+                        indent_level: 0,
                     }
                 }
             })
@@ -145,7 +160,7 @@ let config = {
         splitChunks: {
             chunks: "async",
         },
-        concatenateModules: process.env[ "MODE" ] == 'p',
+        concatenateModules: true,
     }
 }
 module.exports = config

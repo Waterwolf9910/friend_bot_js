@@ -3,7 +3,6 @@
         "module": "CommonJS",
         "strict": false,
         "forceConsistentCasingInFileNames": true,
-        "importHelpers": true,
         "lib": [],
         "moduleResolution": "Node",
         "rootDir": "src",

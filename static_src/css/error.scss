@@ -1,0 +1,7 @@
+@import "./base.scss";
+
+#content div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

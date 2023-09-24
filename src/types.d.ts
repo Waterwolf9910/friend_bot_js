@@ -9,7 +9,6 @@ export interface Config {
     BaseCurrencyName: string
     BotOwner: string
     BotToken: string
-    Cert: string
     ClientId: string
     ClientSecret: string
     CloseOnUsedPort: boolean
@@ -21,16 +20,13 @@ export interface Config {
     DBType: string
     DBUser: string
     DBUseSSL: boolean
-    DHParam: string
     DisabledPlugins: string[],
-    Privkey: string
     HttpPort: number
-    HttpsPort: number
     UseHttps: boolean
-    Prefix: string
     RefreshDays: number
     ReverseProxy: string
     Status: discord.PresenceStatusData
+    WebDomain: string
     WebSecret: string
 }
 
@@ -201,6 +197,8 @@ export interface UserGuild {
     id: snowflake
     name: string
     permission: GuildPermissions
+    rawPermissions: string,
+    hasBot: boolean
     icon: string
 }
 
@@ -353,7 +351,6 @@ export interface Guild {
 
 export interface GuildConfig extends Model {
     gid: string
-    prefix: string
     econ_managers: string[]
     config_managers: string[]
     xp: { [ user_id: string ]: number }

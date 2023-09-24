@@ -20,7 +20,6 @@ let _: import("../types").event<discord.Events.MessageCreate> = {
                 econ_managers: [],
                 id: ctx.guild.id,
                 money: {},
-                prefix: config.Prefix,
                 xp: {},
                 other: {}
             }

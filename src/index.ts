@@ -2,34 +2,28 @@ process.env["YTDL_NO_UPDATE"] = "1"
 if (!process.env.NODE_ENV) {process.env.NODE_ENV="production"}
 import path = require("path")
 import fs = require("fs")
-fs.existsSync(path.resolve(__dirname, ".pnp.cjs")) ? require("./.pnp.cjs").setup() : require("../.pnp.cjs")
-require("./setup")
-// import _fetch = require("node-fetch")
-// let fetch = _fetch.default
+fs.existsSync(path.resolve(__dirname, ".pnp.cjs")) ? require("./.pnp.cjs").setup() : require("../.pnp.cjs").setup()
+import Logger = require("./libs/logger")
+let logger = new Logger()
+console = logger
 import _rl = require("readline")
 let rl = _rl.createInterface({ input: process.stdin, output: process.stdout, prompt: "> " })
-// if (!fs.existsSync(path.resolve("..", ".dev.json"))) {
-//     process.env["NODE_ENV"] = "production"
-// }
 import dayjs = require("dayjs")
-import _random = require("./libs/random")
-import crypto = require("./libs/crypto")
 import discord = require("discord.js")
 import os = require("os")
-import Logger = require("./libs/logger")
+import _random = require("./libs/random")
+import crypto = require("./libs/crypto")
+require("./setup")
 import webserver = require("./web/main")
 // let querystring: typeof import("querystring") = require("querystring")
 
 let random = new _random(512, 9)
 let config: import("./types").Config
 let db: typeof import("./libs/db")
-let client: typeof discord.Client.prototype
-let clientOpt: import("discord.js/typings/index").ClientOptions
+let client: discord.Client<true>
 let isDev = process.env.NODE_ENV == "development"
 
-// let dummy_store = new sequelize_store({ db: null, checkExpirationInterval: -1, expiration: -1}) // to set type
-let logger = new Logger()
-console = { ...logger, error: (message, ...optionalParams) => {
+/* console = { ...logger, error: (message, ...optionalParams) => {
     if (typeof message == "string") {
         if (message.includes("ytsr") || message.includes("*********************") || message.includes("reelPlayerHeaderRenderer")) {
             return
@@ -37,10 +31,9 @@ console = { ...logger, error: (message, ...optionalParams) => {
         return logger.error(message, ...optionalParams)
     }
     return logger.error(message, ...optionalParams)
-} }
+} } */
 
 async function main() {
-    client = new discord.Client(clientOpt)
     let token: string = config.BotToken
     let client_secret = config.ClientSecret
     let secret = config.WebSecret
@@ -50,7 +43,8 @@ async function main() {
     let setToken = async (refresh = false) => {
         if (refresh) {
             token = crypto.decrypt({ tag: validater.List.BotToken.Tag, ciphertext: token, iv: validater.List.BotToken.Nonce, key: validater.List.BotToken.Key })
-        }  
+        }
+        console.log("Encrypted Token")
         let encrypted_BT = crypto.encrypt(token, random.alphaNumSpecial(true, null, 1024))
         config.BotToken = encrypted_BT.ciphertext
         validater.List.BotToken = {
@@ -68,6 +62,7 @@ async function main() {
         if (refresh) {
             client_secret = crypto.decrypt({ tag: validater.List.BotSecret.Tag, ciphertext: client_secret, iv: validater.List.BotSecret.Nonce, key: validater.List.BotSecret.Key })
         }
+        console.log("Encrypted Client Secret")
         let encrypted_CS = crypto.encrypt(client_secret, random.alphaNumSpecial(true, null, 1024))
         config.ClientSecret = encrypted_CS.ciphertext
         validater.List.BotSecret = {
@@ -85,9 +80,10 @@ async function main() {
         if (refresh) {
             secret = crypto.decrypt({ tag: validater.List.WebSecret.Tag, ciphertext: secret, iv: validater.List.WebSecret.Nonce, key: validater.List.WebSecret.Key })
         }
+        console.log("Encrypted Secret")
         let encrypted_WS = crypto.encrypt(secret, random.alphaNumSpecial(true, null, 1024))
         config.WebSecret = encrypted_WS.ciphertext
-        validater.List.BotSecret = {
+        validater.List.WebSecret = {
             CipherText: config.WebSecret,
             ExpireDate: dayjs().add(config.RefreshDays, "days").toISOString(),
             Key: encrypted_WS.key,
@@ -98,12 +94,12 @@ async function main() {
         fs.writeFileSync(path.resolve("config.json"), JSON.stringify(config, null, 4))
     }
 
+    // Validate the bot token (maybe also go back to storing the tokens into os store)
     if (validater.List.BotToken && validater.List.BotToken.CipherText == config.BotToken) {
         if (dayjs(validater.List.BotToken.ExpireDate).diff(dayjs(), "days") <= 0) {
             await setToken(true)
         } else {
             token = crypto.decrypt({ tag: validater.List.BotToken.Tag, ciphertext: config.BotToken, iv: validater.List.BotToken.Nonce, key: validater.List.BotToken.Key })
-            // secret = crypto.decrypt({auth_tag: web_authTag, data: config.secret, iv: webIv, key: webKey})
         }
     } else {
         await setToken()
@@ -114,37 +110,39 @@ async function main() {
             await setClientSecret(true)
         } else {
             client_secret = crypto.decrypt({ tag: validater.List.BotSecret.Tag, ciphertext: config.ClientSecret, iv: validater.List.BotSecret.Nonce, key: validater.List.BotSecret.Key })
-            // secret = crypto.decrypt({auth_tag: web_authTag, data: config.secret, iv: webIv, key: webKey})
         }
     } else {
         await setClientSecret()
     }
 
-    if (validater.List.WebSecret && validater.List.WebSecret.CipherText == config.ClientSecret) {
+    if (validater.List.WebSecret && validater.List.WebSecret.CipherText == config.WebSecret) {
         if (dayjs(validater.List.WebSecret.ExpireDate).diff(dayjs(), "days") <= 0) {
-            await setClientSecret(true)
+            await setSecret(true)
         } else {
-            client_secret = crypto.decrypt({ tag: validater.List.WebSecret.Tag, ciphertext: config.WebSecret, iv: validater.List.WebSecret.Nonce, key: validater.List.WebSecret.Key })
-            // secret = crypto.decrypt({auth_tag: web_authTag, data: config.secret, iv: webIv, key: webKey})
+            secret = crypto.decrypt({ tag: validater.List.WebSecret.Tag, ciphertext: config.WebSecret, iv: validater.List.WebSecret.Nonce, key: validater.List.WebSecret.Key })
         }
     } else {
-        await setClientSecret()
+        await setSecret()
     }
 
-    // console.log(token, secret, client_secret)
-    // process.exit()
+    // Login to discord
     client.login(token)
-    // require("./commands").setup()
 
     client.once('ready', (_c) => {
         require("./slash_setup").setup(token, config)
+        // Get all modules in the event_listeners folder
         for (let eventFile of fs.readdirSync(path.resolve(__dirname, "event_listeners")).filter(val => val.endsWith('.js'))) {
-            let mod = require(`./event_listeners/${eventFile}`)
-            if (mod.name == "ready") {
-                mod.function(config, client, _c)
-            }
-            client.on(mod.name, (...args) => mod.function(config, client, ...args))
+            // Try to import the modules and add their events to the client
+            try {
+                let mod = require(`./event_listeners/${eventFile}`)
+                if (mod.name == "ready") {
+                    mod.function(config, client, _c)
+                }
+                client.on(mod.name, (...args) => mod.function(config, client, ...args))
+            } catch {}
         }
+        // Start the web server
+        webserver.start(secret, client_secret, config, client)
     })
     
     rl.on("close", close)
@@ -152,9 +150,9 @@ async function main() {
     // rl.on("SIGCONT", close)
     rl.on("SIGINT", close)
     rl.on("SIGTSTP", close)
-    webserver.start(secret, client_secret, config)
 }
 
+// Make sure everything is closed and saved
 let close = async (error_code: number) => {
     console.log("Closing")
     webserver.stop()
@@ -163,49 +161,50 @@ let close = async (error_code: number) => {
     await db.sequelize.close()
     process.exit(typeof error_code == "number" ? error_code : 0)
 }
-// let cache: { messages: [ { id: string, channel: string} ] }
+
 // client.generateInvite({ scopes: [ "bot" ], permissions: [ "ADD_REACTIONS", "CHANGE_NICKNAME", "CONNECT", "KICK_MEMBERS", "MANAGE_CHANNELS", "MANAGE_ROLES", "MENTION_EVERYONE", "READ_MESSAGE_HISTORY", "SEND_MESSAGES", "SEND_MESSAGES_IN_THREADS", "SPEAK", "USE_APPLICATION_COMMANDS", "USE_PUBLIC_THREADS", "USE_VAD", "VIEW_CHANNEL"] })
 if (require.main === module) {
-    // cli.
     console.log("Starting")
     db = require("./libs/db")
+    // Import the config
     config = JSON.parse(fs.readFileSync(path.resolve("./config.json"), { encoding: 'utf-8' }))
+    client = new discord.Client({
+        rest: {
+            globalRequestsPerSecond: 40,
+        },
+        intents: [
+            // discord.IntentsBitField.Flags.,
+            discord.GatewayIntentBits.GuildMessages,
+            discord.GatewayIntentBits.GuildMessageReactions,
+            discord.GatewayIntentBits.DirectMessages,
+            discord.GatewayIntentBits.GuildVoiceStates,
+            discord.GatewayIntentBits.Guilds,
+            discord.GatewayIntentBits.GuildWebhooks,
+            discord.GatewayIntentBits.MessageContent,
+            // "GuildMessages",
+            // "MessageContent",
+            // "GuildPresences",
+            // "GuildMessageReactions",
+            // "DirectMessages",
+            // "GuildVoiceStates",
+            // "Guilds"
+        ],
+        // ws: { compress: true },
+        presence: {
+            afk: true,
+            activities: config.Activities,
+            status: config.Status
+        },
+        partials: [ discord.Partials.Channel, discord.Partials.GuildMember, discord.Partials.Message, discord.Partials.Reaction, discord.Partials.User, discord.Partials.ThreadMember ],
+        failIfNotExists: false,
+    })
     let run = () => {
         // cache = fs.existsSync(path.resolve("cache.json")) ? JSON.parse(fs.readFileSync(path.resolve("cache.json"), { encoding: "utf-8" })): {}
-        clientOpt = {
-            rest: {
-                globalRequestsPerSecond: 40,
-
-            },
-            intents: [
-                // discord.IntentsBitField.Flags.,
-                discord.GatewayIntentBits.GuildMessages,
-                discord.GatewayIntentBits.GuildPresences,
-                discord.GatewayIntentBits.GuildMessageReactions,
-                discord.GatewayIntentBits.DirectMessages,
-                discord.GatewayIntentBits.GuildVoiceStates,
-                discord.GatewayIntentBits.Guilds,
-                discord.GatewayIntentBits.GuildWebhooks,
-                discord.GatewayIntentBits.MessageContent,
-                // "GuildMessages",
-                // "MessageContent",
-                // "GuildPresences",
-                // "GuildMessageReactions",
-                // "DirectMessages",
-                // "GuildVoiceStates",
-                // "Guilds"
-            ],
-            // ws: { compress: true },
-            presence: {
-                afk: true,
-                activities: config.Activities,
-                status: config.Status
-            },
-            partials: [ discord.Partials.Channel, discord.Partials.GuildMember, discord.Partials.Message, discord.Partials.Reaction, discord.Partials.User, discord.Partials.ThreadMember],
-            failIfNotExists: false,
-        }
+        
         // console.log(config.activities)
         console.log("Staring Bot")
+
+        // Slightly more 
         main().catch((err) => {
             console.error("An error has occured in the main process. The program will now close.")
             console.fatal(err)

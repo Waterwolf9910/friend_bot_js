@@ -1,7 +1,13 @@
 class Socket {
-
+    /**
+     * The WebSocket object to wrap around
+     */
     #ws: WebSocket
+    /**
+     * Used to readd listeners on recreate
+     */
     #listeners: { [ key: string ]: EventListenerOrEventListenerObject[] } = {}
+    #_realtoEdited: Map<EventListenerOrEventListenerObject, (data: Event) => any> = new Map
     constructor(server: `ws:/${`/${string}`}` | `wss:/${`/${string}`}`) {
         this.#ws = new WebSocket(server)
     }
@@ -11,14 +17,14 @@ class Socket {
      * @param message Data to send
      * @param reconnect reconnect is disconnected
      */
-    send = (message: string, reconnect = true) => {
+    send = (message: import("../../websocket_proto").server, reconnect = true) => {
 
         if (this.#ws.readyState == WebSocket.OPEN) {
-            this.#ws.send(message)
+            this.#ws.send(JSON.stringify(message))
         }
 
         let onreconnect = () => {
-            this.#ws.send(message)
+            this.#ws.send(JSON.stringify(message))
             this.#ws.removeEventListener("open", onreconnect)
         }
         if (!reconnect) {
@@ -61,26 +67,76 @@ class Socket {
         }
         this.#ws.close(code, reason)
     }
-    addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: WebSocket, ev: WebSocketEventMap[ K ]) => any, options?: boolean | AddEventListenerOptions): void;
+
+    addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: WebSocket, ev: (Omit<WebSocketEventMap, "message"> & {"message": MessageEvent<import("../../websocket_proto").client>})[ K ]) => any, options?: boolean | AddEventListenerOptions): void;
     addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
         if (!this.#listeners[ type ]) {
             this.#listeners[ type ] = []
         }
+
+        // Customize the return of the "message event"
+        if (type == "message") {
+            let fun = (_data: Event) => {
+                let data = <MessageEvent>_data;
+                if (typeof data.data != 'string') {
+                    return;
+                }
+                try {
+
+                    let value = new MessageEvent(data.type, {
+                        bubbles: data.bubbles,
+                        cancelable: data.cancelable,
+                        composed: data.composed,
+                        lastEventId: data.lastEventId,
+                        origin: data.origin,
+                        ports: [...data.ports],
+                        source: data.source,
+                        data: JSON.parse(data.data)
+                    })
+                    if (typeof listener == "function") {
+                        return listener(value)
+                    }
+                    return listener.handleEvent(value)
+                } catch (err) {
+                    console.error(err)
+                }
+            }
+            this.#_realtoEdited.set(listener, fun)
+            this.#listeners[ type ].push(fun)
+            return this.#ws.addEventListener(type, fun, options)
+        }
+
         this.#listeners[ type ].push(listener)
         return this.#ws.addEventListener(type, listener, options)
     }
+
     removeEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: WebSocket, ev: WebSocketEventMap[ K ]) => any, options?: boolean | EventListenerOptions): void;
     removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void {
+        if (!this.#listeners[type]) {
+            this.#listeners[type] = []
+        }
+
+        // Remove the custom function
+        if (type == "message") {
+            this.#listeners[ type ] = this.#listeners[ type ].filter(v => v != this.#_realtoEdited.get(listener))
+            this.#_realtoEdited.delete(listener)
+            return this.#ws.removeEventListener(type, this.#_realtoEdited.get(listener)!)
+        }
+
         this.#listeners[ type ] = this.#listeners[ type ].filter(v => v != listener)
-        this.#ws.removeEventListener(type, listener, options)
+        return this.#ws.removeEventListener(type, listener, options)
     }
 }
-let change_page = (url: string, data?: object) => {
+let change_page = (url: string, data?: object, replace_history = false) => {
     let _url: string = url
     if (url.startsWith("./")) {
         _url = url.replace("./", location.pathname.replace(/\/$/, '') + '/')
     }
-    window.history.pushState(data, '', _url)
+    if (replace_history) {
+        window.history.replaceState(data, '', _url)
+    } else {
+        window.history.pushState(data, '', _url)
+    }
     statePushedListeners.forEach(async v => v())
 }
 
@@ -93,5 +149,5 @@ export = {
     addStatePushListener: (listener: () => any) => { statePushedListeners.push(listener) },
     removeStatePushListener: (listener: () => any) => { statePushedListeners = statePushedListeners.filter(v => v != listener) },
     change_page,
-    WSConnection: module.hot ? new Socket("ws://localhost:3000/ws/data") : new Socket(`ws://localhost:${location.protocol == "https:" ? 433 : 80}/ws/data`)
+    WSConnection: new Socket(`ws://${__webpack_public_path__.replace(location.protocol, '').replace(/\/\/$/, '/')}ws/data`)
 }

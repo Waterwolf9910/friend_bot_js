@@ -31,12 +31,6 @@ let guild_configs = sequelize.define<import("../types").GuildConfig>("guild_conf
         unique: true,
         primaryKey: true
     },
-    prefix: {
-        allowNull: false,
-        type: _sequelize.STRING,
-        unique: false,
-        defaultValue: config.Prefix
-    },
     econ_managers: {
         allowNull: false,
         type: _sequelize.TEXT,
@@ -114,37 +108,43 @@ let user_logins = sequelize.define<import("../types").UserLogin>('user_logins', 
         primaryKey: true,
         allowNull: false,
         type: _sequelize.STRING,
-        unique: true
+        unique: true,
+        defaultValue: ""
     },
     access_token: {
-        primaryKey: true,
+        primaryKey: false,
         allowNull: false,
         type: _sequelize.STRING,
-        unique: true
+        unique: true,
+        defaultValue: ""
     },
     refresh_token: {
-        primaryKey: true,
+        primaryKey: false,
         allowNull: false,
         type: _sequelize.STRING,
-        unique: true
+        unique: true,
+        defaultValue: ""
     },
     scope: {
-        primaryKey: true,
+        primaryKey: false,
         allowNull: false,
         type: _sequelize.STRING,
-        unique: true
+        unique: true,
+        defaultValue: ""
     },
     token_type: {
-        primaryKey: true,
+        primaryKey: false,
         allowNull: false,
         type: _sequelize.STRING,
-        unique: true
+        unique: true,
+        defaultValue: ""
     },
     expire_time: {
-        primaryKey: true,
+        primaryKey: false,
         allowNull: false,
         type: _sequelize.STRING,
-        unique: true
+        unique: true,
+        defaultValue: ""
     },
 })
 

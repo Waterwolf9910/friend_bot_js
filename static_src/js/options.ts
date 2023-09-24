@@ -1,7 +1,3 @@
-export interface HeaderOptions extends BaseElementObject {
-    element?: JSX.Element
-}
-
 export interface ButtonOptions extends BaseElementObject{
     /**
      * Is this button primary or not (will override {@link color} and {@link backgroundColor})
@@ -18,13 +14,9 @@ export interface ButtonOptions extends BaseElementObject{
 }
 export interface BaseElementObject {
     /**
-     * Background color of an element
+     * A child element for the element
      */
-    backgroundColor?: import('csstype').Property.BackgroundColor
-    /**
-     * Text color of an element
-     */
-    color?: import('csstype').Property.Color
+    element?: JSX.Element
     /**
      * The height of the element in pixels
      */
@@ -43,7 +35,7 @@ export interface BaseElementObject {
     id?: string
 }
 
-export interface MainHeaderOptions extends HeaderOptions {
+export interface MainHeaderOptions extends BaseElementObject {
     /**
      * Uses the internal dark mode theme. (overwrites {@link lightMode}, {@link backgroundColor}, and {@link color})
      */
@@ -51,31 +43,16 @@ export interface MainHeaderOptions extends HeaderOptions {
     /** 
      * Uses the internal light mode theme (overwrites {@link backgroundColor} and {@link color})
      */
-    lightMode?: boolean
-}
-
-export interface ThemeOptions {
-    backgroundColor: import('csstype').Property.BackgroundColor
-    color: import('csstype').Property.Color
+    lightMode?: boolean,
+    urls?: typeof import("./page_list")
 }
 
 export let defaultMainHeaderOptions: MainHeaderOptions = {
     darkMode: true,
-}
-
-export let darkMode: ThemeOptions = {
-    backgroundColor: "#061ba3",
-    color: "#00ffb3"
-}
-
-export let lightMode: ThemeOptions = {
-    backgroundColor: "bisque",
-    color: "maroon"
+    urls: {}
 }
 
 export let defaultOptions: ButtonOptions = {
-    backgroundColor: "bisque",
-    color: "maroon",
     name: "Button",
     id: undefined,
     primary: false,

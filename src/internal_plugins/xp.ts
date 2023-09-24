@@ -19,7 +19,7 @@ let _: import("../types").plugin = {
         let xp = guild_config.xp
         let current_xp = xp[ ctx.member.id ] || 0
 
-        if (random.singleNum(3) == random.singleNum(6) && !ctx.content.startsWith(guild_config.prefix)) {
+        if (random.singleNum(3) == random.singleNum(6)) {
             let add_amt = random.num(random.singleNum(xpconfig.digits - 2) + 2, random.singleNum(xpconfig.max - 1) + 1)
             xp[ ctx.member.id ] = current_xp + add_amt
             guild_config.xp = xp

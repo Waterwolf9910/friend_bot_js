@@ -1,24 +1,33 @@
 import react = require("react")
+import page_map = require("./page_list")
 import dom = require("react-dom/client")
 import utils = require("./utils");
-import page_map = require("./page_list")
 import Header = require("./components/header")
 // Our error page
 import err = require("./pages/404")
-require.ensure([], require => {
-    baseStyle = require("../css/base.scss")
-    UpdatePage()
+import baseStyle = require("../css/base.scss")
+// Lazy load bootstrap
+require.ensure(["@popperjs/core"], require => {
+    require("bootstrap/dist/js/bootstrap.esm.min.js")
 })
-let baseStyle: typeof import('../css/base.scss') = { default: new CSSStyleSheet }
+if (process.env.NODE_ENV) {
+    console.log(__webpack_public_path__)
+}
+// require.ensure([], require => {
+//     baseStyle = require("../css/base.scss")
+//     UpdatePage()
+// })
+// let baseStyle: typeof import('../css/base.scss') = { default: new CSSStyleSheet }
 
 if (module.hot) {
     window.utils = utils
 }
 
+//TODO: Setup Actual Themes Later
 let theme = localStorage.getItem("theme") ?? "dark"
 let root: dom.Root
 let Element: () => JSX.Element
-let header: JSX.Element = <Header key="header"/>
+// let header: JSX.Element = 
 
 let UpdatePage = () => {
     let page_data = page_map[ location.pathname ] || err
@@ -33,10 +42,10 @@ let UpdatePage = () => {
 
     document.documentElement.setAttribute("data-bs-theme", theme)
     root.render(<react.StrictMode>
-        {header}
-        <div id="content">
+        <Header key="header" urls={page_map} />
+        <main id="content">
             <Element />
-        </div>
+        </main>
     </react.StrictMode>)
 }
 
@@ -52,6 +61,7 @@ if (module.hot) {
         utils.removeStatePushListener(UpdatePage)
         window.removeEventListener("popstate", UpdatePage)
     })
+    UpdatePage()
     module.hot.accept()
 } else {
     root = dom.createRoot(document.getElementById("root")!)

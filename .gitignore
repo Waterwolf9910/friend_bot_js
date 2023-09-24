@@ -16,3 +16,4 @@ debug
 data.json
 *.log
 tester
+static_src/js/pages/page_data.json

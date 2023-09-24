@@ -3,6 +3,7 @@ import fs = require("fs")
 let mdir = fs.mkdirSync
 let wfs = fs.writeFileSync
 let es = fs.existsSync
+let isDev = process.env.NODE_ENV == "development"
 
 //@ts-ignore
 fs.mkdirSync = (_path: fs.PathLike, options?: fs.MakeDirectoryOptions & { recursive: boolean }) => {
@@ -27,7 +28,7 @@ fs.existsSync = (_path: string) => {
     if (typeof _path != "string") {
         return es(_path)
     }
-    if (_path. includes(path.normalize("/node_modules/ytsr/dumps"))) {
+    if (_path.includes(path.normalize("/node_modules/ytsr/dumps"))) {
         return true;
     }
     return es(_path)
@@ -53,7 +54,6 @@ let baseConfig: import("./types").Config = {
     BaseCurrencyName: "cookies",
     BotOwner: "331854425171951616",
     BotToken: "",
-    Cert: path.resolve("web_data", "cert.pem"),
     ClientId: "",
     ClientSecret: "",
     CloseOnUsedPort: false,
@@ -65,26 +65,18 @@ let baseConfig: import("./types").Config = {
     DBType: "sqlite",
     DBUser: "friend_bot",
     DBUseSSL: false,
-    DHParam: path.resolve("web_data", "dhparam.pem"),
     DisabledPlugins: [],
-    HttpPort: 8080,
-    HttpsPort: 3000,
+    HttpPort: isDev ? 8080 : 3000,
     UseHttps: true,
-    Prefix: "f!",
-    Privkey: path.resolve("web_data", "key.pem"),
     RefreshDays: 90,
     ReverseProxy: "",
     Status: "idle",
+    WebDomain: `localhost:${isDev ? 3000 : 8080}`,
     WebSecret: random.alphaNum(true),
-}
+} satisfies import("./types").Config
 
-if (fs.existsSync(path.resolve("config.json"))) {
-    fs.writeFileSync(path.resolve("config.json"), JSON.stringify({ ...baseConfig, ...JSON.parse(fs.readFileSync(path.resolve("config.json"), { encoding: 'utf-8' })) }, null, 4))
+fs.writeFileSync(path.resolve("config.json"), JSON.stringify({ ...(fs.existsSync(path.resolve("config.json")) ? baseConfig : {}), ...JSON.parse(fs.readFileSync(path.resolve("config.json"), { encoding: 'utf-8' })) }, null, 4))
 
-} else {
-    fs.writeFileSync(path.resolve("config.json"), JSON.stringify(baseConfig, null, 4))
-    console.log("Config Successfully Created")
-}
 if (!fs.existsSync(path.resolve("plugins"))) {
     fs.mkdirSync(path.resolve("plugins"))
     // console.log("Write scripts in plugins to be used with the bot! (see example.js to see how to create your own)")

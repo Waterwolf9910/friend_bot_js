@@ -2,27 +2,46 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "request": "launch",
-            "name": "Build (Test)",
-            "type": "node-terminal",
-            "preLaunchTask": "Test Build",
-            "command": "exit 0"
-        },
-        {
             "type": "vscode-edge-devtools.debug",
             "request": "launch",
-            "name": "Launch Edge",
-            "useHttps": true,
-            "url": "https://localhost:3000",
-            "webRoot": "${workspaceFolder}/build/static"
+            "name": "Launch Browser",
+            "useHttps": false,
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/static_src/js"
+        },
+        {
+            "name": "Launch Edge (external)",
+            "request": "launch",
+            "type": "msedge",
+            "url": "http://localhost/friend_bot",
+            "cwd": "${workspaceFolder}/debug/web",
+            "userDataDir": true,
+            "includeDefaultArgs": true,
+            "includeLaunchArgs": true,
+            "runtimeArgs": [
+                // "--user-data-dir=\"${workspaceFolder}/debug/browser\""
+            ],
+            "webRoot": "${workspaceFolder}/static_src/"
+        },
+        {
+            "name": "Launch Chrome (external)",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost:3000",
+            "includeDefaultArgs": true,
+            "runtimeArgs": [
+                // "--user-data-dir=./debug/browser"
+            ],
+            "cwd": "${workspaceFolder}/debug/web",
+            "userDataDir": true,
+            "webRoot": "${workspaceFolder}/static_src/"
         },
         {
             "name": "Launch Bot",
             "request": "launch",
             "type": "node",
             // "profileStartup": true,
-            "runtimeExecutable": "yarn",
-            "runtimeArgs": ["node", "--tls-min-v1.2", "--report-uncaught-exception", /* "--prof", "--node-memory-debug", "--heap-prof", "--cpu-prof" */],
+            "runtimeArgs": ["--tls-min-v1.2", "--report-uncaught-exception", /* "--prof", "--node-memory-debug", "--heap-prof", "--cpu-prof" */],
             "autoAttachChildProcesses": true,
             "presentation": {
                 "hidden": false,
@@ -34,6 +53,12 @@
                 "NODE_ENV": "development"
             },
             "sourceMaps": true,
+            "smartStep": true,
+            "cascadeTerminateToConfigurations": [
+                "Launch Browser",
+                "Launch Edge (external)",
+                "Launch Chrome (external)"
+            ],
             "outputCapture": "std",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
@@ -43,8 +68,9 @@
             "showAsyncStacks": true,
             "serverReadyAction": {
                 "action": "startDebugging",
-                "name": "Launch Edge",
-                "pattern": "Listening on port 3000"
+                "name": "Launch Edge (external)",
+                "killOnServerStop": true,
+                "pattern": "webpack [.0-9]+ compiled successfully"
             },
             "skipFiles": [
                 "<node_internals>/**",

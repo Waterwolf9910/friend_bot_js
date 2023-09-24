@@ -10,10 +10,12 @@ declare global {
         title: string,
         page: () => JSX.Element,
         urls: string[],
-        styles?: {default: CSSStyleSheet}[]
+        priority?: number
+        hidden?: boolean
+        styles?: {default: CSSStyleSheet}[],
     }
     
-    export type WSData = import("../dataTypes").server
+    export type WSData = import("../websocket_proto").server
 }
 
 
