@@ -29,7 +29,7 @@ let _: import("../types").event<discord.Events.MessageCreate> = {
                 db.sequelize.sync()
             }
 
-            for (let iplugin of fs.readdirSync(path.resolve("..", "internal_plugins")).filter(file => file.endsWith(".js"))) {
+            for (let iplugin of fs.readdirSync(path.resolve("internal_plugins")).filter(file => file.endsWith(".js"))) {
                 try {
                     if (config.DisabledPlugins.includes(iplugin.replace(".js", ''))) {
                         return

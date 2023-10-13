@@ -1,12 +1,35 @@
 import voice = require("@discordjs/voice")
 let guild_queues: import("../../types").GuildQueue = {}
 
-let create = (guild_id: string) => {
+let create = (guild_id: string, vchannel: import("discord.js").VoiceBasedChannel, move = false) => {
     let data = guild_queues[ guild_id ]
+    let conn_created = false
+    let connection = data?.connection
+    let player = data?.player
+
+    if (!player) {
+        player = voice.createAudioPlayer({ behaviors: { noSubscriber: voice.NoSubscriberBehavior.Stop } })
+    }
+    if (!connection || connection.state.status == voice.VoiceConnectionStatus.Destroyed) {
+        connection = voice.joinVoiceChannel({
+            adapterCreator: vchannel.guild.voiceAdapterCreator,
+            guildId: vchannel.guild.id,
+            channelId: vchannel.id,
+            selfDeaf: true,
+            selfMute: false
+        })
+        conn_created = true;
+    }
+
+    if (move && !conn_created) {
+        connection.rejoin({...connection.joinConfig, channelId: vchannel.id})
+    }
+
+    connection.subscribe(player)
     guild_queues[ guild_id ] = {
-        channel_id: data?.channel_id,
-        connection: data?.connection,
-        player: data?.player || voice.createAudioPlayer({ behaviors: { noSubscriber: voice.NoSubscriberBehavior.Stop }}),
+        connection,
+        player,
+        channel_id: vchannel.id,
         cur: data?.cur || 0,
         next: data?.next || 0,
         queue: data?.queue || [],
@@ -15,11 +38,13 @@ let create = (guild_id: string) => {
         skiping: data?.skiping || false,
         loop: data?.loop || false,
         tchannel: data?.tchannel || null,
-        vchannel: data?.vchannel || null,
+        vchannel: move || !data?.vchannel ? vchannel : data.vchannel,
         clearing: false
         // adding: false
         // connected_vc: data?.connected_vc,
     }
+
+    return guild_queues[guild_id]
 }
 
 let end = (guild_id: string, stop = false) => {

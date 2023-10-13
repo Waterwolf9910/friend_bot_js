@@ -11,14 +11,17 @@ import express = require("express")
 import helmet = require("helmet")
 import cors = require("cors")
 import morgan = require("morgan")
-import errorhandler = require("errorhandler")
 import compression = require("compression")
 import url = require("url")
 import mime = require("mime")
+import dapiTypes = require("discord-api-types/v10")
+import ytsr = require("@distube/ytsr")
+import voice = require("@discordjs/voice")
 import crypto = require("../libs/crypto")
 import _random = require("../libs/random")
 import db = require("../libs/db")
 import guild_queues = require("../commands/music/queues")
+import play = require("../commands/music/play")
 
 let app = express()
 let wsRouter = express.Router()
@@ -93,7 +96,7 @@ let getTrueRootURLPath = (recievedPath: string, root_path: string | string[]): s
     let _root_path = Array.isArray(root_path) ? root_path[0] : root_path
     let relative_path = path.posix.relative(recievedPath, '/').replace(/^\.\.\//, recievedPath.endsWith('/') ? '../' : './') || './'
     let formatted = path.posix.normalize(_root_path + '/' + relative_path).replace(/\/$/, '')
-    console.log( relative_path, formatted)
+    // console.log( relative_path, formatted)
     return formatted
 }
 
@@ -124,21 +127,27 @@ let start = async (secret: string, client_secret: string, config: import("../typ
         unset: "destroy"
     }))
 
-
     app.use(helmet.default({
-        hsts: !isDev,
+        hsts: !isDev && config.UseHttps,
         crossOriginEmbedderPolicy: {
             policy: "credentialless"
         },
+        crossOriginResourcePolicy: {
+            policy: "cross-origin"
+        },
         contentSecurityPolicy: {
-            useDefaults: true,
+            useDefaults: false,
             directives: {
-                "default-src": [ "'self'" ],
-                "script-src": [ "'self'", isDev && "'unsafe-eval'" ].filter(v => typeof v != "boolean"),
-                "style-src": [ "'self'", "https://fonts.googleapis.com" ],
-                "img-src": [ "'self'", "https://cdn.discordapp.com" ]
+                defaultSrc: [ "'self'" ],
+                connectSrc: [ "'self'", "https://raw.githubusercontent.com", "https://api.github.com/" ],
+                scriptSrc: [ "'self'", isDev && "'unsafe-eval'" ].filter(v => typeof v != "boolean"),
+                styleSrc: [ "'self'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net/" ],
+                fontSrc: [ "'self'", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net/" ],
+                imgSrc: [ "'self'", 'data:', "https://cdn.discordapp.com", "https://i.ytimg.com" ],
+                upgradeInsecureRequests: !isDev || config.UseHttps ? [] : null,
             }
         },
+        
         hidePoweredBy: true,
         noSniff: true
     }))
@@ -146,11 +155,7 @@ let start = async (secret: string, client_secret: string, config: import("../typ
         origin: true,
         credentials: false
     }))
-    app.use(errorhandler({
-        log: (err, str, req) => {
-            fs.appendFileSync(path.resolve("web_data", "error.log"), `Error at ${req.url} (${req.method} request)\n${str}\n${err}`)
-        }
-    }))
+
     app.use(morgan("combined", { stream: fs.createWriteStream(path.resolve("web_data", "access.log")) }))
     fs.mkdirSync("web_data", { recursive: true })
     fs.writeFileSync(path.resolve("web_data", "access.log"), '', { encoding: 'utf-8' })
@@ -224,7 +229,7 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
             
             // Get current date for expiration time the grap our token from discord
             let expire = dayjs()
-            let _user_token: { error: undefined, error_description: undefined, access_token: string, expires_in: number, refresh_token: string, scope: string, token_type: string/* "Bearer" */ } | {error: string, error_description: string} = await (await fetch("https://discord.com/api/oauth2/token", {
+            let user_token: dapiTypes.RESTPostOAuth2AccessTokenResult = await (await fetch(dapiTypes.OAuth2Routes.tokenURL, {
                 method: "POST",
                 body: new url.URLSearchParams({
                     client_id: config.ClientId,
@@ -236,26 +241,25 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
                         protocol: config.UseHttps ? "https" : "http",
                         host: req.headers.host,
                         pathname: path.posix.normalize(`/${getTrueRootURLPath(req.path, root_path)}`)
-                    }),
-                    scope: "identify guilds guilds.members.read"
-                }),
+                    })
+                } satisfies dapiTypes.RESTPostOAuth2AccessTokenURLEncodedData),
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
             })).json()
             
-            if (_user_token.error) {
-                throw _user_token.error_description;
+            //@ts-expect-error
+            if (user_token.error) {
+                //@ts-expect-error
+                throw user_token.error_description;
             }
 
-            //@ts-ignore
-            let user_token: { error: undefined, error_description: undefined, access_token: string, expires_in: number, refresh_token: string, scope: string, token_type: string/* "Bearer" */ } = _user_token
             // console.log(config.client_id, config.client_secret)
             expire.add(user_token.expires_in - 30, "s")
             // fs.writeFileSync(path.resolve("..", "data.json"), JSON.stringify({ ...user_data, expire_time: expire.format() }))
 
             // Get the user data from discord
-            let user: import("../types").User = await (await fetch("https://discord.com/api/users/@me", {
+            let user: dapiTypes.APIUser = await (await fetch("https://discord.com/api/users/@me", {
                 headers: {
                     Authorization: `${user_token.token_type} ${user_token.access_token}`
                 }
@@ -278,7 +282,7 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
             }
             
             // Start fetching guilds
-            let guilds: import("../types").Guild[] = (await (await fetch("https://discord.com/api/users/@me/guilds", {
+            let guilds: dapiTypes.APIGuild[] = (await (await fetch("https://discord.com/api/users/@me/guilds", {
                 headers: {
                     Authorization: `${user_token.token_type} ${user_token.access_token}`
                 }
@@ -290,7 +294,7 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
                 if (isDev) {
                     console.writeDebug("Checking", guild.id, `(${guild.name})`, guild.owner)
                 }
-                //@ts-ignore
+                
                 let permissions: import("../types").GuildPermissions = parsePermissions(BigInt(guild.permissions))
                 guilds_obj[guild.id] = { id: guild.id, name: guild.name, permission: permissions, rawPermissions: `${guild.permissions}`, icon: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp`, hasBot: client.guilds.cache.has(guild.id) }
             }
@@ -351,7 +355,7 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
             let params = new url.URLSearchParams({
                 response_type: "code",
                 client_id: config.ClientId,
-                scope: "identify guilds guilds.members.read",
+                scope: `${dapiTypes.OAuth2Scopes.Identify} ${dapiTypes.OAuth2Scopes.Guilds} ${dapiTypes.OAuth2Scopes.GuildsMembersRead}`,
                 state: state_enc.ciphertext,
                 redirect_uri: url.format({
                     protocol: config.UseHttps ? "https" : "http",
@@ -359,7 +363,7 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
                     pathname: path.posix.normalize(`/${getTrueRootURLPath(req.path, root_path)}/${config.AuthUrl}`)
                 }),
                 prompt: "none"
-            })
+            } satisfies dapiTypes.RESTOAuth2AuthorizationQuery)
             // Redirect us to discord for login
             res.redirect(`https://discord.com/oauth2/authorize?${params.toString()}`)
         })
@@ -375,32 +379,32 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
     })
 
     let handleWSMsg = async (rawData: import("ws").RawData, ws: import("ws").WebSocket, req: express.Request) => {
-        let send_invalid = () => {
+        let send_err = (err: import("../../ws_proto").Errors["msg"]["err"]) => {
             if (isDev) {
                 console.log("Recieved Invalid Input:", rawData.toString())
             }
-            ws.send(JSON.stringify({
+            ws.send(JSON.stringify( {
                 type: "err",
                 msg: {
-                    err: "invalid_msg"
+                    err
                 }
-            } satisfies import("../../websocket_proto").InvalidMessage))
+            } ))
         }
 
-        let data: import("../../websocket_proto").server
+        let data: import("../../ws_proto").server
         try {
             data = JSON.parse(rawData.toString('utf-8'))
         } catch {
-            send_invalid()
+            send_err("invalid_msg")
             return;
         }
 
-        if (!data.type || !data.msg) {
-            send_invalid()
+        if (!data.type) {
+            send_err("invalid_msg")
             return;
         }
 
-        let returner: import("../../websocket_proto").client
+        let returner: import("../../ws_proto").client
 
         let setLoggedOut = () => {
             returner = {
@@ -411,102 +415,153 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
             }
         }
 
-        switch (data.type) {
-            case "request": {
-                if (!req.session.user_data) {
-                    setLoggedOut()
-                    break;
-                }
-                switch (data.msg.type) {
-                    case "user": {
-                        returner = {
-                            type: "user",
-                            msg: {
-                                ...req.session.user_data,
-                                guilds: req.session.guilds
-                            }
-                        }
+        try {
+            switch (data.type) {
+                case "request": {
+                    if (!req.session.user_data) {
+                        setLoggedOut()
                         break;
                     }
-                    case "voice": {
-                        let _data = guild_queues.guild_queues[ (<import("../../websocket_proto").VoiceRequest>data).msg.guild_id]
-                        returner = {
-                            type: "voice",
-                            msg: {
-                                bot_in_channel: Boolean(_data?.vchannel),
-                                id: _data.tchannel?.id,
-                                in_channel: _data.vchannel.members.has(req.session.user_data.id)
+                    switch (data.msg.type) {
+                        case "user": {
+                            returner = {
+                                type: "user",
+                                msg: {
+                                    ...req.session.user_data,
+                                    guilds: req.session.guilds
+                                }
                             }
+                            break;
                         }
-                        break;
-                    }
-                    case "app_info": {
-                        returner = {
-                            type: "app_info",
-                            msg: {
-                                client_id: config.ClientId
+                        case "voice": {
+                            let queue = guild_queues.guild_queues[data.msg.guild_id]
+                            if (queue?.vchannel == null) {
+                                returner = {
+                                    type: 'voice',
+                                    msg: {
+                                        bot_in_channel: false
+                                    }
+                                }
+                                break
                             }
+                            returner = {
+                                type: "voice",
+                                msg: {
+                                    bot_in_channel: true,
+                                    id: queue.tchannel?.id,
+                                    in_channel: queue.vchannel.members.has(req.session.user_data.id)
+                                }
+                            }
+                            break;
                         }
-                        break;
+                        case "app_info": {
+                            returner = {
+                                type: "app_info",
+                                msg: {
+                                    client_id: config.ClientId
+                                }
+                            }
+                            break;
+                        }
+                        case "mqueue": {
+                            let info = guild_queues.guild_queues[data.msg.guild_id] ?? {
+                                queue: [],
+                                cur: 0,
+                                next: 0,
+                                loop: false
+                            }
+                            returner = {
+                                type: "mqueue",
+                                msg: {
+                                    queue: info.queue,
+                                    cur: info.cur,
+                                    next: info.next,
+                                    loop: info.loop
+                                }
+                            }
+                            break
+                        }
+                        case "search": {
+                            let vresult = await ytsr(data.msg.query, {type: "video", limit: 3, safeSearch: false})
+                            returner = {
+                                type: 'search',
+                                msg: {
+                                    video_result: vresult.items
+                                }
+                            }
+                            break;
+                        }
+                        default: {
+                            return send_err("unknown_message");
+                        }
                     }
-                    default: {
-                        return send_invalid()
-                    }
-                }
-                break;
-            }
-            case "set_gid": {
-                if (!req.session.user_data) {
-                    setLoggedOut()
                     break;
                 }
-                req.session.user_data.selected_gid = data.msg.gid
-                break;
-
-            }
-            case "guild_refresh": {
-                if (!req.session.user_data) {
-                    setLoggedOut()
+                case "set_gid": {
+                    if (!req.session.user_data) {
+                        setLoggedOut()
+                        break;
+                    }
+                    req.session.user_data.selected_gid = data.msg.gid
+                    break;
+    
+                }
+                case "guild_refresh": {
+                    if (!req.session.user_data) {
+                        setLoggedOut()
+                        break;
+                    }
+                    let user_token = await db.user_logins.findOne({ where: {id: req.session.user_data.id} })
+                    let guilds: dapiTypes.APIGuild[] = (await(await fetch("https://discord.com/api/users/@me/guilds", {
+                        headers: {
+                            Authorization: `${user_token.token_type} ${user_token.access_token}`
+                        }
+                    })).json())
+    
+                    let guilds_obj: { [ key: string ]: import('../../src/types').UserGuild } = {}
+                    for (let guild of guilds) {
+                        console.writeDebug("Checking", guild.id, `(${guild.name})`, guild.owner)
+                        //@ts-ignore
+                        let permissions: import("../types").GuildPermissions = parsePermissions(BigInt(guild.permissions))
+                        guilds_obj[guild.id] = { id: guild.id, name: guild.name, permission: permissions, rawPermissions: `${guild.permissions}`, icon: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp`, hasBot: client.guilds.cache.has(guild.id) }
+                    }
+    
+                    req.session.guilds = guilds_obj
                     break;
                 }
-                let user_token = await db.user_logins.findOne({ where: {id: req.session.user_data.id} })
-                let guilds: import("../types").Guild[] = (await(await fetch("https://discord.com/api/users/@me/guilds", {
-                    headers: {
-                        Authorization: `${user_token.token_type} ${user_token.access_token}`
+                case "smqueue": {
+                    var queueInfo = data.msg
+                    guild_queues.guild_queues[queueInfo.guild_id].next = queueInfo.next
+                    guild_queues.guild_queues[queueInfo.guild_id].loop = queueInfo.loop
+                    guild_queues.guild_queues[queueInfo.guild_id].queue = queueInfo.queue
+                    if (guild_queues.guild_queues[queueInfo.guild_id].skiping || guild_queues.guild_queues[queueInfo.guild_id].player.state.status == voice.AudioPlayerStatus.Idle) {
+                        play.play_next(guild_queues.guild_queues[queueInfo.guild_id].tchannel, queueInfo.guild_id)
                     }
-                })).json())
-
-                let guilds_obj: { [ key: string ]: import('../../src/types').UserGuild } = {}
-                for (let guild of guilds) {
-                    console.log("Checking", guild.id, `(${guild.name})`, guild.owner)
-                    //@ts-ignore
-                    let permissions: import("../types").GuildPermissions = parsePermissions(BigInt(guild.permissions))
-                    guilds_obj[guild.id] = { id: guild.id, name: guild.name, permission: permissions, rawPermissions: `${guild.permissions}`, icon: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp`, hasBot: client.guilds.cache.has(guild.id) }
                 }
-
-                req.session.guilds = guilds_obj
-                break;
-            }
-            default: {
-                returner = {
-                    type: "err",
-                    msg: {
-                        err: "unknown_message"
+                default: {
+                    returner = {
+                        type: "err",
+                        msg: {
+                            err: "unknown_message"
+                        }
                     }
                 }
             }
+        } catch (err) {
+            send_err("invalid_msg")
+            console.error(err)
         }
 
         // console.log(data, rawData)
         ws.send(JSON.stringify(returner))
     }
 
-    let _static = express.static(path.resolve(__dirname, "static"), { dotfiles: "ignore", extensions: [], index: false, immutable: !isDev })
+    let _static = express.static(path.resolve(__dirname, "../static"), { dotfiles: "ignore", extensions: [], index: false, immutable: !isDev })
     app.use((req, res, next) => _static(req, res, next))
 
     let layout: string
 
-    app.get('*', (req, res) => {
+    app.get('*',  async (req, res) => {
         // let _path = req.path.replace(new RegExp(`/?${config.ReverseProxy}/?`), '')
         //@ts-ignore
         let root_path = config.ReverseProxy ? req.headers['x-original-url'] || req.path : req.path
@@ -560,16 +615,27 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
         }
 
         if (layout == null) {
-            layout = fs.readFileSync(path.resolve("./static/index.html"), { encoding: 'utf-8' })
+            layout = fs.readFileSync(path.resolve(__dirname, "../static/index.html"), { encoding: 'utf-8' })
         }
 
-        if (fs.existsSync(path.normalize(`./static/${req.path}`))){
-            return res.send(path.normalize(`./static/${req.path}`))
-        } else if (!path.basename(req.path).match(/^([^./\\*"<>:|? ]+)(\.[^/\\*"<>:|?.]+)+$/)) {
-            return res.status(404).end()
-        }
+        fs.readFile(path.normalize(`${__dirname}/../static/${req.path}`), {}, (err, data) => {
+            if (!err) {
+                let type = mime.getType(path.extname(req.path))
+                if (type) {
+                    res.setHeader("Content-Type", type)
+                }
+                
+                return res.send(path.normalize(`${__dirname}/../static/${req.path}`))
+            }
 
-        res.send(layout)
+            if (path.basename(req.path).match(/^([^./\\*"<>:|? ]+)(\.[^/\\*"<>:|?.]+)+$/)) {
+                return res.status(404).end()
+            }
+
+            res.send(layout.replace("&{_path_}", getTrueRootURLPath(req.path, root_path)))
+        })
+        
+
     })
 
     app.use(express.urlencoded({ extended: true, inflate: true }))

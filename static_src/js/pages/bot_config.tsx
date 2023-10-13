@@ -1,8 +1,6 @@
-import Header = require("../components/header")
-
 let page = () => {
     return <div>
-        <p>Hello World</p>
+        <p>Not Implemented</p>
     </div>
 }
 

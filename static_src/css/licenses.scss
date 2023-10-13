@@ -1,0 +1,18 @@
+@use "sass:math";
+@import "./base.scss";
+@import "bootstrap/scss/modal";
+@import "bootstrap/scss/list-group";
+
+$spanMargin: 7px;
+
+.mh {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+span {
+    margin-top: $spanMargin;
+    margin-bottom: math.div($spanMargin, 2);
+}
+

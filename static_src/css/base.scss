@@ -1,20 +1,13 @@
-@import "./imports";
+@import "./bootstrap";
 
 // $color-mode-type: data;
 
-* {
-    font-family: fanasty, 'Ubuntu', 'Times New Roman', Times, Arial, sans-serif;
-}
-p {
-    font-size: 12px;
-    margin: 8px;
-}
-
-div,main {
-    display: flex;
-    flex-direction: column;
-    .center_items {
-        align-items: center;
+@media screen and (max-width: 600px) {
+    .header picture+p {
+        display: none;
+    }
+    .header picture {
+        margin-right: 5px;
     }
 }
 
@@ -22,28 +15,21 @@ div,main {
     align-self: center;
 }
 
-.header {
-    font-family: fanasty, 'Ubuntu', 'Times New Roman', Times, Arial, sans-serif;
-    border-bottom: 3px rgba(40, 223, 255, 0.5);
-    padding: 0px 5px;
-    padding-top: 0;
+.center_items {
     display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header {
+    background: var(--bs-body-bg);
+    z-index: 1045;
+    padding: 0px 5px;
     top: 0px;
     justify-content: space-between;
-    flex-direction: row;
-    align-items: center;
     position: sticky;
 
     div {
-        .no-flex {
-            display: initial;
-        }
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        // * {
-        //     max-height: 15px;
-        // }
         h1 {
             font-size: 15px;
             display: inline-block;
@@ -53,7 +39,6 @@ div,main {
 
         p {
             font-size: 12px;
-            display: inline-block;
         }
 
         a {
@@ -68,12 +53,45 @@ div,main {
             height: 50px;
             width: 50px;
     }
+
 }
 
-.noddi.dropdown-toggle::after {
-    content: none
-} 
+.noddi.dropdown-toggle {
+
+    &::after,&::before {
+        content: none
+    }
+
+}
 
 .dropdown-item pre {
     margin: 0;
+}
+
+.dropdown-item {
+    width: 50%;
+}
+
+.offcanvas,.offcanvas-body {
+    display: block;
+}
+
+.row {
+    flex-direction: row;
+    display: flex;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.info {
+    color: var(--bs-info);
+}
+
+p {
+    font-size: 12px;
+    margin: 8px;
 }

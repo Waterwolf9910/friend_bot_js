@@ -1,5 +1,5 @@
-import voice = require("@discordjs/voice")
 import discord = require('discord.js')
+import queues = require("./music/queues")
 let _: import("../types").Command= {
     interaction: (interaction) => run(interaction.guild.id),
     slash: new discord.SlashCommandBuilder()
@@ -10,7 +10,7 @@ let _: import("../types").Command= {
 }
 
 let run = (guildId: string): import('../types').CommandResult => {
-    voice.getVoiceConnection(guildId)?.destroy()
+    queues.end(guildId)
     return { flag: 'n' }
 }
 

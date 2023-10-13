@@ -1,11 +1,12 @@
 import voice = require("@discordjs/voice")
 import discord = require("discord.js")
+import queues = require("./music/queues")
 let _: import("../types").Command= {
     // command: (ctx) => run(ctx.guild.id, ctx.mentions.members.first() || ctx.member),
     interaction: (interaction) => {
         //@ts-ignore
         let member: discord.GuildMember = interaction.member
-        return run(interaction.guild.id, member)
+        return run(interaction.guild.id, member, interaction.channel)
     },
     slash: new discord.SlashCommandBuilder()
         .setName("join")
@@ -14,25 +15,20 @@ let _: import("../types").Command= {
     usage: "join"
 }
 
-let run = (guildId: string, member: discord.GuildMember): import('../types').CommandResult => {
+let run = (guildId: string, member: discord.GuildMember, text_channel: import("discord.js").GuildTextBasedChannel): import('../types').CommandResult => {
     let voice_channel = member.voice.channel
-    let connection = voice.getVoiceConnection(guildId)
     if (!voice_channel.joinable) {
         return { flag: 'r', message: 'Unable to join this voice channel' }
     }
-    if (connection == null) {
-        connection = voice.joinVoiceChannel({
-            channelId: voice_channel.id,
-            guildId: voice_channel.guild.id,
-            adapterCreator: voice_channel.guild.voiceAdapterCreator,
-            selfDeaf: true,
-            selfMute: false
-        })
+    if (!queues.guild_queues[guildId] || queues.guild_queues[guildId].connection == null) {
+        queues.create(guildId, voice_channel)
+        queues.guild_queues[guildId].tchannel = text_channel
         return { flag: 'n' }
     }
-    if (!connection?.rejoin({ ...connection.joinConfig, channelId: voice_channel.id })) {
-        return { flag: 'r', message: 'Error connecting to your channel' }
-    }
+    
+    queues.guild_queues[guildId].connection.rejoin({ ...queues.guild_queues[guildId].connection.joinConfig, channelId: voice_channel.id })
+    queues.guild_queues[guildId].tchannel = text_channel
+    // return { flag: 'r', message: 'Error connecting to your channel' }
     return { flag: 'n' }
 }
 

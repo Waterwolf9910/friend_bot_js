@@ -1,0 +1,20 @@
+@import "./base.scss";
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/pagination";
+@import "bootstrap/scss/spinners";
+@import "bootstrap/scss/modal";
+
+
+.card {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-width: 0;
+}
+
+.card-body {
+    padding: 0px var(--bs-card-spacer-x);
+}
+
+.input-group {
+    margin-top: 15px;
+}

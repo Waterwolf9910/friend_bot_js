@@ -1,0 +1,129 @@
+{
+    "$schema": "./src/licenses.schema.json",
+    "CSS Loader": {
+        "type": "ui",
+        "link": "https://raw.githubusercontent.com/webpack-contrib/css-loader/master/LICENSE",
+        "repo": "https://github.com/webpack-contrib/css-loader"
+    },
+    "Typescript": {
+        "type": "both",
+        "link": "https://raw.githubusercontent.com/microsoft/TypeScript/main/LICENSE.txt",
+        "repo": "https://github.com/microsoft/typescript"
+    },
+    "Webpack": {
+        "type": "both",
+        "link": "https://raw.githubusercontent.com/webpack/webpack/main/LICENSE",
+        "repo": "https://github.com/webpack/webpack"
+    },
+    "Sass Loader": {
+        "type": "ui",
+        "link": "https://raw.githubusercontent.com/webpack-contrib/sass-loader/master/LICENSE",
+        "repo": "https://github.com/webpack-contrib/sass-loader"
+    },
+    "Discord.JS": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/discordjs/discord.js/main/LICENSE",
+        "repo": "https://github.com/discordjs/discord.js"
+    },
+    "Bootstrap": {
+        "type": "ui",
+        "link": "https://raw.githubusercontent.com/twbs/bootstrap/main/LICENSE",
+        "repo": "https://github.com/twbs/bootstrap"
+    },
+    "ExpressJS Compression": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/expressjs/compression/master/LICENSE",
+        "repo": "https://github.com/expressjs/compression"
+    },
+    "Connect Session Sequelize": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/mweibel/connect-session-sequelize/master/package.json",
+        "repo": "https://github.com/mweibel/connect-session-sequelize"
+    },
+    "ExpressJS Cors": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/expressjs/cors/master/LICENSE",
+        "repo": "https://github.com/expressjs/cors"
+    },
+    "DayJS": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/iamkun/dayjs/dev/LICENSE",
+        "repo": "https://github.com/iamkun/dayjs"
+    },
+    "ExpressJS": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/expressjs/express/master/LICENSE",
+        "repo": "https://github.com/expressjs/express"
+    },
+    "ExpressJS Session": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/expressjs/session/master/LICENSE",
+        "repo": "https://github.com/expressjs/session"
+    },
+    "Express WS": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/HenningM/express-ws/master/LICENSE",
+        "repo": "https://github.com/HenningM/express-ws"
+    },
+    "HelmetJS": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/helmetjs/helmet/main/LICENSE",
+        "repo": "https://github.com/helmetjs/helmet/"
+    },
+    "FFmpeg Static": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/eugeneware/ffmpeg-static/master/LICENSE",
+        "repo": "https://github.com/eugeneware/ffmpeg-static"
+    },
+    "MariaDB Nodejs Connector": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/mariadb-corporation/mariadb-connector-nodejs/master/LICENSE",
+        "repo": "https://github.com/mariadb-corporation/mariadb-connector-nodejs"
+    },
+    "Mime": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/broofa/mime/main/LICENSE",
+        "repo": "https://github.com/broofa/mime/"
+    },
+    "ExpressJS Morgan": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/expressjs/morgan/master/LICENSE",
+        "repo": "https://github.com/expressjs/morgan"
+    },
+    "Node Fetch": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/node-fetch/node-fetch/main/LICENSE.md",
+        "repo": "https://www.npmjs.com/package/node-fetch"
+    },
+    "Node Postgres": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/brianc/node-postgres/master/LICENSE",
+        "repo": "https://github.com/brianc/node-postgres"
+    },
+    "React": {
+        "type": "ui",
+        "link": "https://raw.githubusercontent.com/facebook/react/main/LICENSE",
+        "repo": "https://github.com/facebook/react"
+    },
+    "Sequelize": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/sequelize/sequelize/main/LICENSE",
+        "repo": "https://github.com/sequelize/sequelize"
+    },
+    "Node Sqlite3": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/TryGhost/node-sqlite3/master/LICENSE",
+        "repo": "https://github.com/TryGhost/node-sqlite3"
+    },
+    "Tedious": {
+        "type": "server",
+        "link": "https://raw.githubusercontent.com/tediousjs/tedious/master/LICENSE",
+        "repo": "https://github.com/tediousjs/tedious"
+    },
+
+    "Friend Bot (This Program)": {
+        "type": "both",
+        "repo": "https://github.com/Waterwolf9910/friend_bot_js",
+        "link": "https://raw.githubusercontent.com/Waterwolf9910/friend_bot_js/main/LICENSE"
+    }
+}

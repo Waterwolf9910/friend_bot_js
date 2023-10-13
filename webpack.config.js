@@ -8,8 +8,10 @@ let terser = require("terser-webpack-plugin")
 let autoprefixer = require('autoprefixer')
 
 let isDev = process.env.NODE_ENV == "development"
-let pagedir = path.resolve(__dirname, 'static_src', 'js', 'pages')
-fs.writeFileSync(path.resolve(__dirname, "static_src/js/pages/page_data.json"), JSON.stringify(fs.readdirSync(pagedir).filter(v => v.endsWith(".tsx")).map(v => v.replace(".tsx", ''))))
+
+// No longer needed ;D
+// let pagedir = path.resolve(__dirname, 'static_src', 'js', 'pages')
+// fs.writeFileSync(path.resolve(__dirname, "static_src/js/pages/page_data.json"), JSON.stringify(fs.readdirSync(pagedir).filter(v => v.endsWith(".tsx")).map(v => v.replace(".tsx", ''))))
 
 /**
  * @type {webpack.Configuration}
@@ -77,6 +79,11 @@ let config = {
                 test: /\.(png|jpeg|jpg|jpe|jfif|gif|webp|ico|tif|tiff|bmp)$/i,
                 dependency: { not: [ 'url' ] },
                 type: 'asset/resource'
+            },
+            {
+                test: /\.txt$/,
+                dependency: { not: [ 'url' ] },
+                type: 'asset/source'
             },
             {
                 test: /\.svg$/i,

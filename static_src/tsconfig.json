@@ -14,7 +14,7 @@
     },
     "include": [
         "**/*"
-    ],
+, "../all.ts"    ],
     "exclude": [
         "node_modules"
     ]

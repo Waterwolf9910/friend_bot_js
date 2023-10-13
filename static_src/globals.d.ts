@@ -15,7 +15,7 @@ declare global {
         styles?: {default: CSSStyleSheet}[],
     }
     
-    export type WSData = import("../websocket_proto").server
+    export type WSData = import("../ws_proto").server
 }
 
 

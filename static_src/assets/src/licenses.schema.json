@@ -1,0 +1,37 @@
+{
+    "properties": {
+        "$schema": {
+            "type": "string"
+        }
+    },
+    "patternProperties": {
+        "^.*": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$comment": "Where is the library used",
+                    "type": "string",
+                    "enum": [
+                        "ui",
+                        "server",
+                        "both"
+                    ]
+                },
+                "link": {
+                    "$comment": "The Link to the license or package.json",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "repo": {
+                    "$comment": "The repository of the library",
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "required": [
+                "type",
+                "link"
+            ]
+        }
+    }
+}

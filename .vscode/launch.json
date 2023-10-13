@@ -16,8 +16,6 @@
             "url": "http://localhost/friend_bot",
             "cwd": "${workspaceFolder}/debug/web",
             "userDataDir": true,
-            "includeDefaultArgs": true,
-            "includeLaunchArgs": true,
             "runtimeArgs": [
                 // "--user-data-dir=\"${workspaceFolder}/debug/browser\""
             ],
@@ -28,7 +26,6 @@
             "request": "launch",
             "type": "chrome",
             "url": "http://localhost:3000",
-            "includeDefaultArgs": true,
             "runtimeArgs": [
                 // "--user-data-dir=./debug/browser"
             ],
@@ -41,7 +38,7 @@
             "request": "launch",
             "type": "node",
             // "profileStartup": true,
-            "runtimeArgs": ["--tls-min-v1.2", "--report-uncaught-exception", /* "--prof", "--node-memory-debug", "--heap-prof", "--cpu-prof" */],
+            "runtimeArgs": ["--tls-min-v1.2", "--report-uncaught-exception", "--enable-source-maps" /* "--prof", "--node-memory-debug", "--heap-prof", "--cpu-prof" */],
             "autoAttachChildProcesses": true,
             "presentation": {
                 "hidden": false,
@@ -69,7 +66,7 @@
             "serverReadyAction": {
                 "action": "startDebugging",
                 "name": "Launch Edge (external)",
-                "killOnServerStop": true,
+                "killOnServerStop": false,
                 "pattern": "webpack [.0-9]+ compiled successfully"
             },
             "skipFiles": [

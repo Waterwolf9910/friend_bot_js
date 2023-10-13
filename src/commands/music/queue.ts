@@ -11,7 +11,7 @@ let _: import("../../types").Command= {
             interaction.channel,
             //@ts-ignore
             interaction.member,
-            interaction.options.getInteger("queue_page", false) )
+            interaction.options.getInteger("queue_page", false))
     },
     slash: require("./slash").addSubcommand(sub => {
         sub.setName("queue")
@@ -33,7 +33,7 @@ let run = async (guildId: string, authorId: string, text_channel: import('discor
     let page = parseInt(`${_page}`)
     if (isNaN(page)) {
         if (_page == undefined) {
-            page = 0
+            page = 1
         } else {
             return { flag: 'r', message: `${_page} is not a number` }
         }
@@ -98,9 +98,7 @@ let run = async (guildId: string, authorId: string, text_channel: import('discor
                     }
                 } ]
             })
-            queue_msg.react("⬅️").then(() => {
-                queue_msg.react("➡️").catch(() => { })
-            }).catch(() => { })
+            
             queue_msg.awaitReactions({ time: 300000, maxEmojis: 1, filter: (re, user) => { return (user.id == authorId) && (re.emoji.name == "⬅️" || re.emoji.name == "➡️") }, errors: [ "time" ] }).then((emoji_col) => {
                 queue_msg.reactions.removeAll().catch((e) => { console.log(e) })
                 // emoji_col.first().remove().catch(() => { })
@@ -120,11 +118,12 @@ let run = async (guildId: string, authorId: string, text_channel: import('discor
                 // console.log(page)
                 update_queue()
             }).catch(() => { })
+            queue_msg.react("⬅️").then(() => {
+                queue_msg.react("➡️").catch(() => { })
+            }).catch(() => { })
         } catch { }
     }
-    queue_msg.react("⬅️").then(() => {
-        queue_msg.react("➡️").catch(() => { })
-    }).catch(() => { })
+    
     queue_msg.awaitReactions({ time: 300000, maxEmojis: 1, filter: (re, user) => { return (user.id == authorId) && (re.emoji.name == "⬅️" || re.emoji.name == "➡️") }, errors: [ "time" ] }).then((emoji_col) => {
         queue_msg.reactions.removeAll().catch((e) => { console.log(e) })
         // emoji_col.first().remove().catch(() => { })
@@ -142,6 +141,9 @@ let run = async (guildId: string, authorId: string, text_channel: import('discor
             update_queue()
         }
         update_queue()
+    }).catch(() => { })
+    queue_msg.react("⬅️").then(() => {
+        queue_msg.react("➡️").catch(() => { })
     }).catch(() => { })
     return { flag: 'n' }
 }
