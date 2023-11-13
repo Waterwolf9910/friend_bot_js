@@ -64,7 +64,7 @@
         "cors": "^2.8.5",
         "dayjs": "^1.11.9",
         "discord-api-types": "^0.37.56",
-        "discord.js": "latest",
+        "discord.js": "14.14.0",
         "erlpack": "github:discord/erlpack",
         "express": "latest",
         "express-session": "^1.17.3",
