@@ -51,7 +51,7 @@
         "@discordjs/opus": "latest",
         "@discordjs/rest": "latest",
         "@discordjs/voice": "latest",
-        "@distube/ytdl-core": "latest",
+        "@distube/ytdl-core": "4.13.3",
         "@distube/ytpl": "latest",
         "@distube/ytsr": "latest",
         "@popperjs/core": "^2.11.8",
