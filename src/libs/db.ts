@@ -129,21 +129,21 @@ let user_logins = sequelize.define<import("../types").UserLogin>('user_logins', 
         primaryKey: false,
         allowNull: false,
         type: _sequelize.STRING,
-        unique: true,
+        unique: false,
         defaultValue: ""
     },
     token_type: {
         primaryKey: false,
         allowNull: false,
         type: _sequelize.STRING,
-        unique: true,
+        unique: false,
         defaultValue: ""
     },
     expire_time: {
         primaryKey: false,
         allowNull: false,
         type: _sequelize.STRING,
-        unique: true,
+        unique: false,
         defaultValue: ""
     },
 })
