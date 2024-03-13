@@ -2,8 +2,7 @@ import queue_data = require("./queues")
 import voice = require("@discordjs/voice")
 import discord = require("discord.js")
 import slash = require("./slash")
-let _: import("../../types").Command = {
-    // command: (ctx) => run(ctx.guild.id, ctx.author.id, queue_data.guild_queues[ctx.guild.id].vchannel),
+let _: import("main/types").Command = {
     slash: slash.addSubcommand((sub) => {
         sub.setDescription("Removes an item from the queue")
         sub.setName("remove")
@@ -20,24 +19,24 @@ let _: import("../../types").Command = {
     usage: "music remove"
 }
 
-let run = async (index: number,  guildId: string, authorId: string, voice_channel: import('discord.js').VoiceBasedChannel): Promise<import("../../types").CommandResult> => {
-    let connection = queue_data.guild_queues[ guildId ]?.connection
+let run = async (index: number,  guild_id: string, author_id: string, voice_channel: import('discord.js').VoiceBasedChannel): Promise<import("main/types").CommandResult> => {
+    let connection = queue_data.guild_queues[ guild_id ]?.connection
     // let voice_channel = (await(ctx.guild.channels.fetch(connection.joinConfig.channelId)))
-    if (!queue_data.guild_queues[ guildId ]?.channel_id && connection?.state?.status != voice.VoiceConnectionStatus.Ready) {
+    if (!queue_data.guild_queues[ guild_id ]?.channel_id && connection?.state?.status != voice.VoiceConnectionStatus.Ready) {
         return { flag: 'r', message: "I am not in a vc" }
     }
-    if (!voice_channel.members.has(authorId)) {
+    if (!voice_channel.members.has(author_id)) {
         return { flag: 'r', message: "You are not in the vc" }
     }
     if (index < 1) {
         return { flag: 'r', message: "index cannot be less than 1" }
-    } else if (index > queue_data.guild_queues[ guildId ].queue.length) {
+    } else if (index > queue_data.guild_queues[ guild_id ].queue.length) {
         return { flag: 'r', message: 'index cannot be greater than the entire queue' }
     }
     // queue_data.guild_queues[ctx.guildId].
     // queue_data.guild_queues[ guildId ].queue = []
     // queue_data.guild_queues[ guildId ].next = 0
-    queue_data.guild_queues[ guildId ].queue = queue_data.guild_queues[guildId].queue.filter((_, i) => i != index-1)
+    queue_data.guild_queues[ guild_id ].queue = queue_data.guild_queues[guild_id].queue.filter((_, i) => i != index-1)
     return { flag: 'r', message: "Item successfully removed" }
 }
 

@@ -1,8 +1,7 @@
 import queue_data = require("./queues")
 import voice = require("@discordjs/voice")
 
-let _: import("../../types").Command= {
-    // command: (ctx) => run(ctx.guildId),
+let _: import("main/types").Command = {
     slash: require("./slash").addSubcommand(sub => {
         sub.setName("np")
         sub.setDescription("Shows the current song")
@@ -13,18 +12,17 @@ let _: import("../../types").Command= {
     usage: "music np"
 }
 
-let run = (guildId: string): import('../../types').CommandResult => {
-    let returner = "Base"
-    let connection = queue_data.guild_queues[ guildId ]?.connection
-    let player = queue_data.guild_queues[ guildId ]?.player
-    if (!queue_data.guild_queues[ guildId ]?.channel_id && connection?.state?.status != voice.VoiceConnectionStatus.Ready) {
+let run = (guild_id: string): import('main/types').CommandResult => {
+    let connection = queue_data.guild_queues[ guild_id ]?.connection
+    let player = queue_data.guild_queues[ guild_id ]?.player
+    if (!queue_data.guild_queues[ guild_id ]?.channel_id && connection?.state?.status != voice.VoiceConnectionStatus.Ready) {
         return { flag: 'r', message: "I am not in a vc" }
     } else if (player?.state?.status !== voice.AudioPlayerStatus.Playing && player?.state?.status !== voice.AudioPlayerStatus.Buffering) {
         if (player?.state?.status == voice.AudioPlayerStatus.Idle || player?.state?.status == voice.AudioPlayerStatus.AutoPaused) {
             return { flag: 'r', message: "I am not playing anything" }
         }
     }
-    let np = queue_data.guild_queues[ guildId ].np_msg
+    let np = queue_data.guild_queues[ guild_id ].np_msg
 
     return {
         flag: 'r',
@@ -38,7 +36,7 @@ let run = (guildId: string): import('../../types').CommandResult => {
                 image: np.image,
                 author: np.author,
                 footer: {
-                    text: `Looping: Queue ${queue_data.guild_queues[ guildId ].loop === true ? "✅" : "❌"} Song ${queue_data.guild_queues[ guildId ].loop == "song" ? "✅" : "❌"}`
+                    text: `Looping: Queue ${queue_data.guild_queues[ guild_id ].loop === true ? "✅" : "❌"} Song ${queue_data.guild_queues[ guild_id ].loop == "song" ? "✅" : "❌"}`
                 }
             } ]
         } }

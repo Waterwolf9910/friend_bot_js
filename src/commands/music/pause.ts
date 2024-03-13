@@ -1,8 +1,7 @@
 import queue_data = require("./queues")
 import voice = require("@discordjs/voice")
 
-let _: import("../../types").Command= {
-    // command: async (ctx) => await run(ctx.guild.id, ctx.author.id, queue_data.guild_queues[ ctx.guild.id ]?.vchannel),
+let _: import("main/types").Command = {
     interaction: async (interaction) => {
         return run(interaction.guild.id, interaction.user.id, queue_data.guild_queues[ interaction.guild.id ]?.vchannel)
     },
@@ -15,10 +14,10 @@ let _: import("../../types").Command= {
     usage: "music pause"
 }
 
-let run = async (guildId: string, authorId: string, voice_channel: import('discord.js').NonThreadGuildBasedChannel): Promise<import('../../types').CommandResult> => {
-    let connection = queue_data.guild_queues[ guildId ]?.connection
-    let player = queue_data.guild_queues[ guildId ]?.player
-    if (!queue_data.guild_queues[ guildId ]?.channel_id && connection?.state?.status != voice.VoiceConnectionStatus.Ready) {
+let run = async (guild_id: string, author_id: string, voice_channel: import('discord.js').NonThreadGuildBasedChannel): Promise<import('main/types').CommandResult> => {
+    let connection = queue_data.guild_queues[ guild_id ]?.connection
+    let player = queue_data.guild_queues[ guild_id ]?.player
+    if (!queue_data.guild_queues[ guild_id ]?.channel_id && connection?.state?.status != voice.VoiceConnectionStatus.Ready) {
         return { flag: 'r', message: "I am not in a vc" }
     } else if (player?.state?.status !== voice.AudioPlayerStatus.Playing && player?.state?.status !== voice.AudioPlayerStatus.Buffering) {
         if (player?.state?.status == voice.AudioPlayerStatus.Paused) {
@@ -28,7 +27,7 @@ let run = async (guildId: string, authorId: string, voice_channel: import('disco
         }
     }
     
-    if (!voice_channel.members.has(authorId)) {
+    if (!voice_channel.members.has(author_id)) {
         return { flag: 'r', message: "You are not in the vc" }
     }
     if (!player.pause()) {

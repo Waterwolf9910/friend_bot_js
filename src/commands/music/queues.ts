@@ -1,5 +1,5 @@
 import voice = require("@discordjs/voice")
-let guild_queues: import("../../types").GuildQueue = {}
+let guild_queues: import("main/types").GuildQueue = {}
 
 let create = (guild_id: string, vchannel: import("discord.js").VoiceBasedChannel, move = false) => {
     let data = guild_queues[ guild_id ]
@@ -7,9 +7,8 @@ let create = (guild_id: string, vchannel: import("discord.js").VoiceBasedChannel
     let connection = data?.connection
     let player = data?.player
 
-    if (!player) {
-        player = voice.createAudioPlayer({ behaviors: { noSubscriber: voice.NoSubscriberBehavior.Stop } })
-    }
+    player ??= voice.createAudioPlayer({ behaviors: { noSubscriber: voice.NoSubscriberBehavior.Stop } })
+    
     if (!connection || connection.state.status == voice.VoiceConnectionStatus.Destroyed) {
         connection = voice.joinVoiceChannel({
             adapterCreator: vchannel.guild.voiceAdapterCreator,
@@ -35,7 +34,7 @@ let create = (guild_id: string, vchannel: import("discord.js").VoiceBasedChannel
         queue: data?.queue || [],
         timeout_info: data?.timeout_info || { timeout: undefined, msg: undefined, type: "none" },
         np_msg: data?.np_msg,
-        skiping: data?.skiping || false,
+        skipping: data?.skipping || false,
         loop: data?.loop || false,
         tchannel: data?.tchannel || null,
         vchannel: move || !data?.vchannel ? vchannel : data.vchannel,
@@ -81,7 +80,7 @@ let end = (guild_id: string, stop = false) => {
             type: "none"
         },
         np_msg: undefined,
-        skiping: false,
+        skipping: false,
         loop: false,
         tchannel: data.tchannel,
         vchannel: data.vchannel

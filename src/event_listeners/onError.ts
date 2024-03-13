@@ -1,5 +1,5 @@
 
-let _: import("../types").event<"error"> = {
+let _: import("main/types").event<"error"> = {
     name: "error",
     function: (_config, _client, msg) => {
         if (msg.message.includes("Client.destroy")) {

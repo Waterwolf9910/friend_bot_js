@@ -1,8 +1,8 @@
 import discord = require("discord.js")
-import db = require("../libs/db")
+import db = require("main/libs/db")
 import fs = require('fs')
 import path = require("path")
-let _: import("../types").event<discord.Events.MessageCreate> = {
+let _: import("main/types").event<discord.Events.MessageCreate> = {
     name: discord.Events.MessageCreate,
     function: async (config, client, ctx) => {
         try {
@@ -15,13 +15,13 @@ let _: import("../types").event<discord.Events.MessageCreate> = {
                 return;
             }
 
-            // @ts-ignore
-            let guild_config: import("./types").Guild_Config = { // Fallback config
+            let guild_config: import("main/types").GuildConfig = { // Fallback config
                 econ_managers: [],
-                id: ctx.guild.id,
+                config_managers: [],
+                gid: ctx.guild.id,
                 money: {},
                 xp: {},
-                other: {}
+                other: {},
             }
             try { // Get config for guild
                 [ guild_config ] = await db.guild_configs.findOrCreate({ where: { id: ctx.guild.id } })
@@ -48,12 +48,6 @@ let _: import("../types").event<discord.Events.MessageCreate> = {
                 } catch (err) {
                     console.log(`Plugin Error (${plugin.replace(".js", " ")}): \n${err}`)
                 }
-            }
-            if (ctx.mentions.users.has(client.user.id) && !ctx.content.toLowerCase().startsWith(guild_config.prefix.toLowerCase())) { // Basic help commands
-                ctx.reply(`Hello ${ctx.author.username} i am ${client.user.username}
-    slash commands are available,
-    click under my icon after typing slash to see them all`).catch(() => null)
-                return;
             }
         } catch (err) {
             console.error("Error within command handler:", err)

@@ -1,38 +1,8 @@
 import path = require("path")
 import fs = require("fs")
-let mdir = fs.mkdirSync
-let wfs = fs.writeFileSync
-let es = fs.existsSync
+import discord = require("discord.js")
 let isDev = process.env.NODE_ENV == "development"
 
-//@ts-ignore
-fs.mkdirSync = (_path: fs.PathLike, options?: fs.MakeDirectoryOptions & { recursive: boolean }) => {
-    if (typeof _path != "string") {
-        return mdir(_path, options)
-    }
-    if (_path.includes(path.normalize("/node_modules/ytsr/dumps"))) {
-        return null;
-    }
-    return mdir(_path, options)
-}
-fs.writeFileSync = (_path: fs.PathOrFileDescriptor, data: string | NodeJS.ArrayBufferView, options?: fs.WriteFileOptions) => {
-    if (typeof _path != "string") {
-        return wfs(_path, data, options)
-    }
-    if (_path.includes(path.normalize("/node_modules/ytsr/dumps"))) {
-        return null;
-    }
-    return wfs(_path, data, options)
-}
-fs.existsSync = (_path: string) => {
-    if (typeof _path != "string") {
-        return es(_path)
-    }
-    if (_path.includes(path.normalize("/node_modules/ytsr/dumps"))) {
-        return true;
-    }
-    return es(_path)
-}
 import _random = require("./libs/random")
 let random = new _random(256, 9)
 
@@ -40,13 +10,11 @@ let baseConfig: import("./types").Config = {
     Activities: [
         {
             name: "Games with friends",
-            //@ts-ignore
-            activity: "PLAYING"
+            type: discord.ActivityType.Playing
         },
         {
             name: "YT with Friends",
-            //@ts-ignore
-            activity: "WATCHING",
+            type: discord.ActivityType.Watching,
             url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         }
     ],
@@ -68,6 +36,7 @@ let baseConfig: import("./types").Config = {
     DisabledPlugins: [],
     HttpPort: isDev ? 8080 : 3000,
     UseHttps: true,
+    UseServer: true,
     RefreshDays: 90,
     ReverseProxy: "",
     Status: "idle",

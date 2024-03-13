@@ -1,10 +1,10 @@
-import events = require("../events")
+import events = require("main/events")
 import util = require("util")
 import discord = require("discord.js")
 
-let _: import("../types").event<discord.Events.InteractionCreate> = {
+let _: import("main/types").event<discord.Events.InteractionCreate> = {
     name: discord.Events.InteractionCreate,
-    function: async (config, _client,  interaction) => {
+    function: async (_config, _client,  interaction: discord.Interaction<'cached'>) => {
         if (interaction.user.bot) { return }
         if (interaction.isStringSelectMenu()) {
             // await interaction.deferReply({})
@@ -17,7 +17,7 @@ let _: import("../types").event<discord.Events.InteractionCreate> = {
             let command = interaction.commandName
             let subcommand = interaction.options.getSubcommand(false)
 
-            let cmd: import("../types").Command= subcommand ? require(`../commands/${command}/${subcommand}`) : require(`../commands/${command}`)
+            let cmd: import("main/types").Command= subcommand ? require(`../commands/${command}/${subcommand}`) : require(`../commands/${command}`)
             
             if (cmd.interaction == undefined) {
                 return;
@@ -49,13 +49,13 @@ let _: import("../types").event<discord.Events.InteractionCreate> = {
             }
 
         } catch (err) {
-            console.error("Error within interaction handler: ", err)
+            console.error("Error within interaction handler: ", {
+                command: interaction.command,
+                sub: interaction.options.getSubcommand(false),
+                err
+            })
+            interaction.reply("There was an error while trying to run this command")
         }
-        // console.log(interaction, interaction.commandName, interaction.options.getSubcommand(false))
-        // await interaction.editReply("Test")
-        // setTimeout(() => {
-        //     interaction.deleteReply()
-        // }, 3000)
     }
 }
 

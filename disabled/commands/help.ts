@@ -23,7 +23,7 @@ let defaultHelp = () => {
     }
     return returner
 }
-let _: import("../types").Command= {
+let _: import("main/types").Command= {
     command: (_ctx, cmd, sub) => {
         let returner = ""
         let valid: boolean | "partial" = false

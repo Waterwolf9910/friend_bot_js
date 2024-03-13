@@ -1,5 +1,9 @@
 interface BaseWSData {
     /**
+     * The request id of the message
+     */
+    request_id: number
+    /**
      * The Message Identifier
      */
     type: string
@@ -23,6 +27,8 @@ interface GenericError extends BaseWSData {
     }
 }
 
+// Errors
+
 export interface InvalidMessage extends GenericError {
     msg: {
         err: 'invalid_msg'
@@ -35,9 +41,24 @@ export interface SignedOut extends GenericError {
     }
 }
 
+export interface IncorrectCredentials extends GenericError {
+    msg: {
+        err: 'incorrect_auth'
+    }
+}
+
 export interface Unknown extends GenericError {
     msg: {
         err: 'unknown_message'
+    }
+}
+
+// Reponses
+export interface Success extends BaseWSData {
+    // Returns on commands that don't expect a reponse
+    type: 'success',
+    msg: {
+        type: server['type']
     }
 }
 
@@ -108,6 +129,22 @@ export interface SendQueue extends BaseWSData {
     msg: Omit<MusicQueue["msg"], "cur"> & {guild_id: string, skipping: boolean}
 }
 
+export interface SendBotConfig extends BaseWSData {
+    type: "bot_config",
+    msg: import('./src/types').Config
+}
+
+export interface SendGuildConfig extends BaseWSData {
+    type: "guild_config",
+    msg: import('./src/types').GuildConfig
+}
+
+export interface SendBotConfig extends BaseWSData {
+    type: 'bot_config',
+    msg: import('./src/types').Config
+}
+
+// Requests
 export interface UserRequest extends BaseRequest {
     msg: {
         type: 'user'
@@ -141,16 +178,28 @@ export interface SearchRequest extends BaseRequest {
     }
 }
 
-export type Request = UserRequest | ApplicationRequest | VoiceRequest | MQueueRequest | SearchRequest
+export interface BotConfigRequest extends BaseRequest {
+    msg: {
+        type: 'bot_config'
+    }
+}
 
-export type Errors = InvalidMessage | SignedOut | Unknown
+export interface GuildConfigRequest extends BaseRequest {
+    msg: {
+        type: "guild_config"
+    }
+}
+
+export type Request = UserRequest | ApplicationRequest | VoiceRequest | MQueueRequest | SearchRequest | BotConfigRequest | GuildConfigRequest
+
+export type Errors = InvalidMessage | SignedOut | IncorrectCredentials | Unknown
 
 /**
  * Move to the client
  */
-export type client = Errors | User | (VoiceWithBot | VoiceWOBot) | ApplicationInfo | MusicQueue | SearchResult
+export type client = Errors | Success | User | (VoiceWithBot | VoiceWOBot) | ApplicationInfo | MusicQueue | SearchResult | SendBotConfig | SendGuildConfig
 
 /**
  * Move to the server
  */
-export type server = Request | RefreshGuilds | SetSelectedID | SendQueue
+export type server = Request | RefreshGuilds | SetSelectedID | SendQueue | SendBotConfig

@@ -1,12 +1,9 @@
 import voice = require("@discordjs/voice")
 import discord = require("discord.js")
 import queues = require("./music/queues")
-let _: import("../types").Command= {
-    // command: (ctx) => run(ctx.guild.id, ctx.mentions.members.first() || ctx.member),
+let _: import("main/types").Command= {
     interaction: (interaction) => {
-        //@ts-ignore
-        let member: discord.GuildMember = interaction.member
-        return run(interaction.guild.id, member, interaction.channel)
+        return run(interaction.guild.id, interaction.member, interaction.channel)
     },
     slash: new discord.SlashCommandBuilder()
         .setName("join")
@@ -15,19 +12,19 @@ let _: import("../types").Command= {
     usage: "join"
 }
 
-let run = (guildId: string, member: discord.GuildMember, text_channel: import("discord.js").GuildTextBasedChannel): import('../types').CommandResult => {
+let run = (guild_id: string, member: discord.GuildMember, text_channel: import("discord.js").GuildTextBasedChannel): import('main/types').CommandResult => {
     let voice_channel = member.voice.channel
     if (!voice_channel.joinable) {
         return { flag: 'r', message: 'Unable to join this voice channel' }
     }
-    if (!queues.guild_queues[guildId] || queues.guild_queues[guildId].connection == null) {
-        queues.create(guildId, voice_channel)
-        queues.guild_queues[guildId].tchannel = text_channel
+    if (!queues.guild_queues[guild_id] || !queues.guild_queues[guild_id]) {
+        queues.create(guild_id, voice_channel)
+        queues.guild_queues[guild_id].tchannel = text_channel
         return { flag: 'n' }
     }
     
-    queues.guild_queues[guildId].connection.rejoin({ ...queues.guild_queues[guildId].connection.joinConfig, channelId: voice_channel.id })
-    queues.guild_queues[guildId].tchannel = text_channel
+    queues.guild_queues[guild_id].connection.rejoin({ ...queues.guild_queues[guild_id].connection.joinConfig, channelId: voice_channel.id })
+    queues.guild_queues[guild_id].tchannel = text_channel
     // return { flag: 'r', message: 'Error connecting to your channel' }
     return { flag: 'n' }
 }

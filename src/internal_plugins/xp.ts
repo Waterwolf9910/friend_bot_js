@@ -1,4 +1,4 @@
-import _r = require("../libs/random")
+import _r = require("main/libs/random")
 import fs = require("fs")
 import discord = require('discord.js')
 let random = new _r()
@@ -14,8 +14,8 @@ if (!fs.existsSync("./xp.json")) {
 }
 
 // module.exports = plugin
-let _: import("../types").plugin = {
-    run: async (ctx: discord.Message, guild_config: import("../types").GuildConfig) => {
+let _: import("main/types").plugin = {
+    run: async (ctx: discord.Message, guild_config: import("main/types").GuildConfigModel) => {
         let xp = guild_config.xp
         let current_xp = xp[ ctx.member.id ] || 0
 

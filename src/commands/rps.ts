@@ -1,10 +1,9 @@
-import _random = require("../libs/random")
+import _random = require("main/libs/random")
 import discord = require("discord.js")
 let random = new _random(1, 2)
-let _: import("../types").Command= {
+let _: import("main/types").Command= {
     interaction: (interaction) => run(
-        //@ts-ignore
-        interaction.options.getString("choice")
+        <'rock'> interaction.options.getString("choice")
     ),
     slash: new discord.SlashCommandBuilder()
         .setName("slash")
@@ -13,7 +12,7 @@ let _: import("../types").Command= {
     usage: "rps"
 }
 
-let run = (choice: 'rock' | 'paper' | 'scissors'): import("../types").CommandResult => {
+let run = (choice: 'rock' | 'paper' | 'scissors'): import("main/types").CommandResult => {
     let bot_choice: 'rock' | 'paper' | 'scissors'
     switch (random.num()) {
         case 0: {
@@ -42,6 +41,9 @@ let run = (choice: 'rock' | 'paper' | 'scissors'): import("../types").CommandRes
                 case "rock": {
                     return {flag: 'r', message: 'Win'}
                 }
+                default: {
+                    return {flag: 'n'}
+                }
             }
         }
         case "rock": {
@@ -54,6 +56,9 @@ let run = (choice: 'rock' | 'paper' | 'scissors'): import("../types").CommandRes
                 }
                 case "rock": {
                     return { flag: 'r', message: 'Draw' }
+                }
+                default: {
+                    return { flag: 'n' }
                 }
             }
         }
@@ -68,7 +73,12 @@ let run = (choice: 'rock' | 'paper' | 'scissors'): import("../types").CommandRes
                 case "rock": {
                     return { flag: 'r', message: 'Lose' }
                 }
+                default: {
+                    return { flag: 'n' }
+                }
             }
         }
     }
 }
+
+export = _

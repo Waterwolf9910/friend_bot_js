@@ -8,10 +8,6 @@ import Footer = require("./components/footer")
 import err = require("./pages/404")
 import baseStyle = require("../css/base.scss")
 
-if (process.env.NODE_ENV) {
-    console.log(__webpack_public_path__)
-}
-
 if (module.hot) {
     window.utils = utils
 }

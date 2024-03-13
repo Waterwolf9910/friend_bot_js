@@ -192,7 +192,7 @@ class Logger extends old_console.Console {
         super({ stdout: stdout, stderr: stderr, ignoreErrors: ignoreErrors, groupIndentation: 4, })
         this.logfile = logfile
     }
-    private logfile
+    private logfile: string
     Console = old_console.Console
     Logger = Logger
 }

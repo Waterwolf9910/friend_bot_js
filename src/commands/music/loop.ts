@@ -1,11 +1,10 @@
 import queue_data = require("./queues")
 
-let _: import("../../types").Command= {
-    // command: (ctx, type?: "song" | "queue" | "off") => run(ctx.guild.id, type),
+let _: import("main/types").Command = {
     interaction: (interaction) => {
         let type = interaction.options.getString("loop_type", false)
-        //@ts-ignore
-        return run(interaction.guild.id, type)
+
+        return run(interaction.guild.id, <'song'> type)
     },
     slash: require("./slash").addSubcommand(sub => {
         sub.setName("loop")
@@ -25,30 +24,30 @@ let _: import("../../types").Command= {
     usage: "music loop [queue, song, off]"
 }
 
-let run = (guildId: string, type?: "song" | "queue" | "off"): import("../../types").CommandResult => {
-    let cur_loop = queue_data.guild_queues[ guildId ].loop
-    if (type?.length > 1) {
+let run = (guild_id: string, type?: "song" | "queue" | "off"): import("main/types").CommandResult => {
+    let cur_loop = queue_data.guild_queues[ guild_id ].loop
+    if (type) {
         if (type !== "song" && type !== "queue" && type !== "off") {
             return { flag: 'r', message: "type has to be song, queue, or off" }
         }
         if (type == 'queue') {
-            queue_data.guild_queues[ guildId ].loop = true
+            queue_data.guild_queues[ guild_id ].loop = true
         } else if (type == 'song') {
-            queue_data.guild_queues[ guildId ].loop = "song"
+            queue_data.guild_queues[ guild_id ].loop = "song"
         } else {
-            queue_data.guild_queues[ guildId ].loop = false
+            queue_data.guild_queues[ guild_id ].loop = false
         }
+        return { flag: 's', message: `Looping ${type}` }
+    }
+    if (cur_loop) {
+        queue_data.guild_queues[ guild_id ].loop = "song"
+        type = "song"
+    } else if (cur_loop == "song") {
+        queue_data.guild_queues[ guild_id ].loop = false
+        type = "off"
     } else {
-        if (cur_loop) {
-            queue_data.guild_queues[ guildId ].loop = "song"
-            type = "song"
-        } else if (cur_loop == "song") {
-            queue_data.guild_queues[ guildId ].loop = false
-            type = "off"
-        } else {
-            queue_data.guild_queues[ guildId ].loop = true
-            type = "queue"
-        }
+        queue_data.guild_queues[ guild_id ].loop = true
+        type = "queue"
     }
 
     return { flag: 's', message: `Looping ${type}` }

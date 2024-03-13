@@ -5,6 +5,7 @@ let bootstrap: typeof import("bootstrap") = undefined
 require.ensure([], require => {
     bootstrap = require("bootstrap/dist/js/bootstrap.esm.min.js")
 })
+
 class Socket {
     /**
      * The WebSocket object to wrap around
@@ -14,7 +15,12 @@ class Socket {
      * Used to readd listeners on recreate
      */
     #listeners: { [ key: string ]: EventListenerOrEventListenerObject[] } = {}
+    /**
+     * A counter for the request id
+     */
+    #rid = 0
     #_realtoEdited: Map<EventListenerOrEventListenerObject, (data: Event) => any> = new Map
+    
     constructor(server: `ws:/${`/${string}`}` | `wss:/${`/${string}`}`) {
         this.#ws = new WebSocket(server)
     }
@@ -24,47 +30,38 @@ class Socket {
      * @param message Data to send
      * @param reconnect reconnect is disconnected
      */
-    send = (message: import("../../ws_proto").server, reconnect = true) => {
-
+    send = (message: Omit<import("ws_proto").server, 'request_id'>, reconnect = true) => {
+        let _message = message as import('ws_proto').server
+        _message.request_id = this.#rid++
+        
         if (this.#ws.readyState == WebSocket.OPEN) {
-            this.#ws.send(JSON.stringify(message))
-            return;
+            this.#ws.send(JSON.stringify(_message))
+            return this.#rid - 1
         }
 
         let onreconnect = () => {
             setTimeout(() => {
-                this.#ws.send(JSON.stringify(message))
+                this.#ws.send(JSON.stringify(_message))
                 this.#ws.removeEventListener("open", onreconnect)
             }, 500)
         }
         
         if (this.#ws.readyState == WebSocket.CONNECTING) {
             this.#ws.addEventListener("open", onreconnect)
-            return
+            return this.#rid-1
         }
         if (!reconnect) {
             console.warn("Disconnected from Server")
             return false
         } 
-        if (this.#ws.readyState == WebSocket.CLOSING || this.#ws.readyState == WebSocket.CLOSED) {
-            this.#ws = new WebSocket(this.#ws.url)
-            for (let type in this.#listeners) {
-                for (let listener of this.#listeners[ type ]) {
-                    this.#ws.addEventListener(type, listener)
-                }
+        this.#ws = new WebSocket(this.#ws.url)
+        for (let type in this.#listeners) {
+            for (let listener of this.#listeners[ type ]) {
+                this.#ws.addEventListener(type, listener)
             }
-            this.#ws.addEventListener("open", onreconnect)
-            /* let inv = setInterval(() => {
-                if (this.#ws.readyState == WebSocket.OPEN) {
-                    clearInterval(inv)
-                } else if (this.#ws.readyState == WebSocket.CLOSED || this.#ws.readyState == WebSocket.CLOSING) {
-                    console.warn("The Socket closed while sending a message")
-                    clearInterval(inv)
-                }
-            }, 200) */
-        } else {
-            this.#ws.addEventListener("open", onreconnect)
         }
+        this.#ws.addEventListener("open", onreconnect)
+        return this.#rid - 1
     }
 
     close = (reason?: string, code = 0) => {
@@ -74,7 +71,7 @@ class Socket {
         this.#ws.close(code, reason)
     }
 
-    addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: WebSocket, ev: (Omit<WebSocketEventMap, "message"> & {"message": MessageEvent<import("../../ws_proto").client>})[ K ]) => any, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: WebSocket, ev: (Omit<WebSocketEventMap, "message"> & {"message": MessageEvent<import("ws_proto").client>})[ K ]) => any, options?: boolean | AddEventListenerOptions): void;
     addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
         if (!this.#listeners[ type ]) {
             this.#listeners[ type ] = []
@@ -134,55 +131,6 @@ class Socket {
     }
 }
 
-/**
- * @param spdx the SPDX Identifier for the license
- * @returns The License from opensource.org
- */
-/* let parseLicense = async (spdx: string) => {
-    let a = await fetch(`https://opensource.org/license/${spdx.toLowerCase()}/`)
-    let t = (await a.text()).split('\n')
-
-    let index = t.findIndex(e => {
-        return e.includes("entry-content post--content")
-    })
-
-    let parse = (input: string) => {
-        let doc = (new DOMParser()).parseFromString(input, "text/html")
-        return doc.documentElement.textContent ?? ""
-    }
-
-    let nest = 1
-    let readNext = false
-    let data = ""
-    while (index < t.length) {
-        index++
-        if (nest <= 0) {
-            break;
-        }
-        let elem = t[ index ].replace(/^\t+/, '')
-        if (readNext) {
-            if (elem.startsWith("</div")) {
-                nest--;
-                continue
-            }
-            if (elem.startsWith("</")) {
-                readNext = false
-            }
-            let text = parse(elem.replace(/<(p|span|strong) ?([^>]+)?>/g, '').replace(/ ?<br( \/)?> ?/g, '\n').replace(/<\/(p|span|strong)>/, ''))
-            if (text == "") {
-                continue
-            }
-            data += `${text}\n`
-            continue
-        }
-        if (elem.startsWith("<p")) {
-            readNext = true;
-        }
-    }
-
-    return data;
-} */
-
 /** */
 let change_page = (url: string, data?: object, replace_history = false) => {
     let _url: string = url
@@ -206,6 +154,12 @@ let storageKeys = {
     theme: "global.theme"
 }
 
+let error_msgs = {
+    not_authed: "You are not logged in",
+    no_admin_auth: "You do not have access to this page",
+    no_gid: "You need to select a guild"
+}
+
 let renderError = (content: string, ref: import('react').RefObject<HTMLElement>) => {
     let popover = new bootstrap.Popover(ref.current!, {
         animation: true,
@@ -225,7 +179,7 @@ export = {
     addStatePushListener: (listener: () => any) => { statePushedListeners.push(listener) },
     removeStatePushListener: (listener: () => any) => { statePushedListeners = statePushedListeners.filter(v => v != listener) },
     change_page,
-    // parseLicense,
+    error_msgs,
     storageKeys,
     setTheme: (theme: string) => {
         localStorage.setItem(storageKeys.theme, theme)

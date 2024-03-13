@@ -1,16 +1,9 @@
-import db = require("../../libs/db")
+import db = require("main/libs/db")
 import discord = require("discord.js")
-let _: import("../../types").Command = {
-    // command: async (ctx, amount) => await run(ctx.guild, ctx.member, ctx.mentions.members.first(),
-    //     //@ts-ignore
-    //     ctx.channel,
-    //     parseInt(amount)),
+let _: import("main/types").Command = {
     interaction: async (interaction) => {
-        //@ts-ignore
         let smember: import("discord.js").GuildMember = interaction.options.getMember("member")
-        //@ts-ignore
-        let member: import("discord.js").GuildMember = interaction.member
-        return await run(interaction.guild, member, smember,
+        return await run(interaction.guild, interaction.member, smember,
             //@ts-ignore
             interaction.channel,
             interaction.options.getInteger("amount", true))
@@ -36,7 +29,7 @@ let _: import("../../types").Command = {
     description: "Adds xp for a user",
     usage: "xp add"
 }
-let run = async (guild: discord.Guild, member: discord.GuildMember, selected_member: discord.GuildMember, channel: discord.GuildTextBasedChannel, amount: number): Promise<import("../../types").CommandResult> => {
+let run = async (guild: discord.Guild, member: discord.GuildMember, selected_member: discord.GuildMember, channel: discord.GuildTextBasedChannel, amount: number): Promise<import("main/types").CommandResult> => {
     let [guild_config] = await db.guild_configs.findOrCreate({ where: { id: guild.id } })
     let xp = guild_config.xp
     let current_xp = xp[ selected_member.id ] || 0

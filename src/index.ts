@@ -141,8 +141,10 @@ async function main() {
                 client.on(mod.name, (...args) => mod.function(config, client, ...args))
             } catch {}
         }
-        // Start the web server
-        webserver.start(secret, client_secret, config, client)
+        if (config.UseServer) {
+            // Start the web server
+            webserver.start(secret, client_secret, config, client)
+        }
     })
     
     rl.on("close", close)
@@ -162,7 +164,6 @@ let close = async (error_code: number) => {
     process.exit(typeof error_code == "number" ? error_code : 0)
 }
 
-// client.generateInvite({ scopes: [ "bot" ], permissions: [ "ADD_REACTIONS", "CHANGE_NICKNAME", "CONNECT", "KICK_MEMBERS", "MANAGE_CHANNELS", "MANAGE_ROLES", "MENTION_EVERYONE", "READ_MESSAGE_HISTORY", "SEND_MESSAGES", "SEND_MESSAGES_IN_THREADS", "SPEAK", "USE_APPLICATION_COMMANDS", "USE_PUBLIC_THREADS", "USE_VAD", "VIEW_CHANNEL"] })
 if (require.main === module) {
     console.log("Starting")
     db = require("./libs/db")
@@ -173,7 +174,6 @@ if (require.main === module) {
             globalRequestsPerSecond: 40,
         },
         intents: [
-            // discord.IntentsBitField.Flags.,
             discord.GatewayIntentBits.GuildMessages,
             discord.GatewayIntentBits.GuildMessageReactions,
             discord.GatewayIntentBits.DirectMessages,
@@ -181,13 +181,6 @@ if (require.main === module) {
             discord.GatewayIntentBits.Guilds,
             discord.GatewayIntentBits.GuildWebhooks,
             discord.GatewayIntentBits.MessageContent,
-            // "GuildMessages",
-            // "MessageContent",
-            // "GuildPresences",
-            // "GuildMessageReactions",
-            // "DirectMessages",
-            // "GuildVoiceStates",
-            // "Guilds"
         ],
         // ws: { compress: true },
         presence: {
@@ -198,37 +191,33 @@ if (require.main === module) {
         partials: [ discord.Partials.Channel, discord.Partials.GuildMember, discord.Partials.Message, discord.Partials.Reaction, discord.Partials.User, discord.Partials.ThreadMember ],
         failIfNotExists: false,
     })
+    // client.generateInvite({
+    //     scopes: [discord.OAuth2Scopes.Bot, discord.OAuth2Scopes.ApplicationsCommands],
+    //     permissions: [
+    //         discord.PermissionFlagsBits.AddReactions,
+    //         discord.PermissionFlagsBits.AttachFiles,
+    //         discord.PermissionFlagsBits.Connect,
+    //         discord.PermissionFlagsBits.EmbedLinks,
+    //         discord.PermissionFlagsBits.SendMessages,
+    //         discord.PermissionFlagsBits.SendMessagesInThreads,
+    //         discord.PermissionFlagsBits.Speak,
+    //         discord.PermissionFlagsBits.UseExternalEmojis,
+    //         discord.PermissionFlagsBits.UseExternalStickers,
+    //         discord.PermissionFlagsBits.ViewChannel
+    //     ]
+    // })
     let run = () => {
-        // cache = fs.existsSync(path.resolve("cache.json")) ? JSON.parse(fs.readFileSync(path.resolve("cache.json"), { encoding: "utf-8" })): {}
-        
-        // console.log(config.activities)
         console.log("Staring Bot")
 
-        // Slightly more 
-        main().catch((err) => {
+        main().catch((err) => { // "Unrecoverable Error"
             console.error("An error has occured in the main process. The program will now close.")
             console.fatal(err)
-            // client.destroy()
-            // if (err.type !== "__internal-no-catch__") {
+            try {
+                client.destroy()
+            } catch {}
             process.exit(-1)
-            // }
         })
-        // handlers()
     }
-
-    // let handlers = async () => {
-        // try {
-            //TODO: Change to using database
-            // Check reactions for react roles
-        // } catch (err) {
-            // console.log("An error has occured within a handler")
-            // console.error(err)
-            // process.exit()
-            // setTimeout(() => {
-            //     handlers()
-            // }, 30000)
-        // }
-    // }
 
     let getToken = (input: string) => {
         if (input.length > 20) {

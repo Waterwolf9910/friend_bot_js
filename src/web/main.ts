@@ -18,11 +18,11 @@ import dapiTypes = require("discord-api-types/v10")
 import ytsr = require("@distube/ytsr")
 import voice = require("@discordjs/voice")
 import _fetch = require("node-fetch")
-import crypto = require("../libs/crypto")
-import _random = require("../libs/random")
-import db = require("../libs/db")
-import guild_queues = require("../commands/music/queues")
-import play = require("../commands/music/play")
+import crypto = require("main/libs/crypto")
+import _random = require("main/libs/random")
+import db = require("main/libs/db")
+import guild_queues = require("main/commands/music/queues")
+import play = require("main/commands/music/play")
 
 let fetch = _fetch.default
 let app = express()
@@ -41,7 +41,7 @@ app.set('x-powered-by', false)
  * @returns The permissions converted to an object
  */
 let parsePermissions = (permissions: bigint) => {
-    let result: import("../types").GuildPermissions = {
+    let result: import("main/types").GuildPermissions = {
         create_instant_invite: (permissions & 1n << 0n) == 1n << 0n,
         kick_members: (permissions & 1n << 1n) == 1n << 1n,
         ban_members: (permissions & 1n << 2n) == 1n << 2n,
@@ -102,9 +102,9 @@ let getTrueRootURLPath = (recievedPath: string, root_path: string | string[]): s
     return formatted
 }
 
-let start = async (secret: string, client_secret: string, config: import("../types").Config, client: import("discord.js").Client<true>) => {
+let start = async (secret: string, client_secret: string, config: import("main/types").Config, client: import("discord.js").Client<true>) => {
     sequelize_session = new _sequelize.Sequelize({ database: "Friend_Bot", username: "friend_bot", password: secret, dialect: "sqlite", logging: (a) => {
-        fs.appendFileSync(path.resolve("web_data", "session.log"), `[Sequelize] session-store: ${a}`)
+        fs.appendFileSync(path.resolve("web_data", "session.log"), `[Sequelize] session-store: ${a}\n`)
     }, pool: {acquire: 40000}, storage: "./web_data/session.db" })
     store_obj = new sequelize_store({ db: sequelize_session, checkExpirationInterval: 1000 * 60 * 10, expiration: 1000 * 60 * 60 * 24 * 7 * 2, tableName: "sessions", })
     await sequelize_session.sync()
@@ -177,6 +177,7 @@ let start = async (secret: string, client_secret: string, config: import("../typ
             serverSideRender: true,
             writeToDisk: false
         }))
+        //@ts-ignore
         app.use(wphm(compiler, {
             path: '/__hmr'
         }))
@@ -200,7 +201,7 @@ let start = async (secret: string, client_secret: string, config: import("../typ
 app.set("json spaces", 4)
 
 // Setup all of the routes to be effected after stuff like session
-let setupRoutes = (config: import("../types").Config, client_secret: string, client: import("discord.js").Client<true>) => {
+let setupRoutes = (config: import("main/types").Config, client_secret: string, client: import("discord.js").Client<true>) => {
     app.use("/ws", wsRouter)
 
     // Create Login Flow
@@ -291,13 +292,13 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
             })).json())
 
             // Parse the guilds into our format
-            let guilds_obj: { [ key: string ]: import('../../src/types').UserGuild } = {}
+            let guilds_obj: { [ key: string ]: import('main/types').UserGuild } = {}
             for (let guild of guilds) {
                 if (isDev) {
                     console.writeDebug("Checking", guild.id, `(${guild.name})`, guild.owner)
                 }
                 
-                let permissions: import("../types").GuildPermissions = parsePermissions(BigInt(guild.permissions))
+                let permissions: import("main/types").GuildPermissions = parsePermissions(BigInt(guild.permissions))
                 guilds_obj[guild.id] = { id: guild.id, name: guild.name, permission: permissions, rawPermissions: `${guild.permissions}`, icon: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp`, hasBot: client.guilds.cache.has(guild.id) }
             }
 
@@ -381,7 +382,7 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
     })
 
     let handleWSMsg = async (rawData: import("ws").RawData, ws: import("ws").WebSocket, req: express.Request) => {
-        let send_err = (err: import("../../ws_proto").Errors["msg"]["err"]) => {
+        let send_err = (err: import("ws_proto").Errors["msg"]["err"]) => {
             if (isDev) {
                 console.log("Recieved Invalid Input:", rawData.toString())
             }
@@ -393,7 +394,7 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
             } ))
         }
 
-        let data: import("../../ws_proto").server
+        let data: import("ws_proto").server
         try {
             data = JSON.parse(rawData.toString('utf-8'))
         } catch {
@@ -406,11 +407,12 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
             return;
         }
 
-        let returner: import("../../ws_proto").client
+        let response: import("ws_proto").client
 
         let setLoggedOut = () => {
-            returner = {
+            response = {
                 type: "err",
+                request_id: data.request_id,
                 msg: {
                     err: "not_logged_in"
                 }
@@ -426,8 +428,9 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
                     }
                     switch (data.msg.type) {
                         case "user": {
-                            returner = {
+                            response = {
                                 type: "user",
+                                request_id: data.request_id,
                                 msg: {
                                     ...req.session.user_data,
                                     guilds: req.session.guilds
@@ -438,16 +441,18 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
                         case "voice": {
                             let queue = guild_queues.guild_queues[data.msg.guild_id]
                             if (queue?.vchannel == null) {
-                                returner = {
+                                response = {
                                     type: 'voice',
+                                    request_id: data.request_id,
                                     msg: {
                                         bot_in_channel: false
                                     }
                                 }
                                 break
                             }
-                            returner = {
+                            response = {
                                 type: "voice",
+                                request_id: data.request_id,
                                 msg: {
                                     bot_in_channel: true,
                                     id: queue.tchannel?.id,
@@ -457,8 +462,9 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
                             break;
                         }
                         case "app_info": {
-                            returner = {
+                            response = {
                                 type: "app_info",
+                                request_id: data.request_id,
                                 msg: {
                                     client_id: config.ClientId
                                 }
@@ -472,8 +478,9 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
                                 next: 0,
                                 loop: false
                             }
-                            returner = {
+                            response = {
                                 type: "mqueue",
+                                request_id: data.request_id,
                                 msg: {
                                     queue: info.queue,
                                     cur: info.cur,
@@ -485,13 +492,34 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
                         }
                         case "search": {
                             let vresult = await ytsr(data.msg.query, {type: "video", limit: 3, safeSearch: false})
-                            returner = {
+                            response = {
                                 type: 'search',
+                                request_id: data.request_id,
                                 msg: {
                                     video_result: vresult.items
                                 }
                             }
                             break;
+                        }
+                        case "bot_config": {
+                            if (req.session.user_data.id != config.BotOwner) {
+                                return send_err("incorrect_auth")
+                            }
+                            response = {
+                                type: "bot_config",
+                                request_id: data.request_id,
+                                msg: {...config} // Create new obj
+                            }
+                            //TODO: *marker for other secrets to remove*
+                            // Remove Secrets
+                            delete response.msg.BotToken
+                            delete response.msg.ClientSecret
+                            delete response.msg.WebSecret
+                            delete response.msg.DBPassword
+                            break
+                        }
+                        case "guild_config": {
+                            break
                         }
                         default: {
                             return send_err("unknown_message");
@@ -505,8 +533,14 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
                         break;
                     }
                     req.session.user_data.selected_gid = data.msg.gid
+                    response = {
+                        type: 'success',
+                        request_id: data.request_id,
+                        msg: {
+                            type: data.type
+                        }
+                    }
                     break;
-    
                 }
                 case "guild_refresh": {
                     if (!req.session.user_data) {
@@ -520,33 +554,65 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
                         }
                     })).json())
     
-                    let guilds_obj: { [ key: string ]: import('../../src/types').UserGuild } = {}
+                    let guilds_obj: { [ key: string ]: import('main/types').UserGuild } = {}
                     for (let guild of guilds) {
                         console.writeDebug("Checking", guild.id, `(${guild.name})`, guild.owner)
-                        //@ts-ignore
-                        let permissions: import("../types").GuildPermissions = parsePermissions(BigInt(guild.permissions))
+                        let permissions: import("main/types").GuildPermissions = parsePermissions(BigInt(guild.permissions))
                         guilds_obj[guild.id] = { id: guild.id, name: guild.name, permission: permissions, rawPermissions: `${guild.permissions}`, icon: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp`, hasBot: client.guilds.cache.has(guild.id) }
                     }
     
                     req.session.guilds = guilds_obj
+                    response = {
+                        type: 'success',
+                        request_id: data.request_id,
+                        msg: {
+                            type: data.type
+                        }
+                    }
                     break;
                 }
+                case "bot_config": {
+                    if (req.session.user_data.id != config.BotOwner) {
+                        return send_err("incorrect_auth")
+                    }
+                    response = {
+                        type: 'success',
+                        request_id: data.request_id,
+                        msg: {
+                            type: data.type
+                        }
+                    }
+                    config = { ...config, ...data.msg }
+                    fs.writeFileSync(path.resolve("./config.json"), JSON.stringify(config, null, 4))
+                    break
+                }
                 case "smqueue": {
-                    var queueInfo = data.msg
+                    let queueInfo = data.msg
                     guild_queues.guild_queues[queueInfo.guild_id].next = queueInfo.next
                     guild_queues.guild_queues[queueInfo.guild_id].loop = queueInfo.loop
                     guild_queues.guild_queues[queueInfo.guild_id].queue = queueInfo.queue
-                    if (guild_queues.guild_queues[queueInfo.guild_id].skiping || guild_queues.guild_queues[queueInfo.guild_id].player.state.status == voice.AudioPlayerStatus.Idle) {
+                    if (guild_queues.guild_queues[queueInfo.guild_id].skipping || guild_queues.guild_queues[queueInfo.guild_id].player.state.status == voice.AudioPlayerStatus.Idle) {
                         play.play_next(guild_queues.guild_queues[queueInfo.guild_id].tchannel, queueInfo.guild_id)
                     }
+                    response = {
+                        type: 'success',
+                        request_id: data.request_id,
+                        msg: {
+                            type: data.type
+                        }
+                    }
+                    break
                 }
                 default: {
-                    returner = {
+                    response = {
                         type: "err",
+                        //@ts-ignore
+                        request_id: data.request_id,
                         msg: {
                             err: "unknown_message"
                         }
                     }
+                    break
                 }
             }
         } catch (err) {
@@ -555,7 +621,7 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
         }
 
         // console.log(data, rawData)
-        ws.send(JSON.stringify(returner))
+        ws.send(JSON.stringify(response))
     }
 
     let _static = express.static(path.resolve(__dirname, "../static"), { dotfiles: "ignore", extensions: [], index: false, immutable: !isDev })
@@ -565,7 +631,6 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
 
     app.get('*',  async (req, res) => {
         // let _path = req.path.replace(new RegExp(`/?${config.ReverseProxy}/?`), '')
-        //@ts-ignore
         let root_path = config.ReverseProxy ? req.headers['x-original-url'] || req.path : req.path
         if (isDev) {
             let wpmw: import('webpack-dev-middleware').Context<import('http').IncomingMessage, import('http').ServerResponse & import("webpack-dev-middleware").ExtendedServerResponse> = res.locals.webpack.devMiddleware
@@ -582,10 +647,9 @@ let setupRoutes = (config: import("../types").Config, client_secret: string, cli
                     return res.status(404).end()
                 }
 
-                if (req.path.includes("/outPath")) {
-                    //@ts-ignore
-                    return res.send(wpmw.outputFileSystem.readdirSync(wpmw.stats.toJson().outputPath))
-                }
+                // if (req.path.includes("/outPath")) {
+                //     return res.send(wpmw.outputFileSystem.readdirSync(wpmw.stats.toJson().outputPath))
+                // }
                 wpmw.outputFileSystem.readFile(path.resolve(wpmw.stats.toJson().outputPath, path.normalize(`./${req.path}`)), (err2, data) => {
                     if (!err2) {
                         let type = mime.getType(path.extname(req.path))

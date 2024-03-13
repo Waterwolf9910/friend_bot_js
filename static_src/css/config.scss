@@ -1,0 +1,15 @@
+@import "./base.scss";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/card";
+
+.entry {
+    @extend .row, .input-group, .form-switch, .form-check
+}
+
+.card {
+    width: 100%;
+}
+
+textarea {
+    resize: none;
+}

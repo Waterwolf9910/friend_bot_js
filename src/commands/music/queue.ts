@@ -1,15 +1,9 @@
 import queue_data = require("./queues")
 
-let _: import("../../types").Command= {
-    // command: async (ctx, _page) => run(ctx.guild.id, ctx.author.id,
-    //     //@ts-ignore
-    //     ctx.channel,
-    //     ctx.member, _page),
+let _: import("main/types").Command= {
     interaction: (interaction) => {
-        //@ts-ignore
         return run(interaction.guild.id, interaction.user.id,
             interaction.channel,
-            //@ts-ignore
             interaction.member,
             interaction.options.getInteger("queue_page", false))
     },
@@ -28,8 +22,8 @@ let _: import("../../types").Command= {
     usage: "music queue [page]"
 }
 
-let run = async (guildId: string, authorId: string, text_channel: import('discord.js').GuildTextBasedChannel, member: import('discord.js').GuildMember, _page: number | string ): Promise<import('../../types').CommandResult> => {
-    let queue = queue_data.guild_queues[ guildId ].queue
+let run = async (guild_id: string, author_id: string, text_channel: import('discord.js').GuildTextBasedChannel, member: import('discord.js').GuildMember, _page: number | string ): Promise<import('main/types').CommandResult> => {
+    let queue = queue_data.guild_queues[ guild_id ].queue
     let page = parseInt(`${_page}`)
     if (isNaN(page)) {
         if (_page == undefined) {
@@ -41,7 +35,7 @@ let run = async (guildId: string, authorId: string, text_channel: import('discor
     let pages: import("discord.js").EmbedField[][] = []
     let page_create = 0
     let iteration = 1
-    let cur = queue_data.guild_queues[ guildId ].cur
+    let cur = queue_data.guild_queues[ guild_id ].cur
     if (!queue || queue?.length < 1) {
         return { flag: 'r', message: "There is nothing in the queue" }
     }
@@ -72,8 +66,8 @@ let run = async (guildId: string, authorId: string, text_channel: import('discor
         page_create = 0
         iteration = 1
         pages = []
-        let cur = queue_data.guild_queues[ guildId ].cur
-        for (let i = 0; i < queue_data.guild_queues[ guildId ].queue.length; i++) {
+        let cur = queue_data.guild_queues[ guild_id ].cur
+        for (let i = 0; i < queue_data.guild_queues[ guild_id ].queue.length; i++) {
             if (iteration > 10) {
                 iteration = 1
                 page_create++
@@ -81,7 +75,7 @@ let run = async (guildId: string, authorId: string, text_channel: import('discor
             if (!pages[ page_create ]) {
                 pages[ page_create ] = []
             }
-            pages[ page_create ].push({ inline: false, name: `Queue #${i + 1}`, value: `${cur == i ? "**" : ""}[${queue_data.guild_queues[ guildId ].queue[ i ].title}](${queue_data.guild_queues[ guildId ].queue[ i ].link})${cur == i ? "**" : ""}` })
+            pages[ page_create ].push({ inline: false, name: `Queue #${i + 1}`, value: `${cur == i ? "**" : ""}[${queue_data.guild_queues[ guild_id ].queue[ i ].title}](${queue_data.guild_queues[ guild_id ].queue[ i ].link})${cur == i ? "**" : ""}` })
             iteration++
         }
         if (page > pages.length) {
@@ -99,7 +93,7 @@ let run = async (guildId: string, authorId: string, text_channel: import('discor
                 } ]
             })
             
-            queue_msg.awaitReactions({ time: 300000, maxEmojis: 1, filter: (re, user) => { return (user.id == authorId) && (re.emoji.name == "⬅️" || re.emoji.name == "➡️") }, errors: [ "time" ] }).then((emoji_col) => {
+            queue_msg.awaitReactions({ time: 300000, maxEmojis: 1, filter: (re, user) => { return (user.id == author_id) && (re.emoji.name == "⬅️" || re.emoji.name == "➡️") }, errors: [ "time" ] }).then((emoji_col) => {
                 queue_msg.reactions.removeAll().catch((e) => { console.log(e) })
                 // emoji_col.first().remove().catch(() => { })
                 if (emoji_col.first().emoji.name == "⬅️") {
@@ -124,7 +118,7 @@ let run = async (guildId: string, authorId: string, text_channel: import('discor
         } catch { }
     }
     
-    queue_msg.awaitReactions({ time: 300000, maxEmojis: 1, filter: (re, user) => { return (user.id == authorId) && (re.emoji.name == "⬅️" || re.emoji.name == "➡️") }, errors: [ "time" ] }).then((emoji_col) => {
+    queue_msg.awaitReactions({ time: 300000, maxEmojis: 1, filter: (re, user) => { return (user.id == author_id) && (re.emoji.name == "⬅️" || re.emoji.name == "➡️") }, errors: [ "time" ] }).then((emoji_col) => {
         queue_msg.reactions.removeAll().catch((e) => { console.log(e) })
         // emoji_col.first().remove().catch(() => { })
         if (emoji_col.first().emoji.name == "⬅️") {

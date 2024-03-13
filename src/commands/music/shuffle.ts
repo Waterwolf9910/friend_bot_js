@@ -1,9 +1,6 @@
 import queue_data = require("./queues")
-import utils = require("../../libs/utils")
-let _: import("../../types").Command= {
-    // command: (ctx, iterations) => {
-    //     return run(ctx.guild.id, parseInt(iterations))
-    // },
+import utils = require("main/libs/utils")
+let _: import("main/types").Command= {
     interaction: (interaction) =>  {
         return run(interaction.guild.id, interaction.options.getInteger("iterations", false) || 1)
     },
@@ -22,13 +19,13 @@ let _: import("../../types").Command= {
     usage: "music shuffle [iterations]"
 }
 
-let run = (guildId: string, iterations: number = 1): import("../../types").CommandResult => {
+let run = (guild_id: string, iterations: number = 1): import("main/types").CommandResult => {
     
     while (iterations > 0) {
         --iterations;
-        queue_data.guild_queues[ guildId ].cur = utils.array.shuffle(queue_data.guild_queues[ guildId ].queue, queue_data.guild_queues[ guildId ].cur)
+        queue_data.guild_queues[ guild_id ].cur = utils.array.shuffle(queue_data.guild_queues[ guild_id ].queue, queue_data.guild_queues[ guild_id ].cur)
     }
-    queue_data.guild_queues[guildId].next = queue_data.guild_queues[guildId].cur+1
+    queue_data.guild_queues[guild_id].next = queue_data.guild_queues[guild_id].cur+1
 
     return {
         flag: 's',

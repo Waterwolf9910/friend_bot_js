@@ -9,14 +9,14 @@ export = (props: {urls?: typeof import("../page_list") } = {}) => {
     let [useBotFilter, _setUseBotFilter] = react.useState<boolean>(localStorage.getItem(utils.storageKeys.filterStorageKey) != "false")
     let [theme, _set_theme] = react.useState<string>(localStorage.getItem(utils.storageKeys.theme) ?? "dark")
 
-    let [ userInfo, setUserInfo ] = react.useState<import("../../../ws_proto").User['msg']>({
+    let [ userInfo, setUserInfo ] = react.useState<import("ws_proto").User['msg']>({
         id: "",
         name: "Guest",
         avatar: "",
         guilds: {}
     })
 
-    let [ appInfo, setAppInfo ] = react.useState<import("../../../ws_proto").ApplicationInfo["msg"]>({
+    let [ appInfo, setAppInfo ] = react.useState<import("ws_proto").ApplicationInfo["msg"]>({
         client_id: ""
     })
 
@@ -38,8 +38,8 @@ export = (props: {urls?: typeof import("../page_list") } = {}) => {
             continue
         }
         // console.log(__webpack_public_path__, page_data.urls.map(u => __webpack_public_path__.replace(/\/$/, '') + u), location.pathname)
-        if (page_data.urls.length < 0) { // Don't add pages that don't have a url
-            return;
+        if (page_data.urls.length < 1) { // Don't add pages that don't have a url
+            break;
         }
         let at = page_data.urls.map(u => __webpack_public_path__.replace(/\/$/, u)).includes(location.origin + location.pathname)
         urls.push(<div className="nav-item">
@@ -61,7 +61,7 @@ export = (props: {urls?: typeof import("../page_list") } = {}) => {
 
     // Setup communications via websockets
     react.useEffect(() => {
-        let event = (msg: MessageEvent<import("../../../ws_proto").client>) => {
+        let event = (msg: MessageEvent<WSClientData>) => {
             switch (msg.data.type) {
                 case "err": {
                     if (msg.data.msg.err == "not_logged_in") {
@@ -116,13 +116,13 @@ export = (props: {urls?: typeof import("../page_list") } = {}) => {
      * @param guilds array of UserGuilds
      * @returns a array of JSX Elements
      */
-    let getGList = (guilds: import("../../../src/types").UserGuild[] | {[key: string]: import("../../../src/types").UserGuild}) => {
+    let getGList = (guilds: import("main/types").UserGuild[] | {[key: string]: import("main/types").UserGuild}) => {
         let i = 0;
         let temp: JSX.Element = <></>
         let guild_list: JSX.Element[] = []
         for (let id in guilds) {
             //@ts-ignore
-            let guild: import("../../../src/types").UserGuild = guilds[id]
+            let guild: import("main/types").UserGuild = guilds[id]
             // Set to a temp variable because we list the guilds side by side
             let _temp = <button type="button" aria-current={guild.id == userInfo.id} style={guild.id == selected_gid ? { pointerEvents: "none" } : undefined} onClick={(e) => {
                 e.preventDefault()
@@ -193,7 +193,7 @@ export = (props: {urls?: typeof import("../page_list") } = {}) => {
         <div className="row center_items">
             {userInfo.avatar ? <picture>
                 <source srcSet={`https://cdn.discordapp.com/avatars/${userInfo.id}/${userInfo.avatar}.webp`} />
-                <img className="rounded" src={`https://cdn.discordapp.com/embed/avatars/${(BigInt(userInfo.id) >> 22n) % 6n}.png`} alt="Profile Picture"/>
+                <img className="rounded" src={`https://cdn.discordapp.com/embed/avatars/${(BigInt(userInfo.id) >> 22n) % 6n}.png`} alt="Profile" />
             </picture> : <></>}
             <p>Hello {userInfo.name}</p>
             <button className="btn btn-outline-primary btn-sm" onClick={() => {

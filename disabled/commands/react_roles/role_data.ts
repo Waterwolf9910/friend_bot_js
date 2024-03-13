@@ -2,7 +2,7 @@ import events = require("../../events")
 import fs = require("fs")
 import path = require("path")
 import discord = require("discord.js")
-// let reactData: import("../../types").Reacts = {}
+// let reactData: import("main/types").Reacts = {}
 // if (fs.existsSync(path.resolve("./reacts.json"))) {
 //     reactData = JSON.parse(fs.readFileSync(path.resolve("./reacts.json"), {encoding: 'utf-8'}))
 // } else {

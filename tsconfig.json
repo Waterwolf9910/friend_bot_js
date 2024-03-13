@@ -2,8 +2,15 @@
     "compilerOptions": {
         "module": "CommonJS",
         "strict": false,
+        "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
-        "lib": [],
+        // "lib": [],
+        "paths": {
+            "ws_proto": ["./ws_proto.d.ts"],
+            "main/*": ["./src/*"]
+
+        },
+        "jsx": "react-jsx",
         "moduleResolution": "Node",
         "rootDir": "src",
         "target": "ESNext",
@@ -19,6 +26,6 @@
     "watchOptions": {"watchDirectory": "dynamicprioritypolling"},
     "typeAcquisition": {"enable": true},
     "buildOptions": {"verbose": true},
-    "include": ["src/**/*.ts"],
-    "ts-node": {"preferTsExts": true, "transpileOnly": true},
+    "include": ["./src"],
+    "ts-node": {"preferTsExts": true, "compilerOptions": {"jsx": "react-jsx", "allowArbitraryExtensions": true}},
 }

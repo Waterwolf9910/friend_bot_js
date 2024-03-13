@@ -5,7 +5,7 @@ import Logger = require("./logger")
 let sequelize: typeof _sequelize.Sequelize.prototype
 let console = new Logger()
 // console.log(1, fs.readdirSync(path.resolve()), 2, fs.readdirSync(path.resolve("..")))
-let config: import("../types").Config = JSON.parse(fs.readFileSync(path.resolve("config.json"), { encoding: 'utf-8' }))
+let config: import("main/types").Config = JSON.parse(fs.readFileSync(path.resolve("config.json"), { encoding: 'utf-8' }))
 let log = (str: string) => {
     fs.appendFileSync(path.resolve("db_debug.log"), `${str}\n`)
 }
@@ -24,7 +24,7 @@ if (config.DBType.toLowerCase() == "sqlite" || config.DBType.toLowerCase() == "s
 }
 
 import util = require("util")
-let guild_configs = sequelize.define<import("../types").GuildConfig>("guild_configs", {
+let guild_configs = sequelize.define<import("main/types").GuildConfigModel>("guild_configs", {
     id: {
         allowNull: false,
         type: _sequelize.STRING,
@@ -103,7 +103,7 @@ let guild_configs = sequelize.define<import("../types").GuildConfig>("guild_conf
     }
 }, {})
 
-let user_logins = sequelize.define<import("../types").UserLogin>('user_logins', {
+let user_logins = sequelize.define<import("main/types").UserLogin>('user_logins', {
     id: {
         primaryKey: true,
         allowNull: false,

@@ -1,9 +1,7 @@
-import db = require("../../libs/db")
+import db = require("main/libs/db")
 import discord = require("discord.js")
-let _: import("../../types").Command= {
-    // command: async (ctx) => await run(ctx.guild, ctx.mentions.members.first()),
+let _: import("main/types").Command= {
     interaction: async (interaction) => {
-        //@ts-ignore
         let smember: import("discord.js").GuildMember = interaction.options.getMember("member")
         return await run(interaction.guild, smember)
     },
@@ -22,7 +20,7 @@ let _: import("../../types").Command= {
     description: "Gets the xp of a user",
     usage: "xp get"
 }
-let run = async (guild: discord.Guild, selected_member: discord.GuildMember): Promise<import("../../types").CommandResult> => {
+let run = async (guild: discord.Guild, selected_member: discord.GuildMember): Promise<import("main/types").CommandResult> => {
     let [guild_config] = await db.guild_configs.findOrCreate({ where: { id: guild.id } })
     let xp = guild_config.xp
     let current_xp = xp[ selected_member.id ] || 0

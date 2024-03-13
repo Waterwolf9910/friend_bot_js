@@ -1,18 +1,18 @@
-import QueueItem = require("../components/queueItem")
+import QueueItem = require("../components/queue_item")
 import react = require("react")
 import utils = require("../utils")
 
 let page = () => {
-    let [queueInfo, _sqi] = react.useState<import("../../../ws_proto").MusicQueue["msg"]>({ cur: 0, next: 1, loop: false, queue: []})
+    let [queueInfo, _sqi] = react.useState<import("ws_proto").MusicQueue["msg"]>({ cur: 0, next: 1, loop: false, queue: []})
     let [queue, _set_queue] = react.useState<typeof queueInfo["queue"]>([...queueInfo.queue])
     let [edited, _sedit] = react.useState(false)
     let [next, _set_next] = react.useState(0)
     let [loop, _set_loop] = react.useState<boolean | 'song'>(false)
     let [skip, _set_skip] = react.useState(false)
     let [page, set_page] = react.useState(0)
-    let [voice_stat, set_voice_stat] = react.useState<import("../../../ws_proto").VoiceWithBot["msg"] | import("../../../ws_proto").VoiceWOBot["msg"]>()
+    let [voice_stat, set_voice_stat] = react.useState<import("ws_proto").VoiceWithBot["msg"] | import("ws_proto").VoiceWOBot["msg"]>()
     let [access, set_access] = react.useState(true)
-    let [search_results, _ssr] = react.useState<import('../../../ws_proto').SearchResult["msg"]>()
+    let [search_results, _ssr] = react.useState<import('ws_proto').SearchResult["msg"]>()
 
     let set_queue = (val: typeof queue) => {
         if (!edited) {
@@ -55,7 +55,7 @@ let page = () => {
 
     react.useEffect(() => {
         
-        let event = (event: MessageEvent<import("../../../ws_proto").client>) => {
+        let event = (event: MessageEvent<WSClientData>) => {
             switch (event.data.type) {
                 case "err": {
                     if (event.data.msg.err == "not_logged_in") {
@@ -123,7 +123,7 @@ let page = () => {
         startCheck()
         return () => {
             // window.removeEventListener("storage", onStore)
-            utils.WSConnection.removeEventListener("message",event)
+            utils.WSConnection.removeEventListener("message", event)
         }
     }, [])
 
@@ -256,16 +256,16 @@ let page = () => {
     }
 
     if (!access) {
-        return <p style={{textAlign: "center"}}>You are not logged in</p>
+        return <p style={{textAlign: "center"}}>{utils.error_msgs.not_authed}</p>
     }
 
     if (!sessionStorage.getItem(utils.storageKeys.selectedGuildKey)) {
-        return <p style={{textAlign: "center"}}>You need to select a guild</p>
+        return <p style={{textAlign: "center"}}>{utils.error_msgs.no_gid}</p>
     }
 
     if (!voice_stat) {
         return <div className="center_items">
-            <div className="spinner-border" role="status"></div>
+            <div className="spinner-border"></div>
         </div>
     }
 

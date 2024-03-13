@@ -1,14 +1,11 @@
 import fs = require("fs")
 import path = require("path")
-let config: import("../../types").Config = JSON.parse(fs.readFileSync(path.resolve("config.json"), { encoding: 'utf-8' }))
-import db = require("../../libs/db")
-let _: import("../../types").Command = {
+let config: import("main/types").Config = JSON.parse(fs.readFileSync(path.resolve("config.json"), { encoding: 'utf-8' }))
+import db = require("main/libs/db")
+let _: import("main/types").Command = {
     interaction: async (interaction) => {
-        //@ts-ignore
         let member: import('discord.js').GuildMember = interaction.options.getMember("member") || interaction.member
-        //@ts-ignore
-        let amember: import('discord.js').GuildMember = interaction.member
-        return await run(interaction.guild.id, amember, member, interaction.options.getInteger("amount", true))
+        return await run(interaction.guild.id, interaction.member, member, interaction.options.getInteger("amount", true))
     },
     slash: require("./slash").addSubcommand(sub => {
         sub.setName("set")
@@ -31,9 +28,9 @@ let _: import("../../types").Command = {
     usage: "econ add <amount> [user]"
 }
 
-let run = async (guildId: string, author: import('discord.js').GuildMember, selector_member: import('discord.js').GuildMember, amount: string | number): Promise<import('../../types').CommandResult> => {
+let run = async (guild_id: string, author: import('discord.js').GuildMember, selector_member: import('discord.js').GuildMember, amount: string | number): Promise<import('main/types').CommandResult> => {
     let manager = false
-    let [ guild_config ] = (await db.guild_configs.findOrCreate({ where: { id: guildId } }))
+    let [ guild_config ] = (await db.guild_configs.findOrCreate({ where: { id: guild_id } }))
     let selector = selector_member.id
     let money = guild_config.money
     let current_bal = money[ selector ] || 1000

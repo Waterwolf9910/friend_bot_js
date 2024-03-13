@@ -1,6 +1,6 @@
 import role_data = require("./role_data")
 import discord = require("discord.js")
-let _: import("../../types").Command= {
+let _: import("main/types").Command= {
     command: (ctx, id) => {
         let role = ctx.mentions.roles.first()
         if (!id) {
@@ -38,7 +38,7 @@ let _: import("../../types").Command= {
     usage: "add <id> <role>"
 }
 
-let run = (user_id: string, id: `react-${string}`, role: discord.Role | discord.APIRole): import("../../types").CommandResult => {
+let run = (user_id: string, id: `react-${string}`, role: discord.Role | discord.APIRole): import("main/types").CommandResult => {
     let data = role_data.updateList[id]
     if (!data) {
         return {flag: 'r', message: 'No such active edit id'}

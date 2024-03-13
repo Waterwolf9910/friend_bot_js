@@ -3,7 +3,10 @@ import voice = require("@discordjs/voice")
 import discord = require("discord.js")
 import { Model } from "sequelize"
 
-export interface Config {
+export type jsonable = string | number | boolean | Record<string, any> | jsonable[]
+export type jsonable_obj = { [key: string]: jsonable } 
+
+export interface Config extends jsonable_obj {
     Activities: discord.ActivityOptions[]
     AuthUrl: string
     BaseCurrencyName: string
@@ -23,6 +26,7 @@ export interface Config {
     DisabledPlugins: string[],
     HttpPort: number
     UseHttps: boolean
+    UseServer: boolean,
     RefreshDays: number
     ReverseProxy: string
     Status: discord.PresenceStatusData
@@ -120,7 +124,7 @@ export interface GuildPermissions {
     moderate_members: boolean
 }
 
-export interface GuildConfig extends Model {
+export interface GuildConfig {
     gid: string
     econ_managers: string[]
     config_managers: string[]
@@ -128,6 +132,8 @@ export interface GuildConfig extends Model {
     money: { [ user_id: string ]: number }
     other: {[key: string]: any}
 }
+
+export interface GuildConfigModel extends Model, GuildConfig {}
 
 export interface GuildQueue {
     [ key: string ]: {
@@ -149,7 +155,7 @@ export interface GuildQueue {
         channel_id: string
         timeout_info: { timeout: NodeJS.Timeout, msg: discord.Message<boolean>, type: "queue" | "user" | "none" }
         np_msg: import("discord-api-types/payloads").APIEmbed,
-        skiping: boolean
+        skipping: boolean
         loop: boolean | "song"
         clearing: boolean
         vchannel: discord.VoiceBasedChannel
@@ -159,12 +165,11 @@ export interface GuildQueue {
 }
 
 export interface Command {
-    // command: (ctx: typeof import("discord.js").Message.prototype, ...args: string[]) => CommandResult | Promise<CommandResult>
     description: string
     usage: string
     level?: string
     slash: discord.SlashCommandBuilder | discord.SlashCommandOptionsOnlyBuilder | discord.SlashCommandSubcommandsOnlyBuilder,
-    interaction: (interaction: discord.ChatInputCommandInteraction<discord.CacheType>) => CommandResult | Promise<CommandResult>
+    interaction: (interaction: discord.ChatInputCommandInteraction<'cached'>) => CommandResult | Promise<CommandResult>
 }
 
 /**
@@ -190,7 +195,7 @@ export type event<K extends keyof discord.ClientEvents> = {
 export type plugin = {
     name: string
     description: string
-    run: (ctx: discord.Message, guild_config: GuildConfig) => any
+    run: (ctx: discord.Message, guild_config: GuildConfigModel) => any
 }
 
 export interface Validator {

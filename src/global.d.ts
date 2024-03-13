@@ -19,7 +19,7 @@ declare module "express-session" {
             auth_tag: string
         }
 
-        guilds: { [ key: string ]: import('../src/types').UserGuild }
+        guilds: { [ key: string ]: import('main/types').UserGuild }
     }
 }
 
