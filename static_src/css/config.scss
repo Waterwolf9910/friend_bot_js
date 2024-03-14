@@ -1,6 +1,7 @@
 @import "./base.scss";
 @import "bootstrap/scss/list-group";
 @import "bootstrap/scss/card";
+@import "bootstrap/scss/modal";
 
 .entry {
     @extend .row, .input-group, .form-switch, .form-check

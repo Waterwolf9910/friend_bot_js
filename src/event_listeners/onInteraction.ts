@@ -1,4 +1,4 @@
-import events = require("main/events")
+import events = require("../events")
 import util = require("util")
 import discord = require("discord.js")
 

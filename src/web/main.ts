@@ -18,11 +18,11 @@ import dapiTypes = require("discord-api-types/v10")
 import ytsr = require("@distube/ytsr")
 import voice = require("@discordjs/voice")
 import _fetch = require("node-fetch")
-import crypto = require("main/libs/crypto")
-import _random = require("main/libs/random")
-import db = require("main/libs/db")
-import guild_queues = require("main/commands/music/queues")
-import play = require("main/commands/music/play")
+import crypto = require("../libs/crypto")
+import _random = require("../libs/random")
+import db = require("../libs/db")
+import guild_queues = require("../commands/music/queues")
+import play = require("../commands/music/play")
 
 let fetch = _fetch.default
 let app = express()
@@ -331,18 +331,7 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
                 console.log(err)
                 return res.redirect(500, "/500")
             }
-            //TODO: Implement later using session
-            // let _ruri = req.query["redirect_url"]
-            // let ruri: string
-            // if (_ruri instanceof Array) {
-            //     ruri = _ruri[0].toString()
-            // } else {
-            //     ruri = _ruri.toString()
-            // }
-            // if (!ruri.startsWith("/")) {
-            //     ruri = "/"
-            // }
-            // ruri = encodeURIComponent(ruri)
+
             let _host = req.headers.host.toLowerCase().split(":")
             let _port = parseInt(_host[ 1 ]);
             /**
@@ -367,8 +356,9 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
                 }),
                 prompt: "none"
             } satisfies dapiTypes.RESTOAuth2AuthorizationQuery)
-            // Redirect us to discord for login
-            res.redirect(`https://discord.com/oauth2/authorize?${params.toString()}`)
+            // Send link to discord login
+            res.end(`https://discord.com/oauth2/authorize?${params.toString()}`)
+            // res.redirect(`https://discord.com/oauth2/authorize?${params.toString()}`)
         })
     })
     
@@ -510,7 +500,7 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
                                 request_id: data.request_id,
                                 msg: {...config} // Create new obj
                             }
-                            //TODO: *marker for other secrets to remove*
+                            //TODO (PERM): *marker for other secrets to remove*
                             // Remove Secrets
                             delete response.msg.BotToken
                             delete response.msg.ClientSecret

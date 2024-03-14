@@ -1,4 +1,4 @@
-import _r = require("main/libs/random")
+import _r = require("../libs/random")
 import fs = require("fs")
 import discord = require('discord.js')
 let random = new _r()

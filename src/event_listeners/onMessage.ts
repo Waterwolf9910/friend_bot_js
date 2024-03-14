@@ -1,5 +1,5 @@
 import discord = require("discord.js")
-import db = require("main/libs/db")
+import db = require("../libs/db")
 import fs = require('fs')
 import path = require("path")
 let _: import("main/types").event<discord.Events.MessageCreate> = {

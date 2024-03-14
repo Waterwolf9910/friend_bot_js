@@ -2,7 +2,6 @@ import style = require("../../css/config.scss")
 import react = require('react')
 import ConfigEntry = require('../components/config_entry')
 import utils = require('../utils')
-import customize_config = require("../customize_config")
 
 let cur_rid = -1
 let page = () => {
@@ -16,7 +15,6 @@ let page = () => {
         _set_bot_config({...bot_config!})
     }
 
-    console.log(cur_rid)
     let set_bot_config = (config: import('main/types').Config) => {
         set_access(true)
         _set_bot_config(config)
@@ -71,13 +69,13 @@ let page = () => {
         let holder: any = bc!
         for (let i = 0; i < split.length; ++i) {
             if (i == split.length - 1) {
-                holder[split[i]] = customize_config.to(path, value)
+                holder[split[i]] = value
                 break
             }
             holder = holder[split[i]]
         }
         set_edited(true)
-        _sbc(bc)
+        _sbc({...bc!})
     }
 
     return <div className="col center_items">
@@ -90,7 +88,8 @@ let page = () => {
                 <button type="button" className="btn btn-outline-danger" onClick={() => {_sbc({..._bot_config!}); set_edited(false)}}>Cancel</button>
             </div>
         </div> : undefined}
-        {Object.keys(bot_config!).map(key => <ConfigEntry config_key={key} key={key} value={bot_config![key]} on_change={on_change}/>)}
+        <ConfigEntry config_key="bot_config.json" value={bot_config!} no_key_in_path on_change={on_change} />
+        {/* {Object.keys(bot_config!).map(key => <ConfigEntry config_key={key} key={key} value={bot_config![key]} on_change={on_change}/>)} */}
     </div>
 }
 

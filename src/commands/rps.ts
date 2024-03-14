@@ -1,4 +1,4 @@
-import _random = require("main/libs/random")
+import _random = require("../libs/random")
 import discord = require("discord.js")
 let random = new _random(1, 2)
 let _: import("main/types").Command= {

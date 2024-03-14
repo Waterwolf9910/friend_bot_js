@@ -1,7 +1,7 @@
 let baseUrl = new URL(__webpack_public_path__)
 let page_map: { [ key: string ]: page } = {}
 // Get a list of the pages in the project
-let pages: page[] = require.context("./pages/", true, /\.tsx$/, 'sync').keys().map(p => require(`./pages/${p.replace(/^\.\//, '')}`)).filter(v => {
+let pages: page[] = require.context("./pages/", true, module.hot ? /\.tsx$/ : /(?<!test)\.tsx$/, 'sync').keys().map(p => require(`./pages/${p.replace(/^\.\//, '')}`)).filter(v => {
     return v.page && v.title && v.urls && v.urls.length > 0
 })
 pages = pages.sort((a, b) => {

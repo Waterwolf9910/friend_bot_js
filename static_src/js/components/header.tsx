@@ -196,10 +196,13 @@ export = (props: {urls?: typeof import("../page_list") } = {}) => {
                 <img className="rounded" src={`https://cdn.discordapp.com/embed/avatars/${(BigInt(userInfo.id) >> 22n) % 6n}.png`} alt="Profile" />
             </picture> : <></>}
             <p>Hello {userInfo.name}</p>
-            <button className="btn btn-outline-primary btn-sm" onClick={() => {
+            <button className="btn btn-outline-primary btn-sm" onClick={async () => {
                 if (!userInfo.id) {
                     console.log("Going to login flow...")
-                    location.href = `${__webpack_public_path__}getLogin?redirect_url=${encodeURIComponent(location.href.replace(/^https?:\/\/.+(:[0-9]+)?\//, '/'))}`
+                    // location.href = `${__webpack_public_path__}getLogin?redirect_url=${encodeURIComponent(location.href.replace(/^https?:\/\/.+(:[0-9]+)?\//, '/'))}`
+                    let url = await (await fetch(`${__webpack_public_path__}getLogin`)).text()
+                    localStorage.setItem("redirect_uri", location.href)
+                    location.href = url
                     return;
                 }
                 console.log("Logging out")

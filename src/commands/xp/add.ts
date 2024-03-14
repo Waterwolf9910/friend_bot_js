@@ -1,4 +1,4 @@
-import db = require("main/libs/db")
+import db = require("../../libs/db")
 import discord = require("discord.js")
 let _: import("main/types").Command = {
     interaction: async (interaction) => {

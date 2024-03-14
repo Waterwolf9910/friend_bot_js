@@ -1,5 +1,5 @@
 import queue_data = require("./queues")
-import utils = require("main/libs/utils")
+import utils = require("../../libs/utils")
 let _: import("main/types").Command= {
     interaction: (interaction) =>  {
         return run(interaction.guild.id, interaction.options.getInteger("iterations", false) || 1)

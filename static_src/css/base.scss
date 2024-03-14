@@ -1,6 +1,4 @@
-
 @import "./bootstrap";
-
 // $color-mode-type: data;
 
 @media screen and (max-width: 600px) {
@@ -104,8 +102,8 @@ p {
     margin: 8px;
 }
 
-footer {
-    margin-bottom: 3px;
+footer sub {
+    bottom: 0;
 }
 
 #content {

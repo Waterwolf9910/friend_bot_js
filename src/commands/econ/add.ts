@@ -1,7 +1,7 @@
 import fs = require('fs')
 import path = require("path")
 let config: import("main/types").Config = JSON.parse(fs.readFileSync(path.resolve( "config.json"), { encoding: 'utf-8' }))
-import db = require("main/libs/db")
+import db = require("../../libs/db")
 let _: import("main/types").Command = {
     interaction: async (interaction) => {
         let member: import('discord.js').GuildMember = interaction.options.getMember("member") || interaction.member
