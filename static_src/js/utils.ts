@@ -134,6 +134,11 @@ class Socket {
 /** */
 let change_page = (url: string, data?: object, replace_history = false) => {
     let _url: string = url
+
+    if (!url) {
+        return
+    }
+    
     if (url.startsWith("./")) {
         _url = url.replace("./", location.pathname.replace(/\/$/, '') + '/')
     }
@@ -175,7 +180,7 @@ let renderError = (content: string, ref: import('react').RefObject<HTMLElement>)
     }, 2500)
 }
 
-export = {
+export default {
     addStatePushListener: (listener: () => any) => { statePushedListeners.push(listener) },
     removeStatePushListener: (listener: () => any) => { statePushedListeners = statePushedListeners.filter(v => v != listener) },
     change_page,

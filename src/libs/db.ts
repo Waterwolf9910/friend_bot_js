@@ -1,10 +1,7 @@
 import fs = require("fs")
 import path = require("path")
 import _sequelize = require("sequelize")
-import Logger = require("./logger")
 let sequelize: typeof _sequelize.Sequelize.prototype
-let console = new Logger()
-// console.log(1, fs.readdirSync(path.resolve()), 2, fs.readdirSync(path.resolve("..")))
 let config: import("main/types").Config = JSON.parse(fs.readFileSync(path.resolve("config.json"), { encoding: 'utf-8' }))
 let log = (str: string) => {
     fs.appendFileSync(path.resolve("db_debug.log"), `${str}\n`)

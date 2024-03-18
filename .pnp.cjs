@@ -31,7 +31,7 @@ const RAW_RUNTIME_STATE =
           ["@discordjs/rest", "npm:2.2.0"],\
           ["@discordjs/voice", "npm:0.16.1"],\
           ["@distube/ytdl-core", "npm:4.13.3"],\
-          ["@distube/ytpl", "patch:@distube/ytpl@npm%3A1.1.5#./.yarn/patches/@distube-ytpl-npm-1.1.5-28b438f0d1.patch::version=1.1.5&hash=94e76c&locator=discord_bot-friend_server%40workspace%3A."],\
+          ["@distube/ytpl", "npm:1.2.1"],\
           ["@distube/ytsr", "npm:2.0.0"],\
           ["@pmmmwh/react-refresh-webpack-plugin", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:0.5.11"],\
           ["@popperjs/core", "npm:2.11.8"],\
@@ -72,6 +72,7 @@ const RAW_RUNTIME_STATE =
           ["mariadb", "npm:3.2.3"],\
           ["mime", "npm:3.0.0"],\
           ["morgan", "npm:1.10.0"],\
+          ["myutils", "https://github.com/waterwolf9910/myutils_js.git#commit=7eddaeb9c8fe433c5a05edb54342569d7e05e505"],\
           ["node-fetch", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:2.6.7"],\
           ["node-gyp", "npm:10.0.1"],\
           ["pg", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:8.11.3"],\
@@ -91,7 +92,7 @@ const RAW_RUNTIME_STATE =
           ["terser-webpack-plugin", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:5.3.10"],\
           ["ts-loader", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:9.5.1"],\
           ["ts-node", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:10.9.2"],\
-          ["typescript", "patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"],\
+          ["typescript", "patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c"],\
           ["utf-8-validate", "npm:6.0.3"],\
           ["webpack", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:5.90.3"],\
           ["webpack-bundle-analyzer", "npm:4.10.1"],\
@@ -559,11 +560,11 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["@distube/ytpl", [\
-      ["patch:@distube/ytpl@npm%3A1.1.5#./.yarn/patches/@distube-ytpl-npm-1.1.5-28b438f0d1.patch::version=1.1.5&hash=94e76c&locator=discord_bot-friend_server%40workspace%3A.", {\
-        "packageLocation": "../AppData/Local/Yarn/Berry/cache/@distube-ytpl-patch-94cdbf3a55-10c0.zip/node_modules/@distube/ytpl/",\
+      ["npm:1.2.1", {\
+        "packageLocation": "../AppData/Local/Yarn/Berry/cache/@distube-ytpl-npm-1.2.1-9b3ebcfa7b-10c0.zip/node_modules/@distube/ytpl/",\
         "packageDependencies": [\
-          ["@distube/ytpl", "patch:@distube/ytpl@npm%3A1.1.5#./.yarn/patches/@distube-ytpl-npm-1.1.5-28b438f0d1.patch::version=1.1.5&hash=94e76c&locator=discord_bot-friend_server%40workspace%3A."],\
-          ["miniget", "npm:4.2.3"]\
+          ["@distube/ytpl", "npm:1.2.1"],\
+          ["undici", "npm:5.28.3"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -3565,7 +3566,7 @@ const RAW_RUNTIME_STATE =
           ["@discordjs/rest", "npm:2.2.0"],\
           ["@discordjs/voice", "npm:0.16.1"],\
           ["@distube/ytdl-core", "npm:4.13.3"],\
-          ["@distube/ytpl", "patch:@distube/ytpl@npm%3A1.1.5#./.yarn/patches/@distube-ytpl-npm-1.1.5-28b438f0d1.patch::version=1.1.5&hash=94e76c&locator=discord_bot-friend_server%40workspace%3A."],\
+          ["@distube/ytpl", "npm:1.2.1"],\
           ["@distube/ytsr", "npm:2.0.0"],\
           ["@pmmmwh/react-refresh-webpack-plugin", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:0.5.11"],\
           ["@popperjs/core", "npm:2.11.8"],\
@@ -3606,6 +3607,7 @@ const RAW_RUNTIME_STATE =
           ["mariadb", "npm:3.2.3"],\
           ["mime", "npm:3.0.0"],\
           ["morgan", "npm:1.10.0"],\
+          ["myutils", "https://github.com/waterwolf9910/myutils_js.git#commit=7eddaeb9c8fe433c5a05edb54342569d7e05e505"],\
           ["node-fetch", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:2.6.7"],\
           ["node-gyp", "npm:10.0.1"],\
           ["pg", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:8.11.3"],\
@@ -3625,7 +3627,7 @@ const RAW_RUNTIME_STATE =
           ["terser-webpack-plugin", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:5.3.10"],\
           ["ts-loader", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:9.5.1"],\
           ["ts-node", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:10.9.2"],\
-          ["typescript", "patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"],\
+          ["typescript", "patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c"],\
           ["utf-8-validate", "npm:6.0.3"],\
           ["webpack", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:5.90.3"],\
           ["webpack-bundle-analyzer", "npm:4.10.1"],\
@@ -6209,7 +6211,7 @@ const RAW_RUNTIME_STATE =
           ["rc", "npm:1.2.8"],\
           ["stream-to-array", "npm:2.3.0"],\
           ["ts-graphviz", "npm:1.8.2"],\
-          ["typescript", "patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"],\
+          ["typescript", "patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c"],\
           ["walkdir", "npm:0.4.1"]\
         ],\
         "packagePeers": [\
@@ -6664,6 +6666,15 @@ const RAW_RUNTIME_STATE =
           ["multicast-dns", "npm:7.2.5"],\
           ["dns-packet", "npm:5.6.1"],\
           ["thunky", "npm:1.1.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["myutils", [\
+      ["https://github.com/waterwolf9910/myutils_js.git#commit=7eddaeb9c8fe433c5a05edb54342569d7e05e505", {\
+        "packageLocation": "../AppData/Local/Yarn/Berry/cache/myutils-https-fe079a8be8-10c0.zip/node_modules/myutils/",\
+        "packageDependencies": [\
+          ["myutils", "https://github.com/waterwolf9910/myutils_js.git#commit=7eddaeb9c8fe433c5a05edb54342569d7e05e505"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -8111,7 +8122,7 @@ const RAW_RUNTIME_STATE =
           ["@types/react-refresh", null],\
           ["@types/typescript", null],\
           ["react-refresh", "npm:0.14.0"],\
-          ["typescript", "patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"]\
+          ["typescript", "patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c"]\
         ],\
         "packagePeers": [\
           "@types/react-refresh",\
@@ -9564,7 +9575,7 @@ const RAW_RUNTIME_STATE =
           ["micromatch", "npm:4.0.5"],\
           ["semver", "npm:7.6.0"],\
           ["source-map", "npm:0.7.4"],\
-          ["typescript", "patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"],\
+          ["typescript", "patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c"],\
           ["webpack", "virtual:14bfdcbc5f26f65c04a5536ddfcb40951d99c182e07a89e59446f52265432d132f3b3eb0590f3e247aab66e1f14dfcc6057b986a8e10beedd15a8765206181c0#npm:5.90.3"]\
         ],\
         "packagePeers": [\
@@ -9614,7 +9625,7 @@ const RAW_RUNTIME_STATE =
           ["create-require", "npm:1.1.1"],\
           ["diff", "npm:4.0.2"],\
           ["make-error", "npm:1.3.6"],\
-          ["typescript", "patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"],\
+          ["typescript", "patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c"],\
           ["v8-compile-cache-lib", "npm:3.0.1"],\
           ["yn", "npm:3.1.1"]\
         ],\
@@ -9797,10 +9808,10 @@ const RAW_RUNTIME_STATE =
         ],\
         "linkType": "HARD"\
       }],\
-      ["patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7", {\
-        "packageLocation": "../AppData/Local/Yarn/Berry/cache/typescript-patch-4778c7998b-10c0.zip/node_modules/typescript/",\
+      ["patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c", {\
+        "packageLocation": "../AppData/Local/Yarn/Berry/cache/typescript-patch-c145cea93e-10c0.zip/node_modules/typescript/",\
         "packageDependencies": [\
-          ["typescript", "patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"]\
+          ["typescript", "patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c"]\
         ],\
         "linkType": "HARD"\
       }]\

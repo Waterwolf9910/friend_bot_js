@@ -6,7 +6,7 @@ import ytdl = require("@distube/ytdl-core")
 import ytpl = require("@distube/ytpl")
 import dayjs = require("dayjs")
 
-let _ = {
+export = {
     interaction: (interaction) => {
         let search = interaction.options.getString("video_query", false)
         return run(interaction.member, interaction.guild.id, interaction.channel, search, search != null && search !== "" ? search.split(' ') : null)
@@ -22,8 +22,6 @@ let _ = {
         })
         return sub
     }),
-    description: "Add something to the play queue (use without arguments to resume)",
-    usage: "music play or music play <url> or music play <search>",
     get play_next() {
         return play_next
     }
@@ -391,9 +389,5 @@ let run = async (member: import('discord.js').GuildMember, guild_id: string, tex
 
     return { flag: 'n' }
 }
-
-module.exports = _
-
-export = _
 
 // ;(async () => {console.log((await (ctx.guild.channels.fetch())).filter(channel => channel.isVoice() ? channel.joinable && channel.members.has(ctx.member.id) : false).first())})()

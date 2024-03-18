@@ -1,15 +1,13 @@
-import voice = require("@discordjs/voice")
 import discord = require("discord.js")
 import queues = require("./music/queues")
-let _: import("main/types").Command= {
+
+export = {
     interaction: (interaction) => {
         return run(interaction.guild.id, interaction.member, interaction.channel)
     },
     slash: new discord.SlashCommandBuilder()
         .setName("join")
         .setDescription("Has the bot join the voice channel you are in"),
-    description: "Has the bot join the voice channel you are in",
-    usage: "join"
 }
 
 let run = (guild_id: string, member: discord.GuildMember, text_channel: import("discord.js").GuildTextBasedChannel): import('main/types').CommandResult => {
@@ -28,7 +26,3 @@ let run = (guild_id: string, member: discord.GuildMember, text_channel: import("
     // return { flag: 'r', message: 'Error connecting to your channel' }
     return { flag: 'n' }
 }
-
-module.exports = _
-
-export = _

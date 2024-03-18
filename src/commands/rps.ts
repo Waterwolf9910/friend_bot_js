@@ -1,20 +1,19 @@
-import _random = require("../libs/random")
+import _random = require("myutils/random.js")
 import discord = require("discord.js")
-let random = new _random(1, 2)
-let _: import("main/types").Command= {
+let random = _random()
+
+export = {
     interaction: (interaction) => run(
         <'rock'> interaction.options.getString("choice")
     ),
     slash: new discord.SlashCommandBuilder()
-        .setName("slash")
+        .setName("rps")
         .setDescription("Play Rock Paper Scissors with the bot"),
-    description: "Play Rock Paper Scissors with a the bot",
-    usage: "rps"
-}
+} satisfies import("main/types").Command
 
 let run = (choice: 'rock' | 'paper' | 'scissors'): import("main/types").CommandResult => {
     let bot_choice: 'rock' | 'paper' | 'scissors'
-    switch (random.num()) {
+    switch (random.num(2)) {
         case 0: {
             bot_choice = 'rock'
             break;
@@ -80,5 +79,3 @@ let run = (choice: 'rock' | 'paper' | 'scissors'): import("main/types").CommandR
         }
     }
 }
-
-export = _

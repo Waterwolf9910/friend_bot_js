@@ -36,12 +36,11 @@ let send_msg = (image: Buffer, id: string, msg: discord.Message<true>) => {
     })
 }
 
-let _: import("main/types").Command= {
+export = {
     interaction: (interaction) => run(
         interaction.member,
         interaction.options.getMember("player2"),
     interaction.channel),
-    //@ts-ignore
     slash: new discord.SlashCommandBuilder()
         .setName("tic")
         .setDescription("Starts a tic-tac-toe game")
@@ -49,10 +48,8 @@ let _: import("main/types").Command= {
             player2.setName("player2")
             player2.setDescription("Starts a tic tac toe game")
             return player2
-        }),
-    description: "Starts a tic tac toe game",
-    usage: "tic-tac-toe [mention] or tic [mention]"
-}
+        })
+} satisfies import("main/types").Command
 
 let checkPlayerStatus = (game: gameData, player: number) => {
     let won = false
@@ -246,7 +243,3 @@ let run = async (player1: discord.GuildMember, player2: discord.GuildMember, cha
 
     return { flag: 'n' }
 }
-
-module.exports = _
-
-export = _

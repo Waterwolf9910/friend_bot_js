@@ -4,10 +4,8 @@ let page = () => {
     </div>
 }
 
-let _: page = {
+export default {
     page,
     title: "Guild Config",
     urls: ["/config"]
-}
-
-export = _
+} satisfies page

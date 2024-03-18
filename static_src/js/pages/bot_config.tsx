@@ -1,7 +1,7 @@
-import style = require("../../css/config.scss")
-import react = require('react')
-import ConfigEntry = require('../components/config_entry')
-import utils = require('../utils')
+import style from "../../css/config.scss"
+import react from 'react'
+import ConfigEntry from '../components/config_entry'
+import utils from '../utils'
 
 let cur_rid = -1
 let page = () => {
@@ -93,7 +93,7 @@ let page = () => {
     </div>
 }
 
-export = {
+export default {
     page,
     title: "Bot Config",
     urls: ["/bot_config"],

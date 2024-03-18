@@ -7,17 +7,17 @@ let rest = new _rest.REST({})
 
 let setup = async (token: string, config: import("./types").Config) => {
     // commands.setup()
-    if (config.ClientId == "INSERT APP ID") {
+    if (!config.ClientId || config.ClientId == "INSERT APP ID") {
         console.error("No app id found in config, slash commands will not be registered")
         return
     }
     rest.setToken(token)
     let body: RESTPostAPIApplicationCommandsJSONBody[] = []
-    for (let group in commands.commandListGroup) {
-        body.push(commands.commandListGroup[ group ].slash.toJSON())
+    for (let group in commands.groups) {
+        body.push(commands.groups[ group ].slash.toJSON())
     }
-    for (let cmd in commands.commandList) {
-        body.push(commands.commandList[cmd].slash.toJSON())
+    for (let cmd in commands.cmds) {
+        body.push(commands.cmds[cmd].slash.toJSON())
     }
     /* let admin = new discord.SlashCommandBuilder().setName("bot_owner").setDescription("some commands for the owner of the bot")
     admin.addSubcommand((sub) => {

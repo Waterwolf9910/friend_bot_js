@@ -1,5 +1,5 @@
-import react = require("react")
-import utils = require("../utils")
+import react from "react"
+import utils from "../utils"
 
 let page = () => {
     
@@ -11,8 +11,10 @@ let page = () => {
             //     ruri = "/"
             // }
         // utils.change_page(ruri)
-        utils.change_page(localStorage.getItem('redirect_uri')!, undefined, true)
-        localStorage.removeItem('redirect_uri')
+        if (localStorage.getItem('redirect_uri')) {
+            utils.change_page(localStorage.getItem('redirect_uri')!, undefined, true)
+            localStorage.removeItem('redirect_uri')
+        }
     }
         
     react.useEffect(() => {
@@ -36,10 +38,9 @@ let page = () => {
     </>
 }
 
-let _: page = {
+export default {
     page,
     title: "Login",
     hidden: true,
     urls: ["/login"]
-}
-export = _
+} satisfies page

@@ -1,7 +1,7 @@
 import queue_data = require("./queues")
 import _play = require("./play")
 
-let _: import("main/types").Command= {
+export = {
     interaction: (interaction) => {
         let dir: "forward" | "to" | "back" = <'forward'> interaction.options.getString("skip_direction", false)
         return run(interaction.guild.id,
@@ -25,71 +25,8 @@ let _: import("main/types").Command= {
             return skip_direction
         })
         return sub
-    }),
-    description: "Skip forward, backword, or to a song in the queue",
-    usage: "music skip [amount] [direction (forward, to, or back)]"
-}
-
-// let play = async (guild_id: string, text_channel: import('discord.js').GuildTextBasedChannel, queue_pos: number) => {
-//     // console.log("getting ready to play")
-//     let next: number
-//     let cur: number
-//     let player = queue_data.guild_queues[ guild_id ]?.player
-//     let queue = queue_data.guild_queues[guild_id].queue
-//     if (player.state.status == voice.AudioPlayerStatus.Playing || player.state.status == voice.AudioPlayerStatus.Buffering || player.state.status == voice.AudioPlayerStatus.Paused) {
-//         if (!player.stop()) {
-//             return { flag: 'r', message: 'Issue while skipping to another track' }
-//         }
-//     }
-//     // console.log(queue_pos)
-//     try {
-//         // console.log("Playing to skipped")
-//         player.play(voice.createAudioResource(ytdl(queue[ queue_pos ].link, { liveBuffer: 25000, highWaterMark: 1024 * 1024 * 4, quality: "highestaudio", filter: "audioonly" }), { silencePaddingFrames: 10 }))
-//     } catch {
-//         text_channel.send(`There was an error while trying to play this track ([${queue[ queue_pos ].title}](${queue[ queue_pos ].link}))`)
-//         player.stop()
-//         if (queue[ queue_pos ]) {
-//             play(guild_id, text_channel, queue_pos)
-//         } else {
-//             let timeout_msg = await text_channel.send("No more music in the queue. I will leave in 5 minutes if music is not added.")
-//             let inv = setTimeout(() => {
-//                 queue_data.end(guild_id)
-//                 timeout_msg.edit("I disconnected due to inactivity")
-//             })
-//             queue_data.guild_queues[ guild_id ].timeout_info = { timeout: inv, msg: timeout_msg, type: "queue" }
-//         }
-//         return
-//     }
-//     cur = queue_pos
-//     next = queue_pos + 1
-//     queue_data.guild_queues[ guild_id ].np_msg = {
-//         color: 3142847,
-//         title: queue[ cur ].title,
-//         url: queue[ cur ].link,
-//         description: `Now Playing #${next}`,
-//         timestamp: dayjs().toISOString(),
-//         image: {
-//             url: queue[ cur ].thumbnail,
-//         },
-//         author: {
-//             name: queue[ cur ].uploader.name,
-//             url: queue[ cur ].uploader.url
-//         },
-//         footer: {
-//             text: `Looping: Queue ${queue_data.guild_queues[ guild_id ].loop === true ? "✅" : "❌"} Song ${queue_data.guild_queues[ guild_id ].loop === "song" ? "✅" : "❌"}`
-//         }
-//     }
-//     let np_msg = await text_channel.send({ embeds: [ queue_data.guild_queues[ guild_id ].np_msg ] })
-//     setTimeout(() => {
-//         try {
-//             np_msg.delete()
-//         } catch { }
-//     }, 5500)
-//     queue_data.guild_queues[ guild_id ].cur = cur
-//     queue_data.guild_queues[ guild_id ].next = next
-//     queue_data.guild_queues[ guild_id ].skipping = false
-//     // console.log("done skipping")
-// }
+    })
+} satisfies import("main/types").Command
 
 let run = (guild_id: string, text_channel: import('discord.js').GuildTextBasedChannel, amount: number, dir: "forward" | "to" | "back" ): import("main/types").CommandResult => {
     queue_data.guild_queues[ guild_id ].skipping = true
@@ -139,7 +76,3 @@ let run = (guild_id: string, text_channel: import('discord.js').GuildTextBasedCh
 
     return { flag: 'n' }
 }
-
-module.exports = _
-
-export = _

@@ -1,14 +1,14 @@
 import fs = require("fs")
 import path = require("path")
-import * as types from "main/types"
+import types = require("main/types")
 let commandListGroup: {
     [ name: string ]: {
-        slash: import('discord.js').SlashCommandBuilder | import('discord.js').SlashCommandOptionsOnlyBuilder | import('discord.js').SlashCommandSubcommandsOnlyBuilder
+        slash: types.Command['slash']
     }
 } = {}
 let commandList: {
     [ name: string ]: {
-        slash: import("discord.js").SlashCommandBuilder | import('discord.js').SlashCommandOptionsOnlyBuilder | import('discord.js').SlashCommandSubcommandsOnlyBuilder
+        slash: types.Command['slash']
     }
 } = {}
 for (let i of fs.readdirSync(__dirname, { withFileTypes: true })) {
@@ -19,12 +19,12 @@ for (let i of fs.readdirSync(__dirname, { withFileTypes: true })) {
         try {
             cmd = require(fullDir)
         } catch { continue }
-        let cmdGroup: import('discord.js').SlashCommandBuilder | import('discord.js').SlashCommandOptionsOnlyBuilder | import('discord.js').SlashCommandSubcommandsOnlyBuilder = cmd.slash
-        if (!cmdGroup) {
+        
+        if (!cmd.slash) {
             continue
         }
         commandListGroup[i.name] = {
-            slash: cmdGroup
+            slash: cmd.slash
         } 
     } else if (i.isFile() && i.name.endsWith(".js") && i.name != "index.js") {
         let cmd: import("main/types").Command = require(`./${i.name}`)
@@ -38,9 +38,7 @@ for (let i of fs.readdirSync(__dirname, { withFileTypes: true })) {
 }
 
 export = {
-    commandList,
-    commandListGroup,
     setup: () => {},
-    cmd: commandList,
-    group: commandListGroup
+    cmds: commandList,
+    groups: commandListGroup
 }

@@ -1,10 +1,4 @@
-let _: import("main/types").Command= {
-    interaction: (i) => {return {flag: 'n'}},
-    slash: undefined,
-    description: "Base for file all commands",
-    usage: "No Usage"
+export = {
+    interaction: (interaction) => {return {flag: 'n'}},
+    slash: undefined
 }
-
-module.exports = _
-
-export = _

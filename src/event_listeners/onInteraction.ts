@@ -17,7 +17,7 @@ let _: import("main/types").event<discord.Events.InteractionCreate> = {
             let command = interaction.commandName
             let subcommand = interaction.options.getSubcommand(false)
 
-            let cmd: import("main/types").Command= subcommand ? require(`../commands/${command}/${subcommand}`) : require(`../commands/${command}`)
+            let cmd: import("main/types").Command = subcommand ? require(`../commands/${command}/${subcommand}`) : require(`../commands/${command}`)
             
             if (cmd.interaction == undefined) {
                 return;

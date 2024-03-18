@@ -3,21 +3,20 @@ if (!process.env.NODE_ENV) {process.env.NODE_ENV="production"}
 import path = require("path")
 import fs = require("fs")
 fs.existsSync(path.resolve(__dirname, ".pnp.cjs")) ? require("./.pnp.cjs").setup() : require("../.pnp.cjs").setup()
-import Logger = require("./libs/logger")
-let logger = new Logger()
-console = logger
+import Logger = require("myutils/logger.js")
+console = new Logger()
 import _rl = require("readline")
 let rl = _rl.createInterface({ input: process.stdin, output: process.stdout, prompt: "> " })
 import dayjs = require("dayjs")
 import discord = require("discord.js")
 import os = require("os")
-import _random = require("./libs/random")
-import crypto = require("./libs/crypto")
+import _random = require("myutils/random.js")
+import crypto = require("myutils/crypto.js")
 require("./setup")
 import webserver = require("./web/main")
 // let querystring: typeof import("querystring") = require("querystring")
 
-let random = new _random(512, 9)
+let random = _random(512, 9)
 let config: import("./types").Config
 let db: typeof import("./libs/db")
 let client: discord.Client<true>

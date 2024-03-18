@@ -1,17 +1,16 @@
 {
     "compilerOptions": {
-        "module": "CommonJS",
-        "strict": false,
+        "module": "Node16",
         "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
-        // "lib": [],
+        "resolvePackageJsonExports": true,
+        "lib": [],
         "paths": {
             "ws_proto": ["./ws_proto.d.ts"],
             "main/*": ["./src/*"]
 
         },
-        "jsx": "react-jsx",
-        "moduleResolution": "Node",
+        "moduleResolution": "Node16",
         "rootDir": "src",
         "target": "ESNext",
         "sourceMap": true,
@@ -21,6 +20,7 @@
         "declaration": false,
         "extendedDiagnostics": true,
         "esModuleInterop": true,
+        "skipLibCheck": true,
         "diagnostics": true
     },
     "watchOptions": {"watchDirectory": "dynamicprioritypolling"},

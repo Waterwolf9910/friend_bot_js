@@ -1,4 +1,5 @@
-import react = require('react')
+import style from '../../css/test.scss'
+import react from 'react'
 
 let page = () => {
     // let square = 256
@@ -117,11 +118,9 @@ let page = () => {
     </div>
 }
 
-let _: page = {
+export default {
     page,
     title: "test",
     urls: ["/test"],
-    styles: [require('../../css/test.scss')]
-}
-
-export = _
+    styles: [style]
+} satisfies page

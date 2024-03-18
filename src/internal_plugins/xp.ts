@@ -1,7 +1,7 @@
-import _r = require("../libs/random")
+import _r = require("myutils/random.js")
 import fs = require("fs")
 import discord = require('discord.js')
-let random = new _r()
+let random = _r()
 // random.singleNum(4) == random.signelNum(4) (chance)
 // random.num(random.singleNum(peconfig.digits-2)+2, random.singleNum(peconfig.max-1)+1) (val)
 
@@ -19,8 +19,8 @@ let _: import("main/types").plugin = {
         let xp = guild_config.xp
         let current_xp = xp[ ctx.member.id ] || 0
 
-        if (random.singleNum(3) == random.singleNum(6)) {
-            let add_amt = random.num(random.singleNum(xpconfig.digits - 2) + 2, random.singleNum(xpconfig.max - 1) + 1)
+        if (random.num(3) == random.num(6)) {
+            let add_amt = random.lengthNum(random.num(xpconfig.digits, 1), random.num(xpconfig.max, 1))
             xp[ ctx.member.id ] = current_xp + add_amt
             guild_config.xp = xp
             try {

@@ -421,21 +421,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@distube/ytpl@npm:1.1.5":
-  version: 1.1.5
-  resolution: "@distube/ytpl@npm:1.1.5"
+"@distube/ytpl@npm:latest":
+  version: 1.2.1
+  resolution: "@distube/ytpl@npm:1.2.1"
   dependencies:
-    miniget: "npm:^4.2.3"
-  checksum: 10c0/2adb84ee7947bbffb592f1ed73d0195c7f5f5cf6fc200c5589a05bf6643d6b7464463736fa35e174cdc821450495fac186e4118d9b446f1ffbe8641246248c24
-  languageName: node
-  linkType: hard
-
-"@distube/ytpl@patch:@distube/ytpl@npm%3A1.1.5#./.yarn/patches/@distube-ytpl-npm-1.1.5-28b438f0d1.patch::locator=discord_bot-friend_server%40workspace%3A.":
-  version: 1.1.5
-  resolution: "@distube/ytpl@patch:@distube/ytpl@npm%3A1.1.5#./.yarn/patches/@distube-ytpl-npm-1.1.5-28b438f0d1.patch::version=1.1.5&hash=94e76c&locator=discord_bot-friend_server%40workspace%3A."
-  dependencies:
-    miniget: "npm:^4.2.3"
-  checksum: 10c0/1677a627daf1c632a2232e438521412d5adf17d7bdcd3ae6275fb1bee80bff434a35acaaad1e86f07aed1ca373f84678baa543b70aeaa9470081267376896c66
+    undici: "npm:^5.25.2"
+  checksum: 10c0/f1ee21c2ab10ea741fc51c86a6a761d55d2bceed0d26393a981a8158933f32efc3682a589842e6252995cd1b0b5e48f5c894b44c9c72bc89f0f74cb7242d0423
   languageName: node
   linkType: hard
 
@@ -3053,7 +3044,7 @@ __metadata:
     dayjs: "npm:^1.11.9"
     discord-api-types: "npm:^0.37.73"
     discord.js: "npm:latest"
-    erlpack: "github:discord/erlpack"
+    erlpack: "github:discord/erlpack#commit=b25ebd51ae4c097bd7f756fd4e1c841b61bfe50b"
     express: "npm:latest"
     express-session: "npm:^1.17.3"
     express-ws: "npm:^5.0.2"
@@ -3065,6 +3056,7 @@ __metadata:
     mariadb: "npm:^3.2.1"
     mime: "npm:^3.0.0"
     morgan: "npm:^1.10.0"
+    myutils: "waterwolf9910/myutils_js#tag=1.0.2"
     node-fetch: "npm:cjs"
     node-gyp: "npm:^10.0.0"
     pg: "npm:^8.11.3"
@@ -3084,7 +3076,7 @@ __metadata:
     terser-webpack-plugin: "npm:^5.3.9"
     ts-loader: "npm:^9.4.4"
     ts-node: "npm:^10.9.2"
-    typescript: "npm:latest"
+    typescript: "npm:^5.3.3"
     utf-8-validate: "npm:latest"
     webpack: "npm:latest"
     webpack-bundle-analyzer: "npm:^4.9.1"
@@ -3285,7 +3277,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"erlpack@github:discord/erlpack":
+"erlpack@github:discord/erlpack#commit=b25ebd51ae4c097bd7f756fd4e1c841b61bfe50b":
   version: 0.1.3
   resolution: "erlpack@https://github.com/discord/erlpack.git#commit=b25ebd51ae4c097bd7f756fd4e1c841b61bfe50b"
   dependencies:
@@ -5842,6 +5834,13 @@ __metadata:
   bin:
     multicast-dns: cli.js
   checksum: 10c0/5120171d4bdb1577764c5afa96e413353bff530d1b37081cb29cccc747f989eb1baf40574fe8e27060fc1aef72b59c042f72b9b208413de33bcf411343c69057
+  languageName: node
+  linkType: hard
+
+"myutils@waterwolf9910/myutils_js#tag=1.0.2":
+  version: 1.0.2
+  resolution: "myutils@https://github.com/waterwolf9910/myutils_js.git#commit=7eddaeb9c8fe433c5a05edb54342569d7e05e505"
+  checksum: 10c0/b67415366ced9028c7d39ab294329c67913fe9d3997d308d15fcd774078d5c57616e654bf14221439afba6863ad2c153f0f9641dd4b5cd2550c2b158ff33eb6b
   languageName: node
   linkType: hard
 
@@ -8474,13 +8473,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:latest":
-  version: 5.3.3
-  resolution: "typescript@npm:5.3.3"
+"typescript@npm:^5.3.3":
+  version: 5.4.2
+  resolution: "typescript@npm:5.4.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/e33cef99d82573624fc0f854a2980322714986bc35b9cb4d1ce736ed182aeab78e2cb32b385efa493b2a976ef52c53e20d6c6918312353a91850e2b76f1ea44f
+  checksum: 10c0/583ff68cafb0c076695f72d61df6feee71689568179fb0d3a4834dac343df6b6ed7cf7b6f6c801fa52d43cd1d324e2f2d8ae4497b09f9e6cfe3d80a6d6c9ca52
   languageName: node
   linkType: hard
 
@@ -8504,13 +8503,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3Alatest#optional!builtin<compat/typescript>":
-  version: 5.3.3
-  resolution: "typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"
+"typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>":
+  version: 5.4.2
+  resolution: "typescript@patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/1d0a5f4ce496c42caa9a30e659c467c5686eae15d54b027ee7866744952547f1be1262f2d40de911618c242b510029d51d43ff605dba8fb740ec85ca2d3f9500
+  checksum: 10c0/fcf6658073d07283910d9a0e04b1d5d0ebc822c04dbb7abdd74c3151c7aa92fcddbac7d799404e358197222006ccdc4c0db219d223d2ee4ccd9e2b01333b49be
   languageName: node
   linkType: hard
 

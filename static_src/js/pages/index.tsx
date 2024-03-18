@@ -4,10 +4,8 @@ let page = () => {
     </div>
 }
 
-let _: page = {
+export default {
     page,
     title: "Home Page",
     urls: ["/"],
-}
-
-export = _
+} satisfies page

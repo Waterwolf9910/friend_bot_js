@@ -165,9 +165,12 @@ let config = {
         removeAvailableModules: true,
         removeEmptyChunks: true,
         splitChunks: {
-            chunks: "async",
+            chunks: "all",
         },
         concatenateModules: true,
+    },
+    experiments: {
+        topLevelAwait: true
     }
 }
 module.exports = config

@@ -1,15 +1,13 @@
 import queue_data = require("./queues")
 import voice = require("@discordjs/voice")
-let _: import("main/types").Command= {
+export = {
     slash: require("./slash").addSubcommand((sub) => {
         sub.setDescription("Clears the queue")
         sub.setName("clear")
         return sub
     }),
-    interaction: (interaction) => run(interaction.guild.id, interaction.user.id, queue_data.guild_queues[interaction.guild.id].vchannel),
-    description: "Clears the queue",
-    usage: "music clear"
-}
+    interaction: (interaction) => run(interaction.guild.id, interaction.user.id, queue_data.guild_queues[interaction.guild.id].vchannel)
+} satisfies import("main/types").Command
 
 let run = async (guild_id: string, author_id: string, voice_channel: import('discord.js').VoiceBasedChannel): Promise<import("main/types").CommandResult> => {
     let connection = queue_data.guild_queues[ guild_id ]?.connection
@@ -26,7 +24,3 @@ let run = async (guild_id: string, author_id: string, voice_channel: import('dis
     queue_data.end(guild_id)
     return { flag: 'r', message: "Queue successfully clear" }
 }
-
-module.exports = _
-
-export = _

@@ -1,6 +1,7 @@
 import queue_data = require("./queues")
-import utils = require("../../libs/utils")
-let _: import("main/types").Command= {
+import utils = require("myutils/utils.js")
+
+export = {
     interaction: (interaction) =>  {
         return run(interaction.guild.id, interaction.options.getInteger("iterations", false) || 1)
     },
@@ -14,10 +15,8 @@ let _: import("main/types").Command= {
             return iterations
         })
         return sub;
-    }),
-    description: "Shuffles the Queue",
-    usage: "music shuffle [iterations]"
-}
+    })
+} satisfies import("main/types").Command
 
 let run = (guild_id: string, iterations: number = 1): import("main/types").CommandResult => {
     
@@ -32,5 +31,3 @@ let run = (guild_id: string, iterations: number = 1): import("main/types").Comma
         message: 'Queue Shuffled'
     }
 }
-
-export = _

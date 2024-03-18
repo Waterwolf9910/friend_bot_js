@@ -1,5 +1,5 @@
-import types = require("main/types")
-import dtypes = require("discord-api-types/v10")
+import types from "main/types"
+import dtypes from "discord-api-types/v10"
 
 let from =(path: string, _value: types.jsonable): types.jsonable => {
     if (/Activities\.Item [0-9+]\.type/.test(path)) {
@@ -15,7 +15,7 @@ let to = (path: string, _value: types.jsonable): types.jsonable => {
     return _value
 }
 
-export = {
+export default {
     from,
     to
 }

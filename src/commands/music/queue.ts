@@ -1,6 +1,6 @@
 import queue_data = require("./queues")
 
-let _: import("main/types").Command= {
+export= {
     interaction: (interaction) => {
         return run(interaction.guild.id, interaction.user.id,
             interaction.channel,
@@ -17,10 +17,8 @@ let _: import("main/types").Command= {
             return queue_page
         })
         return sub
-    }),
-    description: "Sends the music queue",
-    usage: "music queue [page]"
-}
+    })
+} satisfies import("main/types").Command
 
 let run = async (guild_id: string, author_id: string, text_channel: import('discord.js').GuildTextBasedChannel, member: import('discord.js').GuildMember, _page: number | string ): Promise<import('main/types').CommandResult> => {
     let queue = queue_data.guild_queues[ guild_id ].queue
@@ -141,7 +139,3 @@ let run = async (guild_id: string, author_id: string, text_channel: import('disc
     }).catch(() => { })
     return { flag: 'n' }
 }
-
-module.exports = _
-
-export = _

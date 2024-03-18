@@ -1,25 +1,55 @@
 let baseUrl = new URL(__webpack_public_path__)
 let page_map: { [ key: string ]: page } = {}
 // Get a list of the pages in the project
-let pages: page[] = require.context("./pages/", true, module.hot ? /\.tsx$/ : /(?<!test)\.tsx$/, 'sync').keys().map(p => require(`./pages/${p.replace(/^\.\//, '')}`)).filter(v => {
-    return v.page && v.title && v.urls && v.urls.length > 0
-})
-pages = pages.sort((a, b) => {
-
-    if (a.urls[ 0 ] == "/") {
-        return -1
+let pages = <page[]> await (async () => {
+    let page_list: _page[] = []
+    for (let key of require.context("./pages/", true, module.hot ? /\.tsx$/ : /(?<!test)\.tsx$/, 'sync').keys()) {
+        page_list.push((await import(
+            /* webpackPreload: true */
+            `./pages/${key.replace(/^\.\//, '')}`
+        )).default)
     }
 
-    if (a.title < b.title) {
-        return -1
-    }
+    page_list = page_list.filter(v => {
+        return v.page && v.title && v.urls && v.urls.length > 0
+    })
+    .sort((a, b) => {
+        if (a.urls[0] == "/") {
+            return -1
+        }
 
-    if (a.title > b.title) {
-        return 1
-    }
+        if (a.title < b.title) {
+            return -1
+        }
+
+        if (a.title > b.title) {
+            return 1
+        }
+
+        return 0
+    }).sort((a, b) => (a.priority || 1000) - (b.priority || 1000))
+
+    return page_list
+})();
+// .map(p => require(`./pages/${p.replace(/^\.\//, '')}`).default).filter(v => {
+//     return v.page && v.title && v.urls && v.urls.length > 0
+// })
+// pages = pages.sort((a, b) => {
+
+//     if (a.urls[ 0 ] == "/") {
+//         return -1
+//     }
+
+//     if (a.title < b.title) {
+//         return -1
+//     }
+
+//     if (a.title > b.title) {
+//         return 1
+//     }
     
-    return 0
-}).sort((a, b) => (a.priority || 1000) - (b.priority || 1000))
+//     return 0
+// }).sort((a, b) => (a.priority || 1000) - (b.priority || 1000))
 
 for (let page_data of pages) {
     try {
@@ -30,4 +60,4 @@ for (let page_data of pages) {
     } catch {/** */ }
 }
 
-export = page_map
+export default {...page_map}

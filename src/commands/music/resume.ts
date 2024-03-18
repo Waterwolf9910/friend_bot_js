@@ -22,19 +22,12 @@ let run = (guild_id: string, author_id: string, voice_channel: import("discord.j
     }
 }
 
-let _: import("main/types").Command = {
+export = {
     interaction: async (interaction) => run(interaction.guild.id, interaction.user.id, queue_data.guild_queues[ interaction.guild.id ].vchannel),
     slash: require("./slash").addSubcommand(sub => {
         sub.setName("resume")
         sub.setDescription("Resumes the paused song")
         return sub
     }),
-    description: "Resumes the paused song",
-    usage: "music resume or music play",
-    // @ts-ignore
     run
-}
-
-module.exports = _
-
-export = _
+} satisfies import("main/types").Command & {run: typeof run}

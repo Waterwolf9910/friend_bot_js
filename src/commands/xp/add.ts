@@ -1,10 +1,10 @@
 import db = require("../../libs/db")
 import discord = require("discord.js")
-let _: import("main/types").Command = {
+
+export = {
     interaction: async (interaction) => {
         let smember: import("discord.js").GuildMember = interaction.options.getMember("member")
         return await run(interaction.guild, interaction.member, smember,
-            //@ts-ignore
             interaction.channel,
             interaction.options.getInteger("amount", true))
     },
@@ -24,11 +24,9 @@ let _: import("main/types").Command = {
             return member
         })
         return sub
-    }),
-    level: "admin",
-    description: "Adds xp for a user",
-    usage: "xp add"
-}
+    })
+} satisfies import("main/types").Command
+
 let run = async (guild: discord.Guild, member: discord.GuildMember, selected_member: discord.GuildMember, channel: discord.GuildTextBasedChannel, amount: number): Promise<import("main/types").CommandResult> => {
     let [guild_config] = await db.guild_configs.findOrCreate({ where: { id: guild.id } })
     let xp = guild_config.xp
@@ -41,7 +39,7 @@ let run = async (guild: discord.Guild, member: discord.GuildMember, selected_mem
         }
     }
 
-    if (!member.permissions.has("ModerateMembers", true) && !manager) {
+    if (!member.permissions.has(discord.PermissionFlagsBits.ModerateMembers, true) && !manager) {
         return { flag: 'r', message: "You do not have permission to change xp" }
     }
 
@@ -59,5 +57,3 @@ let run = async (guild: discord.Guild, member: discord.GuildMember, selected_mem
         return { flag: 'r', message: 'Unable to change xp'}
     }
 }
-
-export = _

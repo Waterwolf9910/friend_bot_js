@@ -1,5 +1,6 @@
-import react = require("react")
-import licenses = require("../../assets/licenses.json")
+import style from "../../css/licenses.scss"
+import react from "react"
+import licenses from "../../assets/licenses.json"
 
 let getRenderableError = (text: string) => {
     return <pre>{process.env.NODE_ENV == "development" ? text : "There was an error loading this license. Please try again later."}</pre>
@@ -137,12 +138,10 @@ let page = () => {
     </div>
 }
 
-let _: page = {
+export default {
     page,
     title: "Licenses",
     urls: ["/licenses"],
     hidden: true,
-    styles: [require("../../css/licenses.scss")]
-}
-
-export = _
+    styles: [style]
+} satisfies page

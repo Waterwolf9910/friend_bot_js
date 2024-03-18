@@ -1,6 +1,6 @@
-import utils = require("../utils")
+import utils from "../utils"
 
-export = () => {
+export default () => {
 
     return <footer className="col fixed-bottom center_items" style={{background: "var(--bs-body-bg)"}}>
         <a onClick={() => {

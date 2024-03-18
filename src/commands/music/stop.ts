@@ -1,16 +1,14 @@
 import queue_data = require("./queues")
 import voice = require("@discordjs/voice")
 
-let _: import("main/types").Command = {
+export = {
     interaction: async (interaction) => run(interaction.guild.id, interaction.user.id, queue_data.guild_queues[ interaction.guild.id ]?.vchannel),
     slash: require("./slash").addSubcommand(sub => {
         sub.setName("stop")
         sub.setDescription("Stops the player and clears the queue")
         return sub
-    }),
-    description: "Stops the player and clears the queue",
-    usage: "music stop"
-}
+    })
+} satisfies import("main/types").Command
 
 let run = (guild_id: string, author_id: string, voice_channel: import("discord.js").NonThreadGuildBasedChannel): import("main/types").CommandResult => {
     let connection = queue_data.guild_queues[ guild_id ]?.connection
@@ -26,7 +24,3 @@ let run = (guild_id: string, author_id: string, voice_channel: import("discord.j
     queue_data.end(guild_id, true)
     return { flag: 'r', message: "Successfully Stopped" }
 }
-
-module.exports = _
-
-export = _

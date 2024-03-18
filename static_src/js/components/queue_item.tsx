@@ -1,4 +1,4 @@
-import react = require("react")
+import react from "react"
 
 type props = {
     data: import("main/types").GuildQueue["id"]["queue"][0] & { pos: number, next: number },
@@ -6,7 +6,7 @@ type props = {
     clickSetNext?: react.MouseEventHandler, 
     clickSkipTo?: react.MouseEventHandler
 }
-export = ({ data, clickDelete, clickSetNext, clickSkipTo }: props) => {
+export default ({ data, clickDelete, clickSetNext, clickSkipTo }: props) => {
     
     let ref = react.useRef<HTMLImageElement>(null)
     

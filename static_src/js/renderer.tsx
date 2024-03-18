@@ -1,12 +1,12 @@
-import react = require("react")
-import page_map = require("./page_list")
-import dom = require("react-dom/client")
-import utils = require("./utils");
-import Header = require("./components/header")
-import Footer = require("./components/footer")
+import react from "react"
+import page_map from "./page_list";
+import dom from "react-dom/client"
+import utils from "./utils";
+import Header from "./components/header"
+import Footer from "./components/footer"
 // Our error page
-import err = require("./pages/404")
-import baseStyle = require("../css/base.scss")
+import err from "./pages/404";
+import baseStyle from "../css/base.scss"
 
 if (module.hot) {
     window.utils = utils
@@ -16,14 +16,15 @@ let root: dom.Root
 // let header: JSX.Element = 
 
 let UpdatePage = async () => {
+    console.log(page_map)
     let page_data = page_map[ location.pathname ] || err
     let Element = page_data.page
     document.title = page_data.title
     if (page_data?.styles) {
         // Base should be applied to at least one of the stylesheets
-        document.adoptedStyleSheets = [ ...page_data.styles.map(v => v.default) ]
+        document.adoptedStyleSheets = [ ...page_data.styles ]
     } else {
-        document.adoptedStyleSheets = [ baseStyle.default ]
+        document.adoptedStyleSheets = [ baseStyle ]
     }
 
     root.render(<react.StrictMode>

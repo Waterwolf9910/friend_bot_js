@@ -1,9 +1,9 @@
-import react = require("react")
-import utils = require("../utils")
-// import bootstrap = require("bootstrap")
+import react from "react"
+import utils from "../utils"
+// import bootstrap from "bootstrap"
 // require("../assets/*.png")
 
-export = (props: {urls?: typeof import("../page_list") } = {}) => {
+export default (props: {urls?: typeof import("../page_list").default } = {}) => {
     
     let [ selected_gid, _sgid ] = react.useState<string>(sessionStorage.getItem(utils.storageKeys.selectedGuildKey) ?? '')
     let [useBotFilter, _setUseBotFilter] = react.useState<boolean>(localStorage.getItem(utils.storageKeys.filterStorageKey) != "false")

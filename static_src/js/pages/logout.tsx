@@ -1,5 +1,5 @@
-import react = require("react")
-import utils = require("../utils")
+import react from "react"
+import utils from "../utils"
 
 let page = () => {
 
@@ -16,11 +16,9 @@ let page = () => {
     </div>
 }
 
-let _: page = {
+export default {
     page,
     title: "Logout",
     hidden: true,
     urls: ["/logout"]
-}
-
-export = _
+} satisfies page

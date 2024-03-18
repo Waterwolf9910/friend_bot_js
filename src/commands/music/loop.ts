@@ -1,6 +1,6 @@
 import queue_data = require("./queues")
 
-let _: import("main/types").Command = {
+export = {
     interaction: (interaction) => {
         let type = interaction.options.getString("loop_type", false)
 
@@ -19,10 +19,8 @@ let _: import("main/types").Command = {
             return loop_type
         })
         return sub
-    }),
-    description: "Toggles the music loop",
-    usage: "music loop [queue, song, off]"
-}
+    })
+} satisfies import("main/types").Command
 
 let run = (guild_id: string, type?: "song" | "queue" | "off"): import("main/types").CommandResult => {
     let cur_loop = queue_data.guild_queues[ guild_id ].loop
@@ -52,7 +50,3 @@ let run = (guild_id: string, type?: "song" | "queue" | "off"): import("main/type
 
     return { flag: 's', message: `Looping ${type}` }
 }
-
-module.exports = _
-
-export = _

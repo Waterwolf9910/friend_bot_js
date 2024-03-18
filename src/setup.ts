@@ -3,8 +3,8 @@ import fs = require("fs")
 import discord = require("discord.js")
 let isDev = process.env.NODE_ENV == "development"
 
-import _random = require("./libs/random")
-let random = new _random(256, 9)
+import _random = require("myutils/random.js")
+let random = _random(256, 9)
 
 let baseConfig: import("./types").Config = {
     Activities: [

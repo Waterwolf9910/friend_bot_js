@@ -1,7 +1,7 @@
-import react = require('react')
-import dtypes = require("discord-api-types/v10")
-import customizer = require("../customize_config")
-import types = require('main/types')
+import react from 'react'
+import dtypes from "discord-api-types/v10"
+import customizer from "../customize_config"
+import types from 'main/types'
 
 interface entry_props {
     config_key: string,
@@ -254,4 +254,4 @@ let Entry = ({config_key, value, config_path, no_key_in_path, on_change}: entry_
     </div>
 }
 
-export = Entry
+export default Entry

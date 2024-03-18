@@ -1,6 +1,7 @@
-import QueueItem = require("../components/queue_item")
-import react = require("react")
-import utils = require("../utils")
+import style from "../../css/queue.scss"
+import QueueItem from "../components/queue_item"
+import react from "react"
+import utils from "../utils"
 
 let page = () => {
     let [queueInfo, _sqi] = react.useState<import("ws_proto").MusicQueue["msg"]>({ cur: 0, next: 1, loop: false, queue: []})
@@ -387,11 +388,9 @@ let page = () => {
     </div>
 }
 
-let _: page = {
+export default {
     page,
     title: "Music Queue",
     urls: ["/queue"],
-    styles: [require("../../css/queue.scss")]
-}
-
-export = _
+    styles: [style]
+} satisfies page

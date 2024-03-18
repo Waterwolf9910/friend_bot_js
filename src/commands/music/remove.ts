@@ -1,8 +1,8 @@
 import queue_data = require("./queues")
 import voice = require("@discordjs/voice")
-import discord = require("discord.js")
 import slash = require("./slash")
-let _: import("main/types").Command = {
+
+export = {
     slash: slash.addSubcommand((sub) => {
         sub.setDescription("Removes an item from the queue")
         sub.setName("remove")
@@ -39,7 +39,3 @@ let run = async (index: number,  guild_id: string, author_id: string, voice_chan
     queue_data.guild_queues[ guild_id ].queue = queue_data.guild_queues[guild_id].queue.filter((_, i) => i != index-1)
     return { flag: 'r', message: "Item successfully removed" }
 }
-
-module.exports = _
-
-export = _

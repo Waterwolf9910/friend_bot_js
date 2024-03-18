@@ -18,8 +18,8 @@ import dapiTypes = require("discord-api-types/v10")
 import ytsr = require("@distube/ytsr")
 import voice = require("@discordjs/voice")
 import _fetch = require("node-fetch")
-import crypto = require("../libs/crypto")
-import _random = require("../libs/random")
+import crypto = require("myutils/crypto.js")
+import _random = require("myutils/random.js")
 import db = require("../libs/db")
 import guild_queues = require("../commands/music/queues")
 import play = require("../commands/music/play")
@@ -32,7 +32,7 @@ let sequelize_session: typeof _sequelize.Sequelize.prototype
 let sequelize_store = _sequelize_store(session.Store)
 let store_obj: InstanceType<ReturnType<typeof _sequelize_store>>
 let isDev = process.env.NODE_ENV == "development"
-let random = new _random(512, 9)
+let random = _random(512, 9)
 
 app.set('x-powered-by', false)
 

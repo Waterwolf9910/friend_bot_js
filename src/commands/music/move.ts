@@ -1,6 +1,6 @@
 
 import queue_data = require("./queues")
-let _: import("main/types").Command = {
+export = {
     slash: require("./slash").addSubcommand(sub => {
         sub.setName("move")
         sub.setDescription("Move a song to a different position")
@@ -20,10 +20,8 @@ let _: import("main/types").Command = {
     }),
     interaction: interaction => {
         return run(interaction.guildId, interaction.options.getInteger("origin"), interaction.options.getInteger("to"))
-    },
-    description: "Moves the song to a different position",
-    usage: "/music move 5 1"
-}
+    }
+} satisfies import("main/types").Command
 
 
 let run = async (guild_id: string, origin: number, to: number): Promise<import("main/types").CommandResult> => {
@@ -43,5 +41,3 @@ let run = async (guild_id: string, origin: number, to: number): Promise<import("
     newqueue.splice(to - 1, 0, temp)
     queue_data.guild_queues[guild_id].queue = newqueue
 }
-
-export = _

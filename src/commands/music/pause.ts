@@ -1,7 +1,7 @@
 import queue_data = require("./queues")
 import voice = require("@discordjs/voice")
 
-let _: import("main/types").Command = {
+export = {
     interaction: async (interaction) => {
         return run(interaction.guild.id, interaction.user.id, queue_data.guild_queues[ interaction.guild.id ]?.vchannel)
     },
@@ -9,10 +9,8 @@ let _: import("main/types").Command = {
         sub.setName("pause")
         sub.setDescription("Pauses the current song")
         return sub
-    }),
-    description: "Pauses the current song",
-    usage: "music pause"
-}
+    })
+} satisfies import("main/types").Command
 
 let run = async (guild_id: string, author_id: string, voice_channel: import('discord.js').NonThreadGuildBasedChannel): Promise<import('main/types').CommandResult> => {
     let connection = queue_data.guild_queues[ guild_id ]?.connection
@@ -35,7 +33,3 @@ let run = async (guild_id: string, author_id: string, voice_channel: import('dis
     }
     return { flag: 'n' }
 }
-
-module.exports = _
-
-export = _

@@ -2,7 +2,7 @@ import fs = require('fs')
 import path = require("path")
 let config: import("main/types").Config = JSON.parse(fs.readFileSync(path.resolve( "config.json"), { encoding: 'utf-8' }))
 import db = require("../../libs/db")
-let _: import("main/types").Command = {
+export = {
     interaction: async (interaction) => {
         let member: import('discord.js').GuildMember = interaction.options.getMember("member") || interaction.member
         return await run(interaction.guild.id, interaction.member, member, interaction.options.getInteger("amount", true))
@@ -23,10 +23,8 @@ let _: import("main/types").Command = {
             return member
         })
         return sub
-    }),
-    description: "Adds to the users current bal",
-    usage: "econ add [user] amount or econ add amount [user]"
-}
+    })
+} satisfies import("main/types").Command
 
 let run = async (guild_id: string, author: import('discord.js').GuildMember, selector_member: import('discord.js').GuildMember, amount: string | number): Promise<import('main/types').CommandResult> => {
     let manager = false
@@ -60,7 +58,3 @@ let run = async (guild_id: string, author: import('discord.js').GuildMember, sel
     }
     return { flag: 'r', message: returner }
 }
-
-module.exports = _
-
-export = _

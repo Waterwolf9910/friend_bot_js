@@ -1,16 +1,14 @@
 import queue_data = require("./queues")
 import voice = require("@discordjs/voice")
 
-let _: import("main/types").Command = {
+export = {
     slash: require("./slash").addSubcommand(sub => {
         sub.setName("np")
         sub.setDescription("Shows the current song")
         return sub
     }),
-    interaction: (interaction) => run(interaction.guild.id),
-    description: "Shows the current song",
-    usage: "music np"
-}
+    interaction: (interaction) => run(interaction.guild.id)
+} satisfies import("main/types").Command
 
 let run = (guild_id: string): import('main/types').CommandResult => {
     let connection = queue_data.guild_queues[ guild_id ]?.connection
@@ -41,7 +39,3 @@ let run = (guild_id: string): import('main/types').CommandResult => {
             } ]
         } }
 }
-
-module.exports = _
-
-export = _

@@ -165,10 +165,10 @@ export interface GuildQueue {
 }
 
 export interface Command {
-    description: string
-    usage: string
-    level?: string
-    slash: discord.SlashCommandBuilder | discord.SlashCommandOptionsOnlyBuilder | discord.SlashCommandSubcommandsOnlyBuilder,
+    // description: string // Unused
+    // usage: string // Unused
+    // level?: string // Unused
+    slash: discord.SlashCommandBuilder | discord.SlashCommandOptionsOnlyBuilder | discord.SlashCommandSubcommandsOnlyBuilder | Omit<discord.SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>,
     interaction: (interaction: discord.ChatInputCommandInteraction<'cached'>) => CommandResult | Promise<CommandResult>
 }
 
