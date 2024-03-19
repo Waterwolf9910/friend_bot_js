@@ -78,7 +78,7 @@
         "mime": "^3.0.0",
         "morgan": "^1.10.0",
         "myutils": "waterwolf9910/myutils_js#tag=1.0.2",
-        "node-fetch": "cjs",
+        "node-fetch": "3.3.2",
         "pg": "^8.11.3",
         "pg-hstore": "^2.3.4",
         "react": "^18.2.0",
