@@ -68,7 +68,7 @@
         "discord-api-types": "^0.37.73",
         "discord.js": "latest",
         "erlpack": "github:discord/erlpack#commit=b25ebd51ae4c097bd7f756fd4e1c841b61bfe50b",
-        "express": "latest",
+        "express": "4.19.2",
         "express-session": "^1.17.3",
         "express-ws": "^5.0.2",
         "ffmpeg-static": "latest",
