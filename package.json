@@ -54,7 +54,7 @@
         "@discordjs/voice": "latest",
         "@distube/ytdl-core": "4.13.3",
         "@distube/ytpl": "latest",
-        "@distube/ytsr": "latest",
+        "@distube/ytsr": "2.0.1",
         "@popperjs/core": "^2.11.8",
         "@types/react": "^18.2.21",
         "@types/sequelize": "^4.28.15",
