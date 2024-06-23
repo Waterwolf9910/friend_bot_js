@@ -85,7 +85,7 @@
         "react-dom": "^18.2.0",
         "sequelize": "^6.33.0",
         "sqlite3": "^5.1.6",
-        "tedious": "^16.4.0",
+        "tedious": "^18.2.1",
         "utf-8-validate": "latest",
         "zlib-sync": "latest"
     },
