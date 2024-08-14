@@ -24,7 +24,7 @@ let _: import("main/types").event<discord.Events.InteractionCreate> = {
             }
             
             let result = await cmd.interaction(interaction)
-            if (result.message == undefined) {
+            if (result == undefined || result.message == undefined) {
                 result = {
                     flag: 'n',
                 }
@@ -54,7 +54,7 @@ let _: import("main/types").event<discord.Events.InteractionCreate> = {
                 sub: interaction.options.getSubcommand(false),
                 err
             })
-            interaction.reply("There was an error while trying to run this command")
+            interaction.editReply("There was an error while trying to run this command")
         }
     }
 }

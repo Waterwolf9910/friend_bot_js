@@ -1,5 +1,5 @@
 import queue_data = require("./queues")
-import utils = require("myutils/utils.js")
+import utils = require("wolf_utils/utils.js")
 
 export = {
     interaction: (interaction) =>  {
@@ -20,11 +20,16 @@ export = {
 
 let run = (guild_id: string, iterations: number = 1): import("main/types").CommandResult => {
     
+    let last = 0
     while (iterations > 0) {
         --iterations;
-        queue_data.guild_queues[ guild_id ].cur = utils.array.shuffle(queue_data.guild_queues[ guild_id ].queue, queue_data.guild_queues[ guild_id ].cur)
+        last = utils.array.shuffle(queue_data.guild_queues[ guild_id ].queue, queue_data.guild_queues[ guild_id ].cur)
     }
-    queue_data.guild_queues[guild_id].next = queue_data.guild_queues[guild_id].cur+1
+    queue_data.guild_queues[guild_id].cur = 0
+    queue_data.guild_queues[guild_id].next = 1
+    let temp = queue_data.guild_queues[guild_id].queue[0]
+    queue_data.guild_queues[guild_id].queue[0] = queue_data.guild_queues[guild_id].queue[last]
+    queue_data.guild_queues[guild_id].queue[last] = temp
 
     return {
         flag: 's',

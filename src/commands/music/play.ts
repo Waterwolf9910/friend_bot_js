@@ -56,6 +56,7 @@ let play_next = async (text_channel: import("discord.js").GuildTextBasedChannel,
                 timeout_msg.edit("I disconnected due to inactivity")
             }, 5 * 60 * 1000)
             gqueue_info.timeout_info = { timeout: timeout, msg: timeout_msg, type: "queue" }
+            return
         }
         play_next(text_channel, guild_id, loop == 'song' ? retrys + 1 : 0)
         console.error(err)
@@ -93,10 +94,12 @@ let play_next = async (text_channel: import("discord.js").GuildTextBasedChannel,
             text: `Looping: Queue ${gqueue_info.loop === true ? "✅" : "❌"} Song ${gqueue_info.loop === "song" ? "✅" : "❌"}`
         }
     }
-    let np_msg = await text_channel.send({ embeds: [ gqueue_info.np_msg ] })
-    setTimeout(() => {
-        np_msg.delete().catch(() => null)
-    }, 5500)
+    if (retrys != 0) {
+        let np_msg = await text_channel.send({ embeds: [ gqueue_info.np_msg ] })
+        setTimeout(() => {
+            np_msg.delete().catch(() => null)
+        }, 5500)
+    }
     gqueue_info.cur = cur
     gqueue_info.next = next
     queue_data.guild_queues[ guild_id ] = gqueue_info
@@ -142,6 +145,7 @@ let playerStateChange = (guild_id: string, text_channel: import('discord.js').Gu
         end(guild_id)
         timeout_msg.edit("I disconnected due to inactivity")
     }, 5 * 60 * 1000), msg: timeout_msg, type: 'queue' }
+
 }
 
 let run = async (member: import('discord.js').GuildMember, guild_id: string, text_channel: import('discord.js').GuildTextBasedChannel, search: string, search_split: string[]): Promise<import('main/types').CommandResult> => {
@@ -167,8 +171,8 @@ let run = async (member: import('discord.js').GuildMember, guild_id: string, tex
                 end(guild_id)
                 return
             }
-            console.log(queue_data.guild_queues[guild_id].vchannel.members)
-            if (queue_data.guild_queues[guild_id].vchannel.members.filter(member => !member.user.bot).size < 1) {
+            // console.log(queue_data.guild_queues[guild_id].vchannel.members)
+            if ((await queue_data.guild_queues[guild_id].vchannel.fetch()).members.filter(member => !member.user.bot).size < 1) {
                 let timeout_msg = await text_channel.send("I will leave in a minute due to user inactivity")
                 queue_data.guild_queues[guild_id].player.pause()
 

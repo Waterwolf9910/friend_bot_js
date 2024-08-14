@@ -18,8 +18,8 @@ import dapiTypes = require("discord-api-types/v10")
 import ytsr = require("@distube/ytsr")
 import voice = require("@discordjs/voice")
 import _fetch = require("node-fetch")
-import crypto = require("myutils/crypto.js")
-import _random = require("myutils/random.js")
+import crypto = require("wolf_utils/crypto.js")
+import _random = require("wolf_utils/random.js")
 import db = require("../libs/db")
 import guild_queues = require("../commands/music/queues")
 import play = require("../commands/music/play")
@@ -32,7 +32,7 @@ let sequelize_session: typeof _sequelize.Sequelize.prototype
 let sequelize_store = _sequelize_store(session.Store)
 let store_obj: InstanceType<ReturnType<typeof _sequelize_store>>
 let isDev = process.env.NODE_ENV == "development"
-let random = _random(512, 9)
+let random = _random.createRandom(512, 9)
 
 app.set('x-powered-by', false)
 
@@ -642,6 +642,7 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
                 // }
                 wpmw.outputFileSystem.readFile(path.resolve(wpmw.stats.toJson().outputPath, path.normalize(`./${req.path}`)), (err2, data) => {
                     if (!err2) {
+                        //@ts-ignore
                         let type = mime.getType(path.extname(req.path))
                         if (type) {
                             res.setHeader("Content-Type", type)
@@ -676,6 +677,7 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
 
         fs.readFile(path.normalize(`${__dirname}/../static/${req.path}`), {}, (err, data) => {
             if (!err) {
+                //@ts-ignore
                 let type = mime.getType(path.extname(req.path))
                 if (type) {
                     res.setHeader("Content-Type", type)

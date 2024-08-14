@@ -6,7 +6,7 @@ export = {
         let dir: "forward" | "to" | "back" = <'forward'> interaction.options.getString("skip_direction", false)
         return run(interaction.guild.id,
             interaction.channel,
-            interaction.options.getInteger("skip_amount", true), dir)
+            interaction.options.getInteger("skip_amount", false), dir)
     },
     slash: require("./slash").addSubcommand(sub => {
         sub.setName("skip")
@@ -32,7 +32,7 @@ let run = (guild_id: string, text_channel: import('discord.js').GuildTextBasedCh
     queue_data.guild_queues[ guild_id ].skipping = true
 
     dir ??= 'forward'
-    amount ||= 1
+    amount ??= 1
     
     let cur = queue_data.guild_queues[ guild_id ].cur
     let queue = queue_data.guild_queues[ guild_id ].queue
@@ -73,6 +73,7 @@ let run = (guild_id: string, text_channel: import('discord.js').GuildTextBasedCh
     }
 
     _play.play_next(text_channel, guild_id)
+    queue_data.guild_queues[guild_id].skipping = false
 
     return { flag: 'n' }
 }

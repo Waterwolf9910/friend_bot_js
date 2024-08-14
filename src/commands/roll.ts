@@ -1,7 +1,7 @@
 import discord = require("discord.js")
-import _random = require("myutils/random.js")
+import _random = require("wolf_utils/random.js")
 
-let random = _random(0, 6)
+let random = _random.createRandom(0, 6)
 export = {
     interaction: (interaction) => {
         let options = interaction.options

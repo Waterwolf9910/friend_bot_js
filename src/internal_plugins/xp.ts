@@ -1,7 +1,7 @@
-import _r = require("myutils/random.js")
+import _r = require("wolf_utils/random.js")
 import fs = require("fs")
 import discord = require('discord.js')
-let random = _r()
+let random = _r.createRandom()
 // random.singleNum(4) == random.signelNum(4) (chance)
 // random.num(random.singleNum(peconfig.digits-2)+2, random.singleNum(peconfig.max-1)+1) (val)
 
