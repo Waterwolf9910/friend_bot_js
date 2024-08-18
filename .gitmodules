@@ -1,3 +1,3 @@
 [submodule "external/opus"]
 	path = external/opus
-	url = https://github.com/discordjs/opus
+	url = https://github.com/Waterwolf9910/discord_js-opus
