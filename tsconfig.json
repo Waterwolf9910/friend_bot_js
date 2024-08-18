@@ -1,31 +1,34 @@
 {
     "compilerOptions": {
+        "rootDir": "./app/src",
+        "allowArbitraryExtensions": true,
+        "moduleResolution": "Node16",
         "module": "Node16",
         "noFallthroughCasesInSwitch": true,
-        "forceConsistentCasingInFileNames": true,
         "resolvePackageJsonExports": true,
-        "lib": [],
+        "lib": ["ESNext"],
         "paths": {
-            "ws_proto": ["./ws_proto.d.ts"],
-            "main/*": ["./src/*"]
-
+            "ws_proto": [
+                "./app/ws_proto.d.ts"
+            ],
+            "main/*": [
+                "./app/src/*"
+            ]
         },
-        "moduleResolution": "Node16",
-        "rootDir": "src",
-        "target": "ESNext",
-        "sourceMap": true,
-        "outDir": "build",
-        "removeComments": true,
-        "resolveJsonModule": true,
-        "declaration": false,
-        "extendedDiagnostics": true,
         "esModuleInterop": true,
+        "diagnostics": true,
+        "removeComments": true,
+        "extendedDiagnostics": true,
         "skipLibCheck": true,
-        "diagnostics": true
+        "resolveJsonModule": true,
+        "forceConsistentCasingInFileNames": true,
+        "sourceMap": true,
     },
-    "watchOptions": {"watchDirectory": "dynamicprioritypolling"},
-    "typeAcquisition": {"enable": true},
-    "buildOptions": {"verbose": true},
-    "include": ["./src"],
-    "ts-node": {"preferTsExts": true, "compilerOptions": {"jsx": "react-jsx", "allowArbitraryExtensions": true}},
+    "include": [
+        "./app/**/*"
+    ],
+    "exclude": [
+        "**/node_modules/*",
+        "./app/static_src/**/*"
+    ]
 }

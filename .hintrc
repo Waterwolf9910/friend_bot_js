@@ -3,19 +3,6 @@
     "development"
   ],
   "hints": {
-    "typescript-config/strict": "off",
-    "axe/parsing": [
-      "default",
-      {
-        "duplicate-id-aria": "off"
-      }
-    ],
-    "no-inline-styles": "off",
-    "axe/forms": [
-      "default",
-      {
-        "label": "off"
-      }
-    ]
+    "typescript-config/strict": "off"
   }
 }

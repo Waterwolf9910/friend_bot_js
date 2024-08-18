@@ -1,6 +1,21 @@
 {
-    "version": "0.2.0",
     "configurations": [
+        // {
+        //     "name": "Launch Program",
+        //     "program": "${workspaceFolder}/builder/out/index.js",
+        //     "request": "launch",
+        //     // "resolveSourceMapLocations": [
+        //     //     "${workspaceFolder}/app/src**",
+        //     //     "!**/node_modules/**"
+        //     // ],
+        //     "console": "integratedTerminal",
+        //     "preLaunchTask": "build",
+        //     "cwd": "${workspaceFolder}/builder/build",
+        //     "skipFiles": [
+        //         "<node_internals>/**"
+        //     ],
+        //     "type": "node"
+        // },
         {
             "type": "vscode-edge-devtools.debug",
             "request": "launch",
@@ -38,7 +53,11 @@
             "request": "launch",
             "type": "node",
             // "profileStartup": true,
-            "runtimeArgs": ["--tls-min-v1.2", "--report-uncaught-exception", "--enable-source-maps" /* "--prof", "--node-memory-debug", "--heap-prof", "--cpu-prof" */],
+            "runtimeArgs": [
+                "--tls-min-v1.2",
+                "--report-uncaught-exception",
+                "--enable-source-maps" /* "--prof", "--node-memory-debug", "--heap-prof", "--cpu-prof" */
+            ],
             "autoAttachChildProcesses": true,
             "presentation": {
                 "hidden": false,
@@ -60,8 +79,9 @@
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "localRoot": "${workspaceFolder}/build/",
-            "preLaunchTask": "npm: prepareDebug",
-            "program": "${workspaceFolder}/build/index.js",
+            "preLaunchTask": "build",
+            // "preLaunchTask": "npm: prepareDebug",
+            "program": "${workspaceFolder}/builder/out/index.js",
             "showAsyncStacks": true,
             "serverReadyAction": {
                 "action": "startDebugging",

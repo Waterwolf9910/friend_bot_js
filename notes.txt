@@ -1,0 +1,2 @@
+Hide encryption via something like gpg
+    https://github.com/eschulte/node-gpg

@@ -1,0 +1,24 @@
+diff --git a/dist/index.js b/dist/index.js
+index c5dc0e97b5a439a6063336886ff50990febe6038..999f0f58b3bc69be855d12dd4ea9eb5487a261e6 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -227,7 +227,18 @@ var methods = {
+ void (async () => {
+   for (const libName of Object.keys(libs)) {
+     try {
+-      const lib = require(libName);
++      let _require
++      try {
++        eval('_require = __webpack_require__')
++      } catch {
++        _require = require
++      }
++      let lib
++      try {
++        lib = _require(libName);
++      } catch {
++        lib = _require(Object.keys(__webpack_modules__).find(v => v.includes(libName) && v.includes("index")))
++      }
+       if (libName === "libsodium-wrappers" && lib.ready)
+         await lib.ready;
+       Object.assign(methods, libs[libName](lib));

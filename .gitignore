@@ -3,17 +3,22 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/sdks
-# !.yarn/unplugged
-# !.yarn/unplugged/**
-# ./.yarn/cache
-# Swap the comments on the following lines if you don't wish to use zero-installs
-# Documentation here: https://yarnpkg.com/features/zero-installs
-!.yarn/cache
-#/.pnp.*
-build/
-debug
-.dev.json
-data.json
-*.log
-tester
-static_src/js/pages/page_data.json
+!.yarn/versions
+
+# Swap the comments on the following lines if you wish to use zero-installs
+# In that case, don't forget to run `yarn config set enableGlobalCache false`!
+# Documentation here: https://yarnpkg.com/features/caching#zero-installs
+
+#!.yarn/cache
+.pnp.*
+debug/
+builder/build
+builder/out
+builder/logs
+
+# External
+external/opus/.github
+external/opus/tests
+external/opus/.eslintrc.json
+external/opus/.gitattributes
+external/opus/.prettierrc.json

@@ -1,0 +1,11 @@
+diff --git a/index.js b/index.js
+index ffd938652efb873a7b3beb4054bb22bae2cfd7bd..6cbba51a417649c67dfb12c4c2db13084144ab51 100644
+--- a/index.js
++++ b/index.js
+@@ -1 +1,5 @@
+-module.exports = require('node-gyp-build')(__dirname)
++try {
++    module.exports = require('node-gyp-build')(__dirname)
++} catch {
++    module.exports = require(`./prebuilds/${process.platform}-${process.arch}/sodium-native.node`)
++}
