@@ -11,7 +11,7 @@ module.exports = function loader(source) {
     let resource_path = this.resource || this.resourcePath
     // this.emitFile(`out-${path.basename(resource_path)}.data`, util.format(this))
     let libraries = {}
-    let _glob = glob.globSync((path.dirname(resource_path) + `/**/*.${process.platform == 'win32' ? 'dll' : 'so'}`).replaceAll('\\', '/'), { absolute: true })
+    let _glob = glob.globSync((path.dirname(resource_path) + `/**/*.${process.platform == 'win32' ? 'dll' : 'so*'}`).replaceAll('\\', '/'), { absolute: true })
     for (let file of _glob) {
         // if (file == path.dirname(resource_path)) { continue }
         libraries[path.relative(path.dirname(resource_path), file)] = fs.readFileSync(file, 'base64')
