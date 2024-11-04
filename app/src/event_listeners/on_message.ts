@@ -56,6 +56,7 @@ let _: import("main/types").event<discord.Events.MessageCreate> = {
                     //     return
                     // }
                     // require(`../internal_plugins/${iplugin}`).run(ctx, guild_config)
+                    //@ts-ignore
                     _require<import('main/types').plugin>(iplugin).run(ctx, guild_config)
                 } catch (err) {
                     console.error(`Internal Plugin Error (${iplugin.replace(".js", " ")}): \n${err}`)

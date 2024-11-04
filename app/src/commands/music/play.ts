@@ -1,5 +1,5 @@
 import voice = require("@discordjs/voice")
-// import discord = require("discord.js")
+import slash = require('./slash')
 import queue_data = require("./queues")
 import ytsearch = require("@distube/ytsr")
 import ytdl = require("@distube/ytdl-core")
@@ -7,25 +7,49 @@ import ytpl = require("@distube/ytpl")
 import dayjs = require("dayjs")
 
 export = {
-    interaction: (interaction) => {
+    interaction: (interaction, gcc) => {
+        last_config = {...last_config, ...gcc('music.play')}
         let search = interaction.options.getString("video_query", false)
         return run(interaction.member, interaction.guild.id, interaction.channel, search, search != null && search !== "" ? search.split(' ') : null)
     },
-    slash: require("./slash").addSubcommand(sub => {
-        sub.setName("play")
-        sub.setDescription("Add something to the play queue (use without arguments to resume)")
-        sub.addStringOption(video_query => {
-            video_query.setName("video_query")
-            video_query.setDescription("text to search for or link of the video")
-            video_query.setRequired(false)
-            return video_query
-        })
-        return sub
-    }),
+    slash: slash.addSubcommand(sub => sub
+        .setName("play")
+        .setDescription("Add something to the play queue (use without arguments to resume)").addStringOption(video_query => video_query
+            .setName("video_query")
+            .setDescription("text to search for or link of the video")
+            .setRequired(false)
+        )
+    ),
     get play_next() {
         return play_next
     }
-} satisfies import("main/types").Command & {play_next: typeof play_next}
+} satisfies import("main/types").Command<config> & {play_next: typeof play_next}
+
+let agentOptions: Parameters<typeof ytdl.createAgent>[1] = {
+    connections: 4,
+    pipelining: 2,
+}
+
+type config = {
+    cookies: Parameters<typeof ytdl.createAgent>['0'],
+    agent: string,
+    sec_ch_ua: string,
+    // sec_ch_ua_full_version_list: string,
+}
+
+let last_config: config = {
+    cookies: [],
+    agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+    sec_ch_ua: '"Not A(Brand";v="8", "Chromium";v="132"',
+    // sec_ch_ua_full_version_list: '"Not A(Brand";v="8.0.0.0", "Chromium";v="132.0.6810.0"'
+}
+
+let getRequestOptions = () => ({
+    headers: {
+        "User-Agent": last_config.agent,
+        "Sec-Ch-Ua": last_config.sec_ch_ua,
+    },
+})
 
 let play_next = async (text_channel: import("discord.js").GuildTextBasedChannel, guild_id: string, retrys = 0) => {
     let gqueue_info = queue_data.guild_queues[ guild_id ];
@@ -46,6 +70,7 @@ let play_next = async (text_channel: import("discord.js").GuildTextBasedChannel,
     let queue = gqueue_info.queue
     let err_handle = async (err) => {
         text_channel.send(`There was an error while trying to play this track ([${queue[cur].title}](${queue[cur].link}))`)
+        console.error(err)
         gqueue_info.player.stop()
         // cur = next
         // next++
@@ -59,7 +84,6 @@ let play_next = async (text_channel: import("discord.js").GuildTextBasedChannel,
             return
         }
         play_next(text_channel, guild_id, loop == 'song' ? retrys + 1 : 0)
-        console.error(err)
     }
     if (retrys > 2) {
         text_channel.send("Failed after 3 retries, skipping to next song")
@@ -71,12 +95,15 @@ let play_next = async (text_channel: import("discord.js").GuildTextBasedChannel,
     }
     cur = gqueue_info.skipping ? next++ : gqueue_info.loop == "song" ? cur : next++;
     try {
-        gqueue_info.player.play(voice.createAudioResource(ytdl(queue[ cur ].link, { dlChunkSize: 1024 * 1024 * 64, liveBuffer: 30000, highWaterMark: 1024 * 1024 * 256, quality: "highestaudio", filter: "audioonly" }), { silencePaddingFrames: 10 }))
+        // console.log(last_config)
+        let agent = ytdl.createAgent(last_config.cookies, agentOptions)
+        // console.log(2)
+        gqueue_info.player.play(voice.createAudioResource(ytdl(queue[ cur ].link, { dlChunkSize: 1024 * 1024 * 64, liveBuffer: 30000, highWaterMark: 1024 * 1024 * 256, quality: "highestaudio", filter: "audioonly", agent, requestOptions: getRequestOptions() }), { silencePaddingFrames: 10 }))
     } catch (err) {
         err_handle(err)
         return
     }
-
+    
     gqueue_info.player.once("error", err_handle)
     gqueue_info.np_msg = {
         color: 3142847,
@@ -202,22 +229,24 @@ let run = async (member: import('discord.js').GuildMember, guild_id: string, tex
         url = new URL(search_split[ 0 ])
     } catch { }
 
-    if (!url) {
-        ytsearch(search, { type: "video", safeSearch: false, limit: 20 }).then(async result => {
+    // console.log(last_config)
+    let agent = ytdl.createAgent(last_config.cookies, agentOptions)
 
-            let ran = 0
+    if (!url) {
+        ytsearch(search, { type: "video", safeSearch: false, limit: 20, requestOptions: {...getRequestOptions(), dispatcher: agent.dispatcher} }).then(async result => {
+
             let selections = [ "1️⃣", "2️⃣", "3️⃣" ]
-            let fields = []
+            let fields: import('discord.js').APIEmbedField[] = []
             let options: { [ key: string ]: typeof queue[ 0 ] } = {}
 
             for (let video of result.items) {
                 if (!video.isLive && !video.upcoming) {
                     fields.push({
                         inline: true,
-                        name: `${selections[ ran ]}: `,
+                        name: `${selections[fields.length - 1]}: `,
                         value: `[${video.name}](${video.url})\n[${video.author.name}](${video.author.url})`
                     })
-                    options[ selections[ ran ] ] = {
+                    options[selections[fields.length - 1]] = {
                         duration: video.duration,
                         thumbnail: video.thumbnail,
                         // source: "Youtube",
@@ -228,9 +257,8 @@ let run = async (member: import('discord.js').GuildMember, guild_id: string, tex
                         title: video.name,
                         link: video.url
                     }
-                    ran++
                 }
-                if (ran == 2) {
+                if (fields.length == 3) {
                     break;
                 }
             }
@@ -246,12 +274,12 @@ let run = async (member: import('discord.js').GuildMember, guild_id: string, tex
                 selmsg.react("2️⃣").then(_m2 => {
                     selmsg.react("3️⃣").then(_m3 => {
                         selmsg.react("❌")
-                    }).catch(() => null)
-                }).catch(() => null)
-            }).catch(() => null)
+                    })//.catch(() => null)
+                })//.catch(() => null)
+            })//.catch(() => null)
             try {
                 let sel = (await selmsg.awaitReactions({ errors: [ "time" ], time: 30000, maxEmojis: 1, filter: (_react, user) => user.id == member.id })).first()
-                selmsg.delete().catch(() => null)
+                selmsg.delete()//.catch(() => null)
                 // console.log(sel.first().emoji, options)
                 let video = options[ sel.emoji.name ]
                 if (!video) {
@@ -260,7 +288,7 @@ let run = async (member: import('discord.js').GuildMember, guild_id: string, tex
                         end(guild_id)
                     }
                     setTimeout(() => {
-                        canmsg.delete().catch(() => null)
+                        canmsg.delete()//.catch(() => null)
                     }, 3000)
                     return
                 }
@@ -304,7 +332,7 @@ let run = async (member: import('discord.js').GuildMember, guild_id: string, tex
     if (ytpl.validateID(search_split[0])) {
         let pl: ytpl.result
         try {
-            pl = await ytpl(search_split[0], { limit: Infinity })
+            pl = await ytpl(search_split[0], { limit: Infinity, requestOptions: {...getRequestOptions(), dispatcher: agent.dispatcher} })
         } catch {
             if (queue_data.guild_queues[guild_id].queue.length == 0) {
                 end(guild_id)
@@ -330,7 +358,13 @@ let run = async (member: import('discord.js').GuildMember, guild_id: string, tex
             addmsg.delete().catch(() => null)
         }, 3000)
     } else if (ytdl.validateURL(search_split[0])) {
-        let video = (await ytdl.getInfo(search_split[0])).videoDetails
+        let video: ytdl.MoreVideoDetails 
+        
+        try {
+            video = (await ytdl.getInfo(search_split[0], {agent, requestOptions: getRequestOptions()})).videoDetails
+        } catch (err) {
+            console.error(err)
+        }
         
         if (!video) {
             if (queue_data.guild_queues[guild_id].queue.length == 0) {

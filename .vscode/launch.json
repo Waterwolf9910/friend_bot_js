@@ -55,6 +55,7 @@
             // "profileStartup": true,
             "runtimeArgs": [
                 "--tls-min-v1.2",
+                "--trace-warnings",
                 "--report-uncaught-exception",
                 "--enable-source-maps" /* "--prof", "--node-memory-debug", "--heap-prof", "--cpu-prof" */
             ],
@@ -78,10 +79,9 @@
             "outputCapture": "std",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "localRoot": "${workspaceFolder}/build/",
             "preLaunchTask": "build",
             // "preLaunchTask": "npm: prepareDebug",
-            "program": "${workspaceFolder}/builder/out/index.js",
+            "program": "${workspaceFolder}/dist/index.js",
             "showAsyncStacks": true,
             "serverReadyAction": {
                 "action": "startDebugging",

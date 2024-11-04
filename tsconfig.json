@@ -15,6 +15,7 @@
                 "./app/src/*"
             ]
         },
+        "outDir": "./dist",
         "esModuleInterop": true,
         "diagnostics": true,
         "removeComments": true,

@@ -164,12 +164,14 @@ export interface GuildQueue {
     }
 }
 
-export interface Command {
+export type get_command_config<T> = (name: string) => T
+
+export interface Command<Config = never> {
     // description: string // Unused
     // usage: string // Unused
     // level?: string // Unused
     slash: discord.SlashCommandBuilder | discord.SlashCommandOptionsOnlyBuilder | discord.SlashCommandSubcommandsOnlyBuilder | Omit<discord.SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>,
-    interaction: (interaction: discord.ChatInputCommandInteraction<'cached'>) => CommandResult | Promise<CommandResult>
+    interaction: (interaction: discord.ChatInputCommandInteraction<'cached'>, gcc: get_command_config<Config>) => CommandResult | Promise<CommandResult>
 }
 
 /**
@@ -187,7 +189,7 @@ export interface Reacts {
     }
 }
 
-export type event<K extends keyof discord.ClientEvents> = {
+export type event<K = keyof discord.ClientEvents> = {
     name: K,
     function: (config: Config, client: discord.Client<true>, ...args: discord.ClientEvents[K]) => any
 }
@@ -195,7 +197,7 @@ export type event<K extends keyof discord.ClientEvents> = {
 export type plugin = {
     name: string
     description: string
-    run: (ctx: discord.Message, guild_config: GuildConfig) => any
+    run: (ctx: discord.Message<true>, guild_config: GuildConfig) => any
 }
 
 export interface Validator {

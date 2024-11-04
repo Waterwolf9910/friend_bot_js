@@ -15,7 +15,7 @@ if (!fs.existsSync("./xp.json")) {
 
 // module.exports = plugin
 let _: import("main/types").plugin = {
-    run: async (ctx: discord.Message, guild_config: import("main/types").GuildConfigModel) => {
+    run: async (ctx, guild_config: import("main/types").GuildConfigModel) => {
         let xp = guild_config.xp
         let current_xp = xp[ ctx.member.id ] || 0
 

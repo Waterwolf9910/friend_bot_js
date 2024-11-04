@@ -46,7 +46,10 @@ let server_config = {
                     moduleFilenameTemplate: '../../app/src/[namespace]/[resourcePath]',
                     // sourceRoot: path.resolve(__dirname, "../../app/src/[namespace]/[resourcePath]"),
                 })
-            ] : [])
+            ] : []),
+            new webpack.IgnorePlugin({
+                resourceRegExp: /\.disabled$/
+            })
         ]
     )(),
     optimization: {
@@ -70,6 +73,10 @@ let server_config = {
         //     ".ts": [".js", ".ts"],
         // },
     },
+    cache: isDev ? false : {
+        type: 'filesystem',
+        cacheDirectory: path.resolve(__dirname, '../.cache'),
+    } ,
     name: "main",
     target: "node",
     mode: isDev ? 'development' : 'production'

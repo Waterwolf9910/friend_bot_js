@@ -14,7 +14,9 @@
 debug/
 builder/build
 builder/out
+builder/.cache
 builder/logs
+dist/
 
 # External
 external/opus/.github

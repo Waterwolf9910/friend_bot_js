@@ -11,6 +11,7 @@ let create = (guild_id: string, vchannel: import("discord.js").VoiceBasedChannel
     
     if (!connection || connection.state.status == voice.VoiceConnectionStatus.Destroyed) {
         connection = voice.joinVoiceChannel({
+            //@ts-ignore
             adapterCreator: vchannel.guild.voiceAdapterCreator,
             guildId: vchannel.guild.id,
             channelId: vchannel.id,

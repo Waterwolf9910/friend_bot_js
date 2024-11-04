@@ -3,7 +3,7 @@
     "tasks": [
         {
             "label": "build",
-            "command": "yarn webpack -c ./build_resources/webpack.config.js --config-name main",
+            "command": "yarn tsc",
             "type": "shell",
             "args": [],
             "problemMatcher": [
@@ -15,7 +15,7 @@
             },
             "options": {
                 "env": {
-                    // "NODE_ENV": "development"
+                    "NODE_ENV": "development"
                 },
                 "cwd": "${workspaceFolder}/builder"
             },

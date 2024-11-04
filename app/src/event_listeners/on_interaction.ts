@@ -1,6 +1,21 @@
 import events = require("../events")
 import util = require("util")
 import discord = require("discord.js")
+import fs = require("fs")
+import path = require("path")
+
+let get_conf: import('main/types').get_command_config<never> = (name) =>  {
+    let folder = path.resolve("cmd_configs");
+    fs.mkdirSync(folder, {recursive: true})
+    if (!fs.existsSync(path.resolve(folder, `${name}.json`))) {
+        return {} as never
+    }
+    try {
+        return JSON.parse(fs.readFileSync(path.resolve(folder, `${name}.json`), 'utf-8')) as never
+    } catch {
+        return {} as never
+    }
+}
 
 let _: import("main/types").event<discord.Events.InteractionCreate> = {
     name: discord.Events.InteractionCreate,
@@ -11,9 +26,8 @@ let _: import("main/types").event<discord.Events.InteractionCreate> = {
             events.emit("menu", interaction)
         }
         if (!interaction.isChatInputCommand()) { return }
-        await interaction.deferReply({})
         try {
-
+            await interaction.deferReply({})
             let command = interaction.commandName
             let subcommand = interaction.options.getSubcommand(false)
 
@@ -23,7 +37,7 @@ let _: import("main/types").event<discord.Events.InteractionCreate> = {
                 return;
             }
             
-            let result = await cmd.interaction(interaction)
+            let result = await cmd.interaction(interaction, get_conf)
             if (result == undefined || result.message == undefined) {
                 result = {
                     flag: 'n',
@@ -54,7 +68,9 @@ let _: import("main/types").event<discord.Events.InteractionCreate> = {
                 sub: interaction.options.getSubcommand(false),
                 err
             })
-            interaction.editReply("There was an error while trying to run this command")
+            try {
+                interaction.editReply("There was an error while trying to run this command")
+            } catch {}
         }
     }
 }

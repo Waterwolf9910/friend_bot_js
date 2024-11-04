@@ -1,5 +1,20 @@
 process.env["YTDL_NO_UPDATE"] = "1"
 if (!process.env.NODE_ENV) {process.env.NODE_ENV="production"}
+let isDev = process.env.NODE_ENV == "development"
+
+let packaged = false
+try {
+    eval('packaged = __webpack_modules__ != undefined')
+} catch { }
+if (isDev && !packaged) {
+    let _require: NodeJS.Require
+    try {
+        _require = __non_webpack_require__
+    } catch {
+        _require = require
+    }
+    _require("../.pnp.cjs").setup()
+}
 import path = require("path")
 import fs = require("fs")
 // fs.existsSync(path.resolve(__dirname, ".pnp.cjs")) ? require("./.pnp.cjs").setup() : require("../.pnp.cjs").setup()
@@ -23,15 +38,6 @@ let random = _random.createRandom(512, 9)
 let config: import("./types").Config
 let db: typeof import("./libs/db")
 let client: discord.Client<true>
-let isDev = process.env.NODE_ENV == "development"
-
-let packaged = false
-try {
-    eval('packaged = __webpack_modules__ != undefined')
-} catch {}
-if (isDev && !packaged) {
-    require("../../.pnp.cjs").setup()
-}
 
 /* console = { ...logger, error: (message, ...optionalParams) => {
     if (typeof message == "string") {
@@ -145,7 +151,7 @@ async function main() {
             events = context.keys()
             _require = context
         } else {
-            events = fs.readdirSync(path.resolve(__dirname, "event_listeners")).filter(val => val.endsWith('.js'))
+            events = fs.readdirSync(path.resolve(__dirname, "event_listeners"), {withFileTypes: true}).map(v => `${v.parentPath}/${v.name}`).filter(val => val.endsWith('.js'))
             _require = require
         }
         // for (let eventFile of fs.readdirSync(path.resolve(__dirname, "event_listeners")).filter(val => val.endsWith('.js'))) {
