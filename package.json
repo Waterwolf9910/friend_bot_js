@@ -55,7 +55,7 @@
         "@types/sequelize": "^4.28.15",
         "bootstrap": "^5.3.2",
         "bufferutil": "latest",
-        "canvas": "^2.11.2",
+        "canvas": "^3.0.0",
         "compression": "^1.7.4",
         "connect-session-sequelize": "^7.1.7",
         "cors": "^2.8.5",
