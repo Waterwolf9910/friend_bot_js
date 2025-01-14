@@ -23,7 +23,7 @@
         "html-webpack-plugin": "^5.5.3",
         "madge": "^6.1.0",
         "node-gyp": "patch:node-gyp@npm%3A10.2.0#~/.yarn/patches/node-gyp-npm-10.2.0-cad1109948.patch",
-        "postcss": "^8.4.31",
+        "postcss": "^8.5.0",
         "postcss-loader": "^7.3.3",
         "postject": "^1.0.0-alpha.6",
         "react-refresh": "^0.14.0",
