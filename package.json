@@ -44,7 +44,7 @@
     },
     "dependencies": {
         "@discordjs/builders": "^1.6.5",
-        "@discordjs/opus": "./external/opus",
+        "@discordjs/opus": "0.10.0",
         "@discordjs/rest": "latest",
         "@discordjs/voice": "patch:@discordjs/voice@npm%3A0.17.0#~/.yarn/patches/@discordjs-voice-npm-0.17.0-9cbb5b94a1.patch",
         "@distube/ytdl-core": "^4.15.1",
