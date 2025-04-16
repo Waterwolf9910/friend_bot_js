@@ -8,6 +8,6 @@ export = {
 } satisfies import("main/types").Command
 
 let run = (guild_id: string): import('main/types').CommandResult => {
-    queues.end(guild_id)
+    queues.end(guild_id, true)
     return { flag: 'n' }
 }

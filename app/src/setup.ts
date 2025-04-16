@@ -18,6 +18,7 @@ let baseConfig: import("./types").Config = {
         }
     ],
     AuthUrl: "/login",
+    BasePath: "/",
     BaseCurrencyName: "cookies",
     BotOwner: "331854425171951616",
     BotToken: "",
@@ -38,7 +39,7 @@ let baseConfig: import("./types").Config = {
     UseHttps: true,
     UseServer: true,
     RefreshDays: 90,
-    ReverseProxy: "",
+    ReverseProxy: [],
     Status: "idle",
     WebDomain: `localhost:3000`,
     WebSecret: random.alphaNum(true),

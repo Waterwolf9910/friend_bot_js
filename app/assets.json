@@ -1,3 +1,4 @@
 {
-    "example.txt": "assets/example.txt"
+    "example.txt": "assets/example.txt",
+    "./static": "../builder/out/dist/static"
 }

@@ -14,7 +14,7 @@ module.exports = function loader(source) {
     let _glob = glob.globSync((path.dirname(resource_path) + `/**/*.${process.platform == 'win32' ? 'dll' : 'so*'}`).replaceAll('\\', '/'), { absolute: true })
     for (let file of _glob) {
         // if (file == path.dirname(resource_path)) { continue }
-        libraries[path.relative(path.dirname(resource_path), file)] = fs.readFileSync(file, 'base64')
+        libraries[path.relative(path.dirname(resource_path), file)] = fs.readFileSync(file).toJSON()
     }
     // if (Object.keys(libraries).length > 0) {
     //     fs.writeFileSync("out.json", JSON.stringify(libraries))
@@ -23,7 +23,7 @@ module.exports = function loader(source) {
     return base
         .replaceAll("{base_node_module_deps}", JSON.stringify(libraries))
         //@ts-ignore
-        .replaceAll("{base_node_module_file}", source.toString('base64'))
+        .replaceAll("{base_node_module_file}", JSON.stringify(Buffer.from(source).toJSON()))
         .replaceAll("{base_node_module_name}", path.basename(resource_path))
         // @ts-ignore
         // .replaceAll("{_is_dev_}", this.mode == 'development')

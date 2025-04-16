@@ -22,10 +22,10 @@ let config = {
     target: ["web", "es6"],
     stats: "normal",
     output: {
-        path: path.resolve(__dirname, "../out/static"),
+        path: path.resolve(__dirname, "../out/dist/static"),
         charset: true,
         publicPath: "auto",
-        clean: true
+        clean: false
     },
     context: path.resolve(__dirname, "../../app/static_src"),
     module: {
@@ -102,7 +102,7 @@ let config = {
             new html({
                 inject: "head",
                 template: "./index.html",
-                publicPath: "&{_path_}",
+                // publicPath: "&{_path_}",
                 minify: { removeComments: true }
             }),
             new webpack.ProgressPlugin({

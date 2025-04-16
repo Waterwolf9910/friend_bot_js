@@ -23,7 +23,14 @@ import _random = require("wolf_utils/random.js")
 import db = require("../libs/db")
 import guild_queues = require("../commands/music/queues")
 import play = require("../commands/music/play")
+import sea = require("node:sea")
+//@ts-ignore
+import rotating_file_stream = require("rotating-file-stream")
 
+let months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+]
 let fetch = _fetch.default
 // deepcode ignore DisablePoweredBy: Helmet IS used, deepcode ignore UseCsurfForExpress: (same as prev)
 let app = express()
@@ -34,7 +41,6 @@ let sequelize_store = _sequelize_store(session.Store)
 let store_obj: InstanceType<ReturnType<typeof _sequelize_store>>
 let isDev = process.env.NODE_ENV == "development"
 let random = _random.createRandom(512, 9)
-
 app.set('x-powered-by', false)
 
 /** Converts a Guild Permission bit to an object
@@ -89,29 +95,66 @@ let parsePermissions = (permissions: bigint) => {
     return result;
 }
 
-/**
- * Gets the removed part of the uri from origin server (i.e what is put in the location directive for nginx)
- * @param recievedPath The path got from req.path
- * @param root_path Path sent from origin server (i.e $uri from nginx)
- * @returns Returns the path directed from the origin server 
- */
-let getTrueRootURLPath = (recievedPath: string, root_path: string | string[]): string => {
-    let _root_path = Array.isArray(root_path) ? root_path[0] : root_path
-    let relative_path = path.posix.relative(recievedPath, '/').replace(/^\.\.\//, recievedPath.endsWith('/') ? '../' : './') || './'
-    let formatted = path.posix.normalize(_root_path + '/' + relative_path).replace(/\/$/, '')
-    // console.log( relative_path, formatted)
-    return formatted
-}
+// /**
+//  * Gets the removed part of the uri from origin server (i.e what is put in the location directive for nginx)
+//  * @param recievedPath The path got from req.path
+//  * @param root_path Path sent from origin server (i.e $uri from nginx)
+//  * @returns Returns the path directed from the origin server 
+//  */
+// let getTrueRootURLPath = (recievedPath: string, root_path: string | string[]): string => {
+//     let _root_path = Array.isArray(root_path) ? root_path[0] : root_path
+//     let relative_path = path.posix.relative(recievedPath, '/').replace(/^\.\.\//, recievedPath.endsWith('/') ? '../' : './') || './'
+//     let formatted = path.posix.normalize(_root_path + '/' + relative_path).replace(/\/$/, '')
+//     // console.log( relative_path, formatted)
+//     return formatted
+// }
 
+
+let access_log = rotating_file_stream.createStream(path.resolve("web_data", "access.log"), {
+    compress: 'gzip',
+    size: '25M',
+    interval: '1d',
+    maxFiles: 5
+})
 let start = async (secret: string, client_secret: string, config: import("main/types").Config, client: import("discord.js").Client<true>) => {
-    sequelize_session = new _sequelize.Sequelize({ database: "Friend_Bot", username: "friend_bot", password: secret, dialect: "sqlite", dialectModule: require("sqlite3"), logging: (a) => {
+    let module: any
+    let dialect: _sequelize.Dialect
+    switch (config.DBType) {
+        case "mysql": {
+            dialect = "mysql"
+            module = require("mariadb")
+            break
+        }
+        case "mariadb": {
+            dialect = "mariadb"
+            module = require("mariadb")
+            break
+        }
+        case "postgres":
+        case "postgresql":
+        case "pg": {
+            dialect = "postgres"
+            module = require("pg")
+            break
+        }
+        default: 
+        case "sqlite3":
+        case "sqlite": {
+            dialect = "sqlite"
+            module = require("sqlite3")
+            break
+        }
+    }
+    console.log("a")
+    sequelize_session = new _sequelize.Sequelize({ database: config.DBName, username: config.DBUser, password: config.DBPassword, dialect, dialectModule: module, logging: (a) => {
         fs.appendFileSync(path.resolve("web_data", "session.log"), `[Sequelize] session-store: ${a}\n`)
     }, pool: {acquire: 40000}, storage: "./web_data/session.db" })
     store_obj = new sequelize_store({ db: sequelize_session, checkExpirationInterval: 1000 * 60 * 10, expiration: 1000 * 60 * 60 * 24 * 7 * 2, tableName: "sessions", })
     await sequelize_session.sync()
     store_obj.sync()
 
-    app.set("trust proxy", config.ReverseProxy !== "" ? 1 : 0)
+    // app.set("trust proxy", config.ReverseProxy !== "" ? 1 : 0)
+    app.set("trust proxy", ['loopback', 'linklocal', 'uniquelocal', ...config.ReverseProxy])
 
     app.use(session({
         secret: secret,
@@ -146,11 +189,10 @@ let start = async (secret: string, client_secret: string, config: import("main/t
                 scriptSrc: [ "'self'", isDev && "'unsafe-eval'" ].filter(v => typeof v != "boolean"),
                 styleSrc: [ "'self'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net/" ],
                 fontSrc: [ "'self'", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net/" ],
-                imgSrc: [ "'self'", 'data:', "https://cdn.discordapp.com", "https://i.ytimg.com" ],
+                imgSrc: [ "'self'", 'data:', 'blob:', "https://cdn.discordapp.com", "https://i.ytimg.com" ],
                 upgradeInsecureRequests: !isDev || config.UseHttps ? [] : null,
             }
         },
-        
         hidePoweredBy: true,
         noSniff: true
     }))
@@ -159,7 +201,24 @@ let start = async (secret: string, client_secret: string, config: import("main/t
         credentials: false
     }))
 
-    app.use(morgan("combined", { stream: fs.createWriteStream(path.resolve("web_data", "access.log")) }))
+    app.use((req, res, next) => {
+        let date = new Date
+        let tzoffset = date.getTimezoneOffset()
+        let timezone = `${(tzoffset / 60) * 100 * (tzoffset < 1 ? -1 : 1)}`.padStart(4, '0')
+        timezone = `${tzoffset > 1 ? '-' : '+'}${tzoffset}`
+        let ip = req.ip || req.socket.remoteAddress
+        let date_format = `${date.getDate().toString().padStart(2, '0')}/${months[date.getMonth()]}/${date.getFullYear()}:${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')} ${timezone}`
+        let status = res.statusCode || '-'
+        let content_length = res.getHeader('content-length') || '-'
+        let referrer = req.headers.referer || req.headers.referrer || '-'
+        let user_agent = req.headers["user-agent"] || "-"
+        // fs.appendFileSync(path.resolve('web_data', 'access.log'), 
+        //     `${ip} - - [${date_format}] "${req.method} ${req.path} HTTP/${req.httpVersion}" ${status} ${content_length} "${referrer}" "${user_agent}"`
+        // )
+        access_log.write(`${ip} - - [${date_format}] "${req.method} ${req.path} HTTP/${req.httpVersion}" ${status} ${content_length} "${referrer}" "${user_agent}"\n`)
+        next()
+    })
+    // app.use(morgan("combined", { stream: fs.createWriteStream(path.resolve("web_data", "access.log")) }))
     fs.mkdirSync("web_data", { recursive: true })
     fs.writeFileSync(path.resolve("web_data", "access.log"), '', { encoding: 'utf-8' })
     let ctx = require.context(".")
@@ -234,6 +293,19 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
             
             // Get current date for expiration time the grap our token from discord
             let expire = dayjs()
+            // console.log(req.path, new url.URLSearchParams({
+            //     client_id: config.ClientId,
+            //     client_secret,
+            //     code: req.query.code.toString(),
+            //     grant_type: "authorization_code",
+            //     // Recalculate the redirect uri
+            //     redirect_uri: url.format({
+            //         protocol: config.UseHttps ? "https" : "http",
+            //         host: req.headers.host,
+            //         pathname: path.posix.normalize(`${config.BasePath}${config.AuthUrl}`)
+            //         // pathname: path.posix.normalize(`/${getTrueRootURLPath(req.path, root_path)}`)
+            //     })
+            // }))
             let user_token: dapiTypes.RESTPostOAuth2AccessTokenResult = await (await fetch(dapiTypes.OAuth2Routes.tokenURL, {
                 method: "POST",
                 body: new url.URLSearchParams({
@@ -245,7 +317,8 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
                     redirect_uri: url.format({
                         protocol: config.UseHttps ? "https" : "http",
                         host: req.headers.host,
-                        pathname: path.posix.normalize(`/${getTrueRootURLPath(req.path, root_path)}`)
+                        pathname: path.posix.normalize(`${config.BasePath}${config.AuthUrl}`)
+                        // pathname: path.posix.normalize(`/${getTrueRootURLPath(req.path, root_path)}`)
                     })
                 } satisfies dapiTypes.RESTPostOAuth2AccessTokenURLEncodedData),
                 headers: {
@@ -320,7 +393,7 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
     })
 
     app.get("/getLogin", async (req, res) => {
-        let root_path = config.ReverseProxy ? req.headers[ 'x-original-url' ] || req.path : req.path
+        // let root_path = config.ReverseProxy ? req.headers[ 'x-original-url' ] || req.path : req.path
 
         // Generate and encrypt a state to be sent
         let state = random.alphaNum(true, 25)
@@ -354,7 +427,8 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
                 redirect_uri: url.format({
                     protocol: config.UseHttps ? "https" : "http",
                     host: req.headers.host,
-                    pathname: path.posix.normalize(`/${getTrueRootURLPath(req.path, root_path)}/${config.AuthUrl}`)
+                    pathname: path.posix.normalize(`${config.BasePath}${config.AuthUrl}`)
+                    // pathname: path.posix.normalize(`/${getTrueRootURLPath(req.path, root_path)}/${config.AuthUrl}`)
                 }),
                 prompt: "none"
             } satisfies dapiTypes.RESTOAuth2AuthorizationQuery)
@@ -616,15 +690,16 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
         ws.send(JSON.stringify(response))
     }
 
-    let _static = express.static(path.resolve(__dirname, "../static"), { dotfiles: "ignore", extensions: [], index: false, immutable: !isDev })
+    let _static = express.static(path.resolve("./static"), { dotfiles: "ignore", extensions: [], index: false, immutable: !isDev })
+    // let _static = express.static(    let _static = express.static(sea.isSea() ? path.resolve(__dirname, "../static") : path.resolve(__dirname, "../static"), { dotfiles: "ignore", extensions: [], index: false, immutable: !isDev })
     app.use((req, res, next) => _static(req, res, next))
 
     let layout: string
 
     app.get('*',  async (req, res) => {
         // let _path = req.path.replace(new RegExp(`/?${config.ReverseProxy}/?`), '')
-        let root_path = config.ReverseProxy ? req.headers['x-original-url'] || req.path : req.path
-        if (isDev) {
+        // let root_path = config.ReverseProxy ? req.headers['x-original-url'] || req.path : req.path
+        if (isDev && !sea.isSea()) {
             let wpmw: import('webpack-dev-middleware').Context<import('http').IncomingMessage, import('http').ServerResponse & import("webpack-dev-middleware").ExtendedServerResponse> = res.locals.webpack.devMiddleware
             if (!wpmw.state) {
                 return res.status(500).send("<p>Not done loading</p>")
@@ -657,9 +732,10 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
                     }
                     try {
                         let _layout = wpmw.outputFileSystem.readFileSync(path.join(wpmw.stats.toJson().outputPath, "index.html"), { encoding: 'utf-8' })
-                        console.log(req.headers[ 'x-original-url' ])
+                        // console.log(req.headers[ 'x-original-url' ])
+                        res.send(_layout.replaceAll("&{_path_}", config.BasePath))
                         // deepcode ignore XSS: Development path
-                        res.send(_layout.replaceAll("&{_path_}", getTrueRootURLPath(req.path, root_path)))
+                        // res.send(_layout.replaceAll("&{_path_}", getTrueRootURLPath(req.path, root_path)))
                     } catch {
                         res.status(500).send("Internal Error")
                     }
@@ -674,10 +750,10 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
         }
 
         if (layout == null) {
-            layout = fs.readFileSync(path.resolve(__dirname, "../static/index.html"), { encoding: 'utf-8' })
+            layout = fs.readFileSync(path.resolve("static/index.html"), { encoding: 'utf-8' })
         }
 
-        fs.readFile(path.normalize(`${__dirname}/../static/${req.path}`), {}, (err, data) => {
+        fs.readFile(path.normalize(`${path.resolve()}/static/${req.path}`), {}, (err, data) => {
             if (!err) {
                 let type = mime.getType(path.extname(req.path))
                 
@@ -688,7 +764,8 @@ let setupRoutes = (config: import("main/types").Config, client_secret: string, c
                 return res.status(404).end()
             }
 
-            res.send(layout.replaceAll("&{_path_}", getTrueRootURLPath(req.path, root_path)))
+            // res.send(layout.replaceAll("&{_path_}", getTrueRootURLPath(req.path, root_path)))
+            res.send(layout.replaceAll("&{_path_}", config.BasePath))
         })
         
 
@@ -757,6 +834,7 @@ let stop = () => {
     sequelize_session?.close()
     store_obj?.sync()
     store_obj?.stopExpiringSessions()
+    access_log.end()
 }
 
 export = {

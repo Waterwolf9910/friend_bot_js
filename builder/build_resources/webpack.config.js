@@ -1,4 +1,3 @@
-let fs = require("fs");
 let path = require("path");
 let webpack = require("webpack");
 let isDev = process.env.NODE_ENV == "development";
@@ -9,11 +8,11 @@ let isDev = process.env.NODE_ENV == "development";
 let server_config = {
     entry: ["./libs/fs.ts", "./index.ts"],
     context: path.resolve(__dirname, "../../app/src"),
-    devtool: isDev ? "inline-source-map" : false,
+    devtool: "inline-source-map",
     output: {
         path: path.resolve(__dirname, "../out"),
         filename: "index.js",
-        clean: true,
+        clean: false,
     },
     stats: {
         errorDetails: true
@@ -29,7 +28,10 @@ let server_config = {
             },
             {
                 test: /\.node$/,
-                loader: path.resolve(__dirname, "./native_loader/loader.js")
+                loader: path.resolve(__dirname, "./sea_native_loader/loader.js"),
+                options: {
+                    temp_path: path.resolve(__dirname, '../out/native')
+                }
             }
         ]
     },
@@ -49,6 +51,9 @@ let server_config = {
             ] : []),
             new webpack.IgnorePlugin({
                 resourceRegExp: /\.disabled$/
+            }),
+            new webpack.optimize.LimitChunkCountPlugin({
+                maxChunks: 1
             })
         ]
     )(),
@@ -64,8 +69,6 @@ let server_config = {
         // providedExports: false,
         // sideEffects: false,
         // usedExports: false,
-        // splitChunks: false,
-
     },
     resolve: {
         extensions: [".js", ".ts", ".tsx"],
@@ -73,10 +76,7 @@ let server_config = {
         //     ".ts": [".js", ".ts"],
         // },
     },
-    cache: isDev ? false : {
-        type: 'filesystem',
-        cacheDirectory: path.resolve(__dirname, '../.cache'),
-    } ,
+    cache: false,
     name: "main",
     target: "node",
     mode: isDev ? 'development' : 'production'

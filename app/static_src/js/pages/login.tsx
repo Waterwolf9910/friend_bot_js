@@ -19,9 +19,10 @@ let page = () => {
         
     react.useEffect(() => {
         if (sec < 1) {
-            return () => {
-                clearInterval(inv)
-            }
+            return
+            // return () => {
+            //     clearInterval(inv)
+            // }
         }
         let inv = setInterval(() => {
             setSec(sec-1)

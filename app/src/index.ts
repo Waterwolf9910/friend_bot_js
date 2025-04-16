@@ -1,3 +1,5 @@
+import path = require("path")
+import fs = require("fs")
 process.env["YTDL_NO_UPDATE"] = "1"
 if (!process.env.NODE_ENV) {process.env.NODE_ENV="production"}
 let isDev = process.env.NODE_ENV == "development"
@@ -15,8 +17,6 @@ if (isDev && !packaged) {
     }
     _require("../.pnp.cjs").setup()
 }
-import path = require("path")
-import fs = require("fs")
 // fs.existsSync(path.resolve(__dirname, ".pnp.cjs")) ? require("./.pnp.cjs").setup() : require("../.pnp.cjs").setup()
 import Logger = require("wolf_utils/logger.js")
 console = new Logger.default()
@@ -32,6 +32,7 @@ import _random = require("wolf_utils/random.js")
 import crypto = require("wolf_utils/crypto.js")
 require("./setup")
 import webserver = require("./web/main")
+process.env.PATH += `${process.platform == 'win32' ? ';' : ':'}${require('ffmpeg-static')}`
 // let querystring: typeof import("querystring") = require("querystring")
 
 let random = _random.createRandom(512, 9)
@@ -55,7 +56,7 @@ async function main() {
     let secret = config.WebSecret
     let validatorPath = path.resolve(os.homedir(), `friend_bot-validator.${isDev ? "dev" : "json"}`)
     let validater: import("./types").Validator = fs.existsSync(validatorPath) ? JSON.parse(fs.readFileSync(validatorPath, { encoding: 'utf-8' })) : {List: {}}
-     
+    console.log(os.homedir())
     let setToken = async (refresh = false) => {
         if (refresh) {
             token = crypto.decrypt({ tag: validater.List.BotToken.Tag, ciphertext: config.BotToken, iv: validater.List.BotToken.Nonce, key: validater.List.BotToken.Key })
@@ -156,6 +157,7 @@ async function main() {
         }
         // for (let eventFile of fs.readdirSync(path.resolve(__dirname, "event_listeners")).filter(val => val.endsWith('.js'))) {
         for (let eventFile of events) {
+            console.log('Registering events')
             // console.log(context, eventFile)
             // Try to import the modules and add their events to the client
             try {
@@ -181,6 +183,8 @@ async function main() {
         }
     }
 
+    // console.log("Using config", config)
+
     client.once('ready', listener)
 
     // Login to discord
@@ -194,7 +198,7 @@ async function main() {
 }
 
 // Make sure everything is closed and saved
-let close = async (error_code: number) => {
+let close = async (error_code?: number) => {
     console.log("Closing")
     webserver.stop()
     await db.sequelize.sync()
@@ -236,6 +240,7 @@ if (require.main === module) {
     repl.context.db = db
     repl.context.webserver = webserver
     repl.context.discord = discord
+    repl.context.close = close
     try {
         repl.context.__webpack_require__ = __webpack_require__
         repl.context.__webpack_modules__ = __webpack_modules__

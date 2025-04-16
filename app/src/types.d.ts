@@ -10,6 +10,7 @@ export interface Config extends jsonable_obj {
     Activities: discord.ActivityOptions[]
     AuthUrl: string
     BaseCurrencyName: string
+    BasePath: string
     BotOwner: string
     BotToken: string
     ClientId: string
@@ -28,7 +29,7 @@ export interface Config extends jsonable_obj {
     UseHttps: boolean
     UseServer: boolean,
     RefreshDays: number
-    ReverseProxy: string
+    ReverseProxy: string[]
     Status: discord.PresenceStatusData
     WebDomain: string
     WebSecret: string
