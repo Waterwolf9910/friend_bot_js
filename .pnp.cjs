@@ -65,7 +65,7 @@ const RAW_RUNTIME_STATE =
           ["express-session", "npm:1.18.0"],\
           ["express-ws", "virtual:3a26800f8c2d6499364de136b281bd72156b6256dd8d957add7849a1f5657a3755ecc1bcef12937ba59c9a91992fecbe10e0813c114e67ed3ff8ad8bbf5c8c5e#npm:5.0.2"],\
           ["ffmpeg-static", "npm:5.2.0"],\
-          ["fs-monkey", "npm:1.0.6"],\
+          ["fs-monkey", "patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch::version=1.0.6&hash=3e2057"],\
           ["glob", "npm:11.0.0"],\
           ["helmet", "npm:7.1.0"],\
           ["html-webpack-plugin", "virtual:3a26800f8c2d6499364de136b281bd72156b6256dd8d957add7849a1f5657a3755ecc1bcef12937ba59c9a91992fecbe10e0813c114e67ed3ff8ad8bbf5c8c5e#npm:5.6.0"],\
@@ -4182,7 +4182,7 @@ const RAW_RUNTIME_STATE =
           ["express-session", "npm:1.18.0"],\
           ["express-ws", "virtual:3a26800f8c2d6499364de136b281bd72156b6256dd8d957add7849a1f5657a3755ecc1bcef12937ba59c9a91992fecbe10e0813c114e67ed3ff8ad8bbf5c8c5e#npm:5.0.2"],\
           ["ffmpeg-static", "npm:5.2.0"],\
-          ["fs-monkey", "npm:1.0.6"],\
+          ["fs-monkey", "patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch::version=1.0.6&hash=3e2057"],\
           ["glob", "npm:11.0.0"],\
           ["helmet", "npm:7.1.0"],\
           ["html-webpack-plugin", "virtual:3a26800f8c2d6499364de136b281bd72156b6256dd8d957add7849a1f5657a3755ecc1bcef12937ba59c9a91992fecbe10e0813c114e67ed3ff8ad8bbf5c8c5e#npm:5.6.0"],\
@@ -4257,10 +4257,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["fs-monkey", [\
-      ["npm:1.0.6", {\
-        "packageLocation": "../snap/code/186/.local/share/yarn/berry/cache/fs-monkey-npm-1.0.6-9155bd1580-10c0.zip/node_modules/fs-monkey/",\
+      ["patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch::version=1.0.6&hash=3e2057", {\
+        "packageLocation": "../snap/code/186/.local/share/yarn/berry/cache/fs-monkey-patch-64a7ad758b-10c0.zip/node_modules/fs-monkey/",\
         "packageDependencies": [\
-          ["fs-monkey", "npm:1.0.6"]\
+          ["fs-monkey", "patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch::version=1.0.6&hash=3e2057"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -5672,7 +5672,7 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../snap/code/186/.local/share/yarn/berry/cache/memfs-npm-3.5.3-58186f00bb-10c0.zip/node_modules/memfs/",\
         "packageDependencies": [\
           ["memfs", "npm:3.5.3"],\
-          ["fs-monkey", "npm:1.0.6"]\
+          ["fs-monkey", "patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch::version=1.0.6&hash=3e2057"]\
         ],\
         "linkType": "HARD"\
       }],\
@@ -9186,7 +9186,7 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../snap/code/186/.local/share/yarn/berry/cache/unionfs-npm-4.5.4-bf94f3c420-10c0.zip/node_modules/unionfs/",\
         "packageDependencies": [\
           ["unionfs", "npm:4.5.4"],\
-          ["fs-monkey", "npm:1.0.6"]\
+          ["fs-monkey", "patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch::version=1.0.6&hash=3e2057"]\
         ],\
         "linkType": "HARD"\
       }]\

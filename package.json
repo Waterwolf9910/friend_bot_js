@@ -66,7 +66,7 @@
         "express-session": "^1.17.3",
         "express-ws": "^5.0.2",
         "ffmpeg-static": "^5.2.0",
-        "fs-monkey": "^1.0.6",
+        "fs-monkey": "patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch",
         "helmet": "^7.0.0",
         "libsodium-wrappers": "latest",
         "mariadb": "^3.4.1",
@@ -94,6 +94,8 @@
     "resolutions": {
         "prism-media@npm:^1.3.5": "patch:prism-media@npm%3A1.3.5#~/.yarn/patches/prism-media-npm-1.3.5-f727c60102.patch",
         "node-gyp@npm:latest": "patch:node-gyp@npm%3A10.2.0#~/.yarn/patches/node-gyp-npm-10.2.0-cad1109948.patch",
-        "node-gyp@npm:8.x": "patch:node-gyp@npm%3A10.2.0#~/.yarn/patches/node-gyp-npm-10.2.0-cad1109948.patch"
+        "node-gyp@npm:8.x": "patch:node-gyp@npm%3A10.2.0#~/.yarn/patches/node-gyp-npm-10.2.0-cad1109948.patch",
+        "fs-monkey@npm:^1.0.0": "patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch",
+        "fs-monkey@npm:^1.0.4": "patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch"
     }
 }

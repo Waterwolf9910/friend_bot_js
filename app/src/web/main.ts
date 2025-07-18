@@ -10,7 +10,6 @@ import _sequelize_store = require("connect-session-sequelize")
 import express = require("express")
 import helmet = require("helmet")
 import cors = require("cors")
-import morgan = require("morgan")
 import compression = require("compression")
 import url = require("url")
 import mime = require("mime")
@@ -112,6 +111,7 @@ let parsePermissions = (permissions: bigint) => {
 
 let access_log = rotating_file_stream.createStream(path.resolve("web_data", "access.log"), {
     compress: 'gzip',
+    path: path.resolve("web_data"),
     size: '25M',
     interval: '1d',
     maxFiles: 5
@@ -202,11 +202,11 @@ let start = async (secret: string, client_secret: string, config: import("main/t
     }))
 
     app.use((req, res, next) => {
+        let ip = req.ip || req.socket.remoteAddress
         let date = new Date
         let tzoffset = date.getTimezoneOffset()
         let timezone = `${(tzoffset / 60) * 100 * (tzoffset < 1 ? -1 : 1)}`.padStart(4, '0')
-        timezone = `${tzoffset > 1 ? '-' : '+'}${tzoffset}`
-        let ip = req.ip || req.socket.remoteAddress
+        timezone = `${tzoffset > 1 ? '-' : '+'}${timezone}`
         let date_format = `${date.getDate().toString().padStart(2, '0')}/${months[date.getMonth()]}/${date.getFullYear()}:${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')} ${timezone}`
         let status = res.statusCode || '-'
         let content_length = res.getHeader('content-length') || '-'
@@ -226,7 +226,6 @@ let start = async (secret: string, client_secret: string, config: import("main/t
     if (!isDev) {
         app.use(compression())
     } else if (!ctx.id) { // TODO: Fix these imports
-        app.use(morgan("dev"))
         let webpack: typeof import("webpack") = __non_webpack_require__("webpack")
         let wpdm: typeof import("webpack-dev-middleware") = __non_webpack_require__("webpack-dev-middleware")
         let wphm: typeof import("webpack-hot-middleware") = __non_webpack_require__("webpack-hot-middleware")

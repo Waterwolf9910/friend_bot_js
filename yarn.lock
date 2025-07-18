@@ -3449,7 +3449,7 @@ __metadata:
     express-session: "npm:^1.17.3"
     express-ws: "npm:^5.0.2"
     ffmpeg-static: "npm:^5.2.0"
-    fs-monkey: "npm:^1.0.6"
+    fs-monkey: "patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch"
     glob: "npm:^11.0.0"
     helmet: "npm:^7.0.0"
     html-webpack-plugin: "npm:^5.5.3"
@@ -3520,10 +3520,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-monkey@npm:^1.0.0, fs-monkey@npm:^1.0.4, fs-monkey@npm:^1.0.6":
+"fs-monkey@npm:1.0.6":
   version: 1.0.6
   resolution: "fs-monkey@npm:1.0.6"
   checksum: 10c0/6f2508e792a47e37b7eabd5afc79459c1ea72bce2a46007d2b7ed0bfc3a4d64af38975c6eb7e93edb69ac98bbb907c13ff1b1579b2cf52d3d02dbc0303fca79f
+  languageName: node
+  linkType: hard
+
+"fs-monkey@patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch":
+  version: 1.0.6
+  resolution: "fs-monkey@patch:fs-monkey@npm%3A1.0.6#~/.yarn/patches/fs-monkey-npm-1.0.6-9155bd1580.patch::version=1.0.6&hash=3e2057"
+  checksum: 10c0/256a4e00219a86fb169ca5edca183a9e061c7a2ce4fdd622d32a4f055cc64c9867e8906547358ee2c037e5dd301183eed0b9b074758a28425b170a69d87d7d31
   languageName: node
   linkType: hard
 
